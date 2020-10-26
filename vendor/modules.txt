@@ -1,0 +1,27 @@
+# github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d
+github.com/cpuguy83/go-md2man/v2/md2man
+# github.com/konsorten/go-windows-terminal-sequences v1.0.1
+github.com/konsorten/go-windows-terminal-sequences
+# github.com/russross/blackfriday/v2 v2.0.1
+github.com/russross/blackfriday/v2
+# github.com/shurcooL/sanitized_anchor_name v1.0.0
+github.com/shurcooL/sanitized_anchor_name
+# github.com/sirupsen/logrus v1.4.2
+github.com/sirupsen/logrus
+# github.com/urfave/cli v1.22.1
+github.com/urfave/cli
+# golang.org/x/net v0.0.0-20201201195509-5d6afe98e0b7
+golang.org/x/net/context
+# golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f
+golang.org/x/sys/internal/unsafeheader
+golang.org/x/sys/unix
+# k8s.io/klog v1.0.0
+k8s.io/klog
+# k8s.io/kubernetes v1.16.15
+k8s.io/kubernetes/pkg/util/mount
+k8s.io/kubernetes/pkg/volume/util/hostutil
+# k8s.io/utils v0.0.0-20190801114015-581e00157fb1
+k8s.io/utils/exec
+k8s.io/utils/io
+k8s.io/utils/keymutex
+k8s.io/utils/path
