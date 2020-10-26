@@ -22,7 +22,7 @@ RUN mkdir -p /usr/local \
     -DUSE_FSAL_PROXY_V4=OFF -DUSE_FSAL_PROXY_V3=OFF -DUSE_FSAL_LUSTRE=OFF -DUSE_FSAL_LIZARDFS=OFF \
     -DUSE_FSAL_KVSFS=OFF -DUSE_FSAL_CEPH=OFF -DUSE_FSAL_GPFS=OFF -DUSE_FSAL_PANFS=OFF -DUSE_FSAL_GLUSTER=OFF \
     -DCMAKE_INSTALL_PREFIX=/usr/local src/ \
-    && sed -i 's|@SYSSTATEDIR@/lib/nfs/ganesha|/export|' src/include/config-h.in.cmake \
+    && sed -i 's|@SYSSTATEDIR@/lib/nfs/ganesha|/tmp|' src/include/config-h.in.cmake \
 	  && make \
 	  && make install
 RUN mkdir -p /ganesha-extra \
