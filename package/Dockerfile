@@ -8,11 +8,11 @@ FROM fedora:30 AS build
 # Set NFS_V4_RECOV_ROOT to /export
 
 RUN dnf install -y tar gcc cmake-3.14.2-1.fc30 autoconf libtool bison flex make gcc-c++ krb5-devel dbus-devel jemalloc-devel libnfsidmap-devel libnsl2-devel userspace-rcu-devel patch libblkid-devel
-RUN curl -L https://github.com/nfs-ganesha/nfs-ganesha/archive/V2.8.2.tar.gz | tar zx \
-	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/v1.8.0.tar.gz | tar zx \
-	  && rm -r nfs-ganesha-2.8.2/src/libntirpc \
-	  && mv ntirpc-1.8.0 nfs-ganesha-2.8.2/src/libntirpc
-WORKDIR /nfs-ganesha-2.8.2
+RUN curl -L https://github.com/nfs-ganesha/nfs-ganesha/archive/V3.3.tar.gz | tar zx \
+	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/v3.3.tar.gz | tar zx \
+	  && rm -r nfs-ganesha-3.3/src/libntirpc \
+	  && mv ntirpc-3.3 nfs-ganesha-3.3/src/libntirpc
+WORKDIR /nfs-ganesha-3.3
 
 # build ganesha only supporting nfsv4 and vfs
 RUN mkdir -p /usr/local \
@@ -30,8 +30,9 @@ RUN mkdir -p /ganesha-extra \
     && cp src/scripts/ganeshactl/org.ganesha.nfsd.conf /ganesha-extra/etc/dbus-1/system.d/
 
 FROM registry.fedoraproject.org/fedora-minimal:30 AS run
-RUN microdnf install -y e2fsprogs fuse-libs libss libblkid userspace-rcu dbus-x11 rpcbind hostname nfs-utils xfsprogs jemalloc libnfsidmap && microdnf clean all
+RUN microdnf install -y nano tar lsof e2fsprogs fuse-libs libss libblkid userspace-rcu dbus-x11 rpcbind hostname nfs-utils xfsprogs jemalloc libnfsidmap && microdnf clean all
 # ext4 filesystem tools are not present on the minimal disk, required packages: e2fsprogs fuse-libs libss
+# add lsof for debugging
 
 RUN mkdir -p /var/run/dbus \
     && mkdir -p /export
