@@ -59,7 +59,8 @@ func (m *ShareManager) Run() error {
 			go m.runHealthCheck()
 
 			// This blocks until server exits
-			if err := m.nfsServer.Run(m.context); err != nil {
+			err := m.nfsServer.Run(m.context)
+			if err != nil {
 				m.logger.WithError(err).Error("nfs server exited with error")
 			}
 
@@ -67,6 +68,9 @@ func (m *ShareManager) Run() error {
 			if err := unmountVolume(m.volume); err != nil {
 				m.logger.WithError(err).Error("failed to unmount volume")
 			}
+
+			m.Shutdown()
+			return err
 		}
 	}
 }
