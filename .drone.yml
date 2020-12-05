@@ -33,7 +33,7 @@ steps:
     dockerfile: package/Dockerfile
     password:
       from_secret: docker_password
-    repo: longhornio/longhorn-instance-manager
+    repo: longhornio/longhorn-share-manager
     tag: "master-amd64"
     username:
       from_secret: docker_username
@@ -52,7 +52,7 @@ steps:
     dockerfile: package/Dockerfile
     password:
       from_secret: docker_password
-    repo: longhornio/longhorn-instance-manager
+    repo: longhornio/longhorn-share-manager
     tag: "${DRONE_TAG}-amd64"
     username:
       from_secret: docker_username
@@ -119,7 +119,7 @@ steps:
     dockerfile: package/Dockerfile
     password:
       from_secret: docker_password
-    repo: longhornio/longhorn-instance-manager
+    repo: longhornio/longhorn-share-manager
     tag: "master-arm64"
     username:
       from_secret: docker_username
@@ -138,7 +138,7 @@ steps:
     dockerfile: package/Dockerfile
     password:
       from_secret: docker_password
-    repo: longhornio/longhorn-instance-manager
+    repo: longhornio/longhorn-share-manager
     tag: "${DRONE_TAG}-arm64"
     username:
       from_secret: docker_username
@@ -189,8 +189,8 @@ steps:
     platforms:
       - linux/amd64
       - linux/arm64
-    target: "longhornio/longhorn-instance-manager:master"
-    template: "longhornio/longhorn-instance-manager:master-ARCH"
+    target: "longhornio/longhorn-share-manager:master"
+    template: "longhornio/longhorn-share-manager:master-ARCH"
   when:
     instance:
     - drone-publish.longhorn.io
@@ -209,8 +209,8 @@ steps:
     platforms:
       - linux/amd64
       - linux/arm64
-    target: "longhornio/longhorn-instance-manager:${DRONE_TAG}"
-    template: "longhornio/longhorn-instance-manager:${DRONE_TAG}-ARCH"
+    target: "longhornio/longhorn-share-manager:${DRONE_TAG}"
+    template: "longhornio/longhorn-share-manager:${DRONE_TAG}-ARCH"
   when:
     instance:
     - drone-publish.longhorn.io
