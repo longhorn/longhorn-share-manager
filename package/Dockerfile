@@ -29,7 +29,7 @@ RUN mkdir -p /ganesha-extra \
     && mkdir -p /ganesha-extra/etc/dbus-1/system.d \
     && cp src/scripts/ganeshactl/org.ganesha.nfsd.conf /ganesha-extra/etc/dbus-1/system.d/
 
-FROM registry.fedoraproject.org/fedora-minimal:30 AS run
+FROM registry.fedoraproject.org/fedora-minimal:30
 RUN microdnf install -y nano tar lsof e2fsprogs fuse-libs libss libblkid userspace-rcu dbus-x11 rpcbind hostname nfs-utils xfsprogs jemalloc libnfsidmap && microdnf clean all
 # ext4 filesystem tools are not present on the minimal disk, required packages: e2fsprogs fuse-libs libss
 # add lsof for debugging
