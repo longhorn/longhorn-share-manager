@@ -28,6 +28,10 @@ TAG="v${APIVERSION}_`date -u +%Y%m%d`"
 REPO=${REPO:-longhornio}
 IMAGE=${REPO}/${PROJECT}:${TAG}
 
+# update base image to get latest changes
+BASE_IMAGE=`grep FROM package/Dockerfile | grep -vi AS | awk '{print $2}'`
+docker pull ${BASE_IMAGE}
+
 docker build --build-arg ARCH=${ARCH} -t ${IMAGE} -f package/Dockerfile .
 
 echo Built ${IMAGE}
