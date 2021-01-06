@@ -1,13 +1,31 @@
 ARG ARCH=amd64
 
 # Based on https://github.com/kubernetes-sigs/nfs-ganesha-server-and-external-provisioner/blob/master/deploy/docker/x86_64/Dockerfile
-FROM fedora:30 AS build
+FROM ubuntu:18.04 AS build
 
-# TODO: considering switching this to ubuntu, we lose the multi stage build and the image size will increase
 # Build ganesha from source, install it to /usr/local and a use multi stage build to have a smaller image
-# Set NFS_V4_RECOV_ROOT to /export
+# RUN dnf install -y tar gcc cmake-3.14.2-1.fc30 autoconf libtool bison flex make gcc-c++ krb5-devel dbus-devel jemalloc-devel libnfsidmap-devel libnsl2-devel userspace-rcu-devel patch libblkid-devel
+RUN apt-get update && apt-get install -y \
+  autoconf \
+  build-essential \
+  bison \
+  curl \
+  cmake \
+  doxygen \
+  make \
+  git \
+  g++ \
+  flex \
+  libboost-dev \
+  libglu1-mesa-dev \
+  libc6-dev \
+  libkrb5-dev \
+  libdbus-1-dev \
+  libnfsidmap-dev \
+  liburcu-dev \
+  libblkid-dev \
+  && rm -rf /var/lib/apt/lists/*
 
-RUN dnf install -y tar gcc cmake-3.14.2-1.fc30 autoconf libtool bison flex make gcc-c++ krb5-devel dbus-devel jemalloc-devel libnfsidmap-devel libnsl2-devel userspace-rcu-devel patch libblkid-devel
 RUN curl -L https://github.com/nfs-ganesha/nfs-ganesha/archive/V3.3.tar.gz | tar zx \
 	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/v3.3.tar.gz | tar zx \
 	  && rm -r nfs-ganesha-3.3/src/libntirpc \
@@ -15,9 +33,11 @@ RUN curl -L https://github.com/nfs-ganesha/nfs-ganesha/archive/V3.3.tar.gz | tar
 WORKDIR /nfs-ganesha-3.3
 
 # build ganesha only supporting nfsv4 and vfs
+# Set NFS_V4_RECOV_ROOT to /tmp we don't support recovery in this release
+# we disable dbus (-DUSE_DBUS=OFF) for the single share manager since we don't use dynamic exports
 RUN mkdir -p /usr/local \
     && cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_CONFIG=vfs_only \
-    -DUSE_DBUS=ON -DUSE_NFS3=OFF -DUSE_NLM=OFF -DUSE_RQUOTA=OFF -DUSE_9P=OFF -D_MSPAC_SUPPORT=OFF -DRPCBIND=OFF \
+    -DUSE_DBUS=OFF -DUSE_NFS3=OFF -DUSE_NLM=OFF -DUSE_RQUOTA=OFF -DUSE_9P=OFF -D_MSPAC_SUPPORT=OFF -DRPCBIND=OFF \
     -DUSE_RADOS_RECOV=OFF -DRADOS_URLS=OFF -DUSE_FSAL_VFS=ON -DUSE_FSAL_XFS=OFF \
     -DUSE_FSAL_PROXY_V4=OFF -DUSE_FSAL_PROXY_V3=OFF -DUSE_FSAL_LUSTRE=OFF -DUSE_FSAL_LIZARDFS=OFF \
     -DUSE_FSAL_KVSFS=OFF -DUSE_FSAL_CEPH=OFF -DUSE_FSAL_GPFS=OFF -DUSE_FSAL_PANFS=OFF -DUSE_FSAL_GLUSTER=OFF \
@@ -29,10 +49,18 @@ RUN mkdir -p /ganesha-extra \
     && mkdir -p /ganesha-extra/etc/dbus-1/system.d \
     && cp src/scripts/ganeshactl/org.ganesha.nfsd.conf /ganesha-extra/etc/dbus-1/system.d/
 
-FROM registry.fedoraproject.org/fedora-minimal:30
-RUN microdnf install -y nano tar lsof e2fsprogs fuse-libs libss libblkid userspace-rcu dbus-x11 rpcbind hostname nfs-utils xfsprogs jemalloc libnfsidmap && microdnf clean all
-# ext4 filesystem tools are not present on the minimal disk, required packages: e2fsprogs fuse-libs libss
-# add lsof for debugging
+FROM ubuntu:18.04
+# RUN microdnf install -y nano tar lsof e2fsprogs fuse-libs libss libblkid userspace-rcu dbus-x11 rpcbind hostname nfs-utils xfsprogs jemalloc libnfsidmap && microdnf clean all
+RUN apt-get update && apt-get install -y \
+  rpcbind \
+  hostname \
+  libblkid1 \
+  liburcu6 \
+  dbus-x11 \
+  dbus \
+  libnfsidmap2 \
+  nfs-common \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/run/dbus \
     && mkdir -p /export
@@ -53,5 +81,4 @@ RUN ldconfig
 # onyl expose the nfsd since for v4 only that is necessary
 EXPOSE 2049/tcp
 
-# TODO: finish the docker file to run the share manager
 ENTRYPOINT ["/longhorn-share-manager"]
