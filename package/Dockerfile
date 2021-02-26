@@ -71,6 +71,9 @@ RUN echo /usr/local/lib64 > /etc/ld.so.conf.d/local_libs.conf
 # do not ask systemd for user IDs or groups (slows down dbus-daemon start)
 RUN sed -i s/systemd// /etc/nsswitch.conf
 
+# ganesha reads /etc/mtab for mounted volumes
+RUN ln -sf /proc/self/mounts /etc/mtab
+
 COPY --from=build /usr/local /usr/local/
 COPY --from=build /ganesha-extra /
 COPY bin/longhorn-share-manager /longhorn-share-manager
