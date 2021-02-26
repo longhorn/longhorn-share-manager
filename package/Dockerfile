@@ -26,11 +26,12 @@ RUN apt-get update && apt-get install -y \
   libblkid-dev \
   && rm -rf /var/lib/apt/lists/*
 
-RUN curl -L https://github.com/nfs-ganesha/nfs-ganesha/archive/V3.3.tar.gz | tar zx \
-	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/v3.3.tar.gz | tar zx \
-	  && rm -r nfs-ganesha-3.3/src/libntirpc \
-	  && mv ntirpc-3.3 nfs-ganesha-3.3/src/libntirpc
-WORKDIR /nfs-ganesha-3.3
+RUN curl -L https://github.com/longhorn/nfs-ganesha/archive/v3_20210302.tar.gz | tar zx \
+	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/v3.4.tar.gz | tar zx \
+	  && mv nfs-ganesha-3_20210302 nfs-ganesha-3.4 \
+	  && rm -r nfs-ganesha-3.4/src/libntirpc \
+	  && mv ntirpc-3.4 nfs-ganesha-3.4/src/libntirpc
+WORKDIR /nfs-ganesha-3.4
 
 # build ganesha only supporting nfsv4 and vfs
 # Set NFS_V4_RECOV_ROOT to /tmp we don't support recovery in this release
