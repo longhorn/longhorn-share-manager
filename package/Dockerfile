@@ -64,7 +64,8 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/run/dbus \
-    && mkdir -p /export
+    && mkdir -p /export \
+    && chmod 666 /export
 
 # add libs from /usr/local/lib64
 RUN echo /usr/local/lib64 > /etc/ld.so.conf.d/local_libs.conf
