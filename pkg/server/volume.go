@@ -57,7 +57,7 @@ func unmountVolume(volume string) error {
 // If pathname already exists as a directory, no error is returned.
 // If pathname already exists as a file, an error is returned.
 func makeDir(pathname string) error {
-	err := os.MkdirAll(pathname, os.FileMode(0755))
+	err := os.MkdirAll(pathname, os.FileMode(0777))
 	if err != nil {
 		if !os.IsExist(err) {
 			return err
