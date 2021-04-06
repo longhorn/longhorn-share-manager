@@ -41,6 +41,7 @@ NFSV4
     Grace_Period = 0;
     Minor_Versions = 1, 2;
     RecoveryBackend = fs_ng;
+    Only_Numeric_Owners = true;
 }
 
 Export_defaults
