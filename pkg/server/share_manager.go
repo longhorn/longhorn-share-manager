@@ -55,6 +55,11 @@ func (m *ShareManager) Run() error {
 				break
 			}
 
+			if err := setPermissions(m.volume, 0777); err != nil {
+				log.WithError(err).Error("failed to set permissions for volume")
+				break
+			}
+
 			log.Info("starting nfs server, volume is ready for export")
 			go m.runHealthCheck()
 

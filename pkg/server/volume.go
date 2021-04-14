@@ -47,6 +47,14 @@ func mountVolume(volume string) error {
 	return mounter.FormatAndMount(devicePath, mountPath, "ext4", nil)
 }
 
+func setPermissions(volume string, mode os.FileMode) error {
+	if !checkMountValid(volume) {
+		return fmt.Errorf("cannot set permissions %v for volume %v invalid mount point", mode, volume)
+	}
+	mountPath := filepath.Join(exportPath, volume)
+	return os.Chmod(mountPath, mode)
+}
+
 func unmountVolume(volume string) error {
 	mountPath := filepath.Join(exportPath, volume)
 	mounter := mount.New("")
@@ -57,7 +65,7 @@ func unmountVolume(volume string) error {
 // If pathname already exists as a directory, no error is returned.
 // If pathname already exists as a file, an error is returned.
 func makeDir(pathname string) error {
-	err := os.MkdirAll(pathname, os.FileMode(0755))
+	err := os.MkdirAll(pathname, os.FileMode(0777))
 	if err != nil {
 		if !os.IsExist(err) {
 			return err
