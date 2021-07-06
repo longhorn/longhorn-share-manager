@@ -5,26 +5,28 @@ FROM ubuntu:18.04 AS build
 
 # Build ganesha from source, install it to /usr/local and a use multi stage build to have a smaller image
 # RUN dnf install -y tar gcc cmake-3.14.2-1.fc30 autoconf libtool bison flex make gcc-c++ krb5-devel dbus-devel jemalloc-devel libnfsidmap-devel libnsl2-devel userspace-rcu-devel patch libblkid-devel
-RUN apt-get update && apt-get install -y \
-  autoconf \
-  build-essential \
-  bison \
-  curl \
-  cmake \
-  doxygen \
-  make \
-  git \
-  g++ \
-  flex \
-  libboost-dev \
-  libglu1-mesa-dev \
-  libc6-dev \
-  libkrb5-dev \
-  libdbus-1-dev \
-  libnfsidmap-dev \
-  liburcu-dev \
-  libblkid-dev \
-  && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+    autoconf \
+    build-essential \
+    bison \
+    curl \
+    cmake \
+    doxygen \
+    make \
+    git \
+    g++ \
+    flex \
+    libboost-dev \
+    libglu1-mesa-dev \
+    libc6-dev \
+    libkrb5-dev \
+    libdbus-1-dev \
+    libnfsidmap-dev \
+    liburcu-dev \
+    libblkid-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN curl -L https://github.com/longhorn/nfs-ganesha/archive/v3_20210302.tar.gz | tar zx \
 	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/v3.4.tar.gz | tar zx \

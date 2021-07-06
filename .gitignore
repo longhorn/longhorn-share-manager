@@ -10,9 +10,6 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
-.glide/
-
 # goland ide project files
 .idea
 *.iml
@@ -22,3 +19,6 @@
 
 # vim temp file
 .*.swp
+
+# Misc
+bin/
