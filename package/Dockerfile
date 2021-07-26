@@ -1,12 +1,14 @@
 ARG ARCH=amd64
 
 # Based on https://github.com/kubernetes-sigs/nfs-ganesha-server-and-external-provisioner/blob/master/deploy/docker/x86_64/Dockerfile
-FROM ubuntu:18.04 AS build
+FROM ubuntu:20.04 AS build
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Build ganesha from source, install it to /usr/local and a use multi stage build to have a smaller image
 # RUN dnf install -y tar gcc cmake-3.14.2-1.fc30 autoconf libtool bison flex make gcc-c++ krb5-devel dbus-devel jemalloc-devel libnfsidmap-devel libnsl2-devel userspace-rcu-devel patch libblkid-devel
 RUN apt-get update && \
-    apt-get upgrade -y && \
+    apt-get dist-upgrade -y && \
     apt-get install -y \
     autoconf \
     build-essential \
@@ -52,18 +54,23 @@ RUN mkdir -p /ganesha-extra \
     && mkdir -p /ganesha-extra/etc/dbus-1/system.d \
     && cp src/scripts/ganeshactl/org.ganesha.nfsd.conf /ganesha-extra/etc/dbus-1/system.d/
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
 # RUN microdnf install -y nano tar lsof e2fsprogs fuse-libs libss libblkid userspace-rcu dbus-x11 rpcbind hostname nfs-utils xfsprogs jemalloc libnfsidmap && microdnf clean all
-RUN apt-get update && apt-get install -y \
-  rpcbind \
-  hostname \
-  libblkid1 \
-  liburcu6 \
-  dbus-x11 \
-  dbus \
-  libnfsidmap2 \
-  nfs-common \
-  && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get dist-upgrade -y && \
+    apt-get install -y \
+    rpcbind \
+    hostname \
+    libblkid1 \
+    liburcu6 \
+    dbus-x11 \
+    dbus \
+    libnfsidmap2 \
+    nfs-common \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/run/dbus \
     && mkdir -p /export
