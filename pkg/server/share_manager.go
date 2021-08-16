@@ -1,23 +1,29 @@
 package server
 
 import (
-	"golang.org/x/net/context"
+	"context"
+	"fmt"
 	"os/exec"
 	"path/filepath"
 	"time"
 
 	"github.com/sirupsen/logrus"
 
+	"github.com/longhorn/longhorn-share-manager/pkg/crypto"
 	"github.com/longhorn/longhorn-share-manager/pkg/server/nfs"
+	"github.com/longhorn/longhorn-share-manager/pkg/volume"
 )
 
 const waitBetweenChecks = time.Second * 5
 const healthCheckInterval = time.Second * 10
+const exportPath = "/export"
+const configPath = "/tmp/vfs.conf"
+const devPath = "/dev"
 
 type ShareManager struct {
 	logger logrus.FieldLogger
 
-	volume string
+	volume volume.Volume
 
 	context  context.Context
 	shutdown context.CancelFunc
@@ -25,11 +31,14 @@ type ShareManager struct {
 	nfsServer *nfs.Server
 }
 
-func NewShareManager(logger logrus.FieldLogger, volume string) (*ShareManager, error) {
-	m := &ShareManager{logger: logger, volume: volume}
+func NewShareManager(logger logrus.FieldLogger, volume volume.Volume) (*ShareManager, error) {
+	m := &ShareManager{
+		volume: volume,
+		logger: logger.WithField("volume", volume.Name).WithField("encrypted", volume.IsEncrypted()),
+	}
 	m.context, m.shutdown = context.WithCancel(context.Background())
 
-	nfsServer, err := nfs.NewDefaultServer(logger, volume)
+	nfsServer, err := nfs.NewServer(logger, configPath, exportPath, volume.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -38,40 +47,51 @@ func NewShareManager(logger logrus.FieldLogger, volume string) (*ShareManager, e
 }
 
 func (m *ShareManager) Run() error {
+	vol := m.volume
+	mountPath := filepath.Join(exportPath, vol.Name)
+	devicePath := filepath.Join(devPath, "longhorn", vol.Name)
+
 	for ; ; time.Sleep(waitBetweenChecks) {
 		select {
 		case <-m.context.Done():
 			m.logger.Info("nfs server is shutting down")
 			return nil
 		default:
-			log := m.logger.WithField("volume", m.volume)
-			if !checkDeviceValid(m.volume) {
-				log.Warn("waiting with nfs server start, volume is not attached")
+			if !volume.CheckDeviceValid(devicePath) {
+				m.logger.Warn("waiting with nfs server start, volume is not attached")
 				break
 			}
 
-			if err := mountVolume(m.volume); err != nil {
-				log.Warn("waiting with nfs server start, failed to mount volume")
+			devicePath, err := setupDevice(m.logger, vol, devicePath)
+			if err != nil {
+				return err
+			}
+
+			if err := volume.MountVolume(devicePath, mountPath, vol.FsType, vol.MountOptions); err != nil {
+				m.logger.Warn("waiting with nfs server start, failed to mount volume")
 				break
 			}
 
-			if err := setPermissions(m.volume, 0777); err != nil {
-				log.WithError(err).Error("failed to set permissions for volume")
+			if err := volume.SetPermissions(mountPath, 0777); err != nil {
+				m.logger.WithError(err).Error("failed to set permissions for volume")
 				break
 			}
 
-			log.Info("starting nfs server, volume is ready for export")
+			m.logger.Info("starting nfs server, volume is ready for export")
 			go m.runHealthCheck()
 
-			// This blocks until server exits
-			err := m.nfsServer.Run(m.context)
-			if err != nil {
+			// This blocks until server exist
+			if err := m.nfsServer.Run(m.context); err != nil {
 				m.logger.WithError(err).Error("nfs server exited with error")
 			}
 
-			// if the server is exiting, try to unmount before we terminate the container
-			if err := unmountVolume(m.volume); err != nil {
+			// if the server is exiting, try to unmount & teardown device before we terminate the container
+			if err := volume.UnmountVolume(mountPath); err != nil {
 				m.logger.WithError(err).Error("failed to unmount volume")
+			}
+
+			if err := tearDownDevice(m.logger, vol); err != nil {
+				m.logger.WithError(err).Error("failed to tear down volume")
 			}
 
 			m.Shutdown()
@@ -80,8 +100,61 @@ func (m *ShareManager) Run() error {
 	}
 }
 
+// setupDevice will return a path where the device file can be found
+// for encrypted volumes, it will try formatting the volume on first use
+// then open it and expose a crypto device at the returned path
+func setupDevice(logger logrus.FieldLogger, vol volume.Volume, devicePath string) (string, error) {
+	diskFormat, err := volume.GetDiskFormat(devicePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to determine filesystem format of volume error %v", err)
+	}
+	logger.Debugf("volume %v device %v contains filesystem of format %v", vol.Name, devicePath, diskFormat)
+
+	if vol.IsEncrypted() || diskFormat == "luks" {
+		if vol.Passphrase == "" {
+			return "", fmt.Errorf("missing passphrase for encrypted volume %v", vol.Name)
+		}
+
+		// initial setup of longhorn device for crypto
+		if diskFormat == "" {
+			logger.Info("encrypting new volume before first use")
+			if err := crypto.EncryptVolume(devicePath, vol.Passphrase); err != nil {
+				return "", fmt.Errorf("failed to encrypt volume %v error %v", vol.Name, err)
+			}
+		}
+
+		cryptoDevice := crypto.VolumeMapper(vol.Name)
+		logger.Infof("volume %s requires crypto device %s", vol.Name, cryptoDevice)
+		if err := crypto.OpenVolume(vol.Name, devicePath, vol.Passphrase); err != nil {
+			logger.Error("failed to open encrypted volume")
+			return "", err
+		}
+
+		// update the device path to point to the new crypto device
+		return cryptoDevice, nil
+	}
+
+	return devicePath, nil
+}
+
+func tearDownDevice(logger logrus.FieldLogger, vol volume.Volume) error {
+	// close any matching crypto device for this volume
+	cryptoDevice := crypto.VolumeMapper(vol.Name)
+	if isOpen, err := crypto.IsDeviceOpen(cryptoDevice); err != nil {
+		return err
+	} else if isOpen {
+		logger.Infof("volume %s has active crypto device %s", vol.Name, cryptoDevice)
+		if err := crypto.CloseVolume(vol.Name); err != nil {
+			return err
+		}
+		logger.Infof("volume %s closed active crypto device %s", vol.Name, cryptoDevice)
+	}
+
+	return nil
+}
+
 func (m *ShareManager) runHealthCheck() {
-	m.logger.WithField("volume", m.volume).Info("starting health check for volume")
+	m.logger.Info("starting health check for volume")
 	ticker := time.NewTicker(healthCheckInterval)
 	defer ticker.Stop()
 
@@ -92,7 +165,7 @@ func (m *ShareManager) runHealthCheck() {
 			return
 		case <-ticker.C:
 			if !m.hasHealthyVolume() {
-				m.logger.WithField("volume", m.volume).Error("volume health check failed, terminating")
+				m.logger.Error("volume health check failed, terminating")
 				m.Shutdown()
 				return
 			}
@@ -101,8 +174,8 @@ func (m *ShareManager) runHealthCheck() {
 }
 
 func (m *ShareManager) hasHealthyVolume() bool {
-	path := filepath.Join(exportPath, m.volume)
-	err := exec.CommandContext(m.context, "ls", path).Run()
+	mountPath := filepath.Join(exportPath, m.volume.Name)
+	err := exec.CommandContext(m.context, "ls", mountPath).Run()
 	return err == nil
 }
 

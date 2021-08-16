@@ -12,10 +12,8 @@ import (
 )
 
 const (
-	defaultExportBase = "/export"
-	defaultLogFile    = "/tmp/ganesha.log"
-	defaultPidFile    = "/var/run/ganesha.pid"
-	defaultConfigFile = "/tmp/vfs.conf"
+	defaultLogFile = "/tmp/ganesha.log"
+	defaultPidFile = "/var/run/ganesha.pid"
 )
 
 var defaultConfig = []byte(`
@@ -76,11 +74,7 @@ type Server struct {
 	exporter   *exporter
 }
 
-func NewDefaultServer(logger logrus.FieldLogger, volume string) (*Server, error) {
-	return NewServer(logger, defaultConfigFile, volume)
-}
-
-func NewServer(logger logrus.FieldLogger, configPath, volume string) (*Server, error) {
+func NewServer(logger logrus.FieldLogger, configPath, exportPath, volume string) (*Server, error) {
 	if err := setRlimitNOFILE(logger); err != nil {
 		logger.Warnf("Error setting RLIMIT_NOFILE, there may be 'Too many open files' errors later: %v", err)
 	}
@@ -91,7 +85,7 @@ func NewServer(logger logrus.FieldLogger, configPath, volume string) (*Server, e
 		}
 	}
 
-	exporter, err := newExporter(logger, configPath, defaultExportBase)
+	exporter, err := newExporter(logger, configPath, exportPath)
 	if err != nil {
 		return nil, fmt.Errorf("error creating nfs exporter: %v", err)
 	}
@@ -103,7 +97,7 @@ func NewServer(logger logrus.FieldLogger, configPath, volume string) (*Server, e
 	return &Server{
 		logger:     logger,
 		configPath: configPath,
-		exportPath: defaultExportBase,
+		exportPath: exportPath,
 		exporter:   exporter,
 	}, nil
 }
