@@ -10,6 +10,7 @@ import (
 
 	"github.com/longhorn/longhorn-share-manager/pkg/server"
 	"github.com/longhorn/longhorn-share-manager/pkg/util"
+	"github.com/longhorn/longhorn-share-manager/pkg/volume"
 )
 
 func ServerCmd() cli.Command {
@@ -21,19 +22,47 @@ func ServerCmd() cli.Command {
 				Usage:    "The volume to export via the nfs server",
 				Required: true,
 			},
+			cli.BoolFlag{
+				Name:     "encrypted",
+				Usage:    "signals that a volume is encrypted",
+				EnvVar:   "ENCRYPTED",
+				Required: false,
+			},
+			cli.StringFlag{
+				Name:     "passphrase",
+				Usage:    "contains the encryption passphrase",
+				EnvVar:   "PASSPHRASE",
+				Required: false,
+			},
+			cli.StringFlag{
+				Name:     "fs",
+				Usage:    "the filesystem to use for the volume",
+				Value:    "ext4",
+				Required: false,
+			},
+			cli.StringSliceFlag{
+				Name:     "mount",
+				Usage:    "allows for specifying additional mount options",
+				Required: false,
+			},
 		},
 		Action: func(c *cli.Context) {
-			volume := c.String("volume")
-			if err := start(volume); err != nil {
+			vol := volume.Volume{
+				Name:         c.String("volume"),
+				Passphrase:   c.String("passphrase"),
+				FsType:       c.String("fs"),
+				MountOptions: c.StringSlice("mount"),
+			}
+			if err := start(vol); err != nil {
 				logrus.Fatalf("Error running start command: %v.", err)
 			}
 		},
 	}
 }
 
-func start(volume string) error {
+func start(vol volume.Volume) error {
 	logger := util.NewLogger()
-	manager, err := server.NewShareManager(logger, volume)
+	manager, err := server.NewShareManager(logger, vol)
 	if err != nil {
 		return err
 	}
