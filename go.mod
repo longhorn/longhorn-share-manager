@@ -31,8 +31,9 @@ replace (
 )
 
 require (
+	github.com/longhorn/go-iscsi-helper v0.0.0-20210330030558-49a327fb024e
 	github.com/sirupsen/logrus v1.4.2
 	github.com/urfave/cli v1.22.1
-	golang.org/x/net v0.0.0-20201201195509-5d6afe98e0b7
+	golang.org/x/net v0.0.0-20201201195509-5d6afe98e0b7 // indirect
 	k8s.io/kubernetes v1.16.15
 )
