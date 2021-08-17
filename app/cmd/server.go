@@ -53,6 +53,11 @@ func ServerCmd() cli.Command {
 				FsType:       c.String("fs"),
 				MountOptions: c.StringSlice("mount"),
 			}
+
+			if c.Bool("encrypted") && len(vol.Passphrase) == 0 {
+				logrus.Fatalf("Error starting share-manager missing passphrase for encrypted volume %v", vol.Name)
+			}
+
 			if err := start(vol); err != nil {
 				logrus.Fatalf("Error running start command: %v.", err)
 			}
