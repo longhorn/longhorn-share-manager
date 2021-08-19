@@ -2,15 +2,18 @@ package crypto
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	iscsi_util "github.com/longhorn/go-iscsi-helper/util"
 )
 
-const HostProcPath = "/host/proc"
+const hostProcPath = "/host/proc"
+const luksTimeout = time.Minute
 
 func luksOpen(volume, devicePath, passphrase string) (stdout string, err error) {
 	return cryptSetupWithPassphrase(passphrase,
@@ -43,10 +46,12 @@ func cryptSetup(args ...string) (stdout string, err error) {
 func cryptSetupWithPassphrase(passphrase string, args ...string) (stdout string, err error) {
 	// NOTE: cryptsetup needs to be run in the host IPC/MNT
 	// if you only use MNT the binary will not return but still do the appropriate action.
-	ns := iscsi_util.GetHostNamespacePath(HostProcPath)
-	// ns := fmt.Sprintf("%s/%d/ns/", HostProcPath, 1)
+	ns := iscsi_util.GetHostNamespacePath(hostProcPath)
+	// ns := fmt.Sprintf("%s/%d/ns/", hostProcPath, 1)
 	nsArgs := prepareCommandArgs(ns, "cryptsetup", args)
-	cmd := exec.Command("nsenter", nsArgs...)
+	ctx, cancel := context.WithTimeout(context.TODO(), luksTimeout)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, "nsenter", nsArgs...)
 
 	var stdoutBuf bytes.Buffer
 	cmd.Stdout = &stdoutBuf
