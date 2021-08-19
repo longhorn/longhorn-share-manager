@@ -28,6 +28,8 @@ RUN apt-get update && \
     libnfsidmap-dev \
     liburcu-dev \
     libblkid-dev \
+    xfsprogs \
+    e2fsprogs \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -L https://github.com/longhorn/nfs-ganesha/archive/v3_20210302.tar.gz | tar zx \
@@ -70,6 +72,8 @@ RUN apt-get update && \
     dbus \
     libnfsidmap2 \
     nfs-common \
+    xfsprogs \
+    e2fsprogs \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/run/dbus \
