@@ -14,16 +14,16 @@ github.com/shurcooL/sanitized_anchor_name
 github.com/sirupsen/logrus
 # github.com/urfave/cli v1.22.1
 github.com/urfave/cli
-# golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f
+# golang.org/x/sys v0.0.0-20201112073958-5cba982894dd
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 # k8s.io/klog v1.0.0
 k8s.io/klog
-# k8s.io/kubernetes v1.16.15
-k8s.io/kubernetes/pkg/util/mount
+# k8s.io/kubernetes v1.18.19
 k8s.io/kubernetes/pkg/volume/util/hostutil
-# k8s.io/utils v0.0.0-20190801114015-581e00157fb1
+# k8s.io/utils v0.0.0-20200324210504-a9aa75ae1b89
 k8s.io/utils/exec
 k8s.io/utils/io
 k8s.io/utils/keymutex
+k8s.io/utils/mount
 k8s.io/utils/path
