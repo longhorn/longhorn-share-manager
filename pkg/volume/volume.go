@@ -3,9 +3,11 @@ package volume
 import (
 	"fmt"
 	"os"
+	"strings"
 
-	"k8s.io/kubernetes/pkg/util/mount"
 	"k8s.io/kubernetes/pkg/volume/util/hostutil"
+	utilexec "k8s.io/utils/exec"
+	"k8s.io/utils/mount"
 )
 
 type Volume struct {
@@ -20,7 +22,7 @@ func (v Volume) IsEncrypted() bool {
 }
 
 func GetDiskFormat(devicePath string) (string, error) {
-	mounter := &mount.SafeFormatAndMount{Interface: mount.New(""), Exec: mount.NewOSExec()}
+	mounter := &mount.SafeFormatAndMount{Interface: mount.New(""), Exec: utilexec.New()}
 	return mounter.GetDiskFormat(devicePath)
 }
 
@@ -43,7 +45,21 @@ func MountVolume(devicePath, mountPath, fsType string, mountOptions []string) er
 		return nil
 	}
 
-	mounter := &mount.SafeFormatAndMount{Interface: mount.New(""), Exec: mount.NewOSExec()}
+	// https://github.com/longhorn/longhorn/issues/2991
+	// pre v1.2 we ignored the fsType and always formatted as ext4
+	// after v1.2 we include the user specified fsType to be able to
+	// mount priorly created volumes we need to switch to the existing fsType
+	diskFormat, err := GetDiskFormat(devicePath)
+	if err != nil {
+		return err
+	}
+
+	// `unknown data, probably partitions` is used when the disk contains a partition table
+	if diskFormat != "" && !strings.Contains(diskFormat, "unknown data") && fsType != diskFormat {
+		fsType = diskFormat
+	}
+
+	mounter := &mount.SafeFormatAndMount{Interface: mount.New(""), Exec: utilexec.New()}
 
 	if exists, err := hostutil.NewHostUtil().PathExists(mountPath); !exists || err != nil {
 		if err != nil {
@@ -53,10 +69,6 @@ func MountVolume(devicePath, mountPath, fsType string, mountOptions []string) er
 		if err := makeDir(mountPath); err != nil {
 			return err
 		}
-	}
-
-	if fsType == "" {
-		fsType = "ext4"
 	}
 
 	return mounter.FormatAndMount(devicePath, mountPath, fsType, mountOptions)
