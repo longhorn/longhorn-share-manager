@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -80,7 +81,7 @@ func (m *ShareManager) Run() error {
 				return err
 			}
 
-			if err := volume.MountVolume(devicePath, mountPath, vol.FsType, vol.MountOptions); err != nil {
+			if err := mountVolume(m.logger, vol, devicePath, mountPath); err != nil {
 				m.logger.WithError(err).Warn("failed to mount volume")
 				return err
 			}
@@ -153,6 +154,29 @@ func tearDownDevice(logger logrus.FieldLogger, vol volume.Volume) error {
 	}
 
 	return nil
+}
+
+func mountVolume(logger logrus.FieldLogger, vol volume.Volume, devicePath, mountPath string) error {
+	fsType := vol.FsType
+	mountOptions := vol.MountOptions
+
+	// https://github.com/longhorn/longhorn/issues/2991
+	// pre v1.2 we ignored the fsType and always formatted as ext4
+	// after v1.2 we include the user specified fsType to be able to
+	// mount priorly created volumes we need to switch to the existing fsType
+	diskFormat, err := volume.GetDiskFormat(devicePath)
+	if err != nil {
+		logger.WithError(err).Error("failed to evaluate disk format")
+		return err
+	}
+
+	// `unknown data, probably partitions` is used when the disk contains a partition table
+	if diskFormat != "" && !strings.Contains(diskFormat, "unknown data") && fsType != diskFormat {
+		logger.Warnf("disk is already formatted to %v but user requested fs is %v using existing device fs type for mount", diskFormat, fsType)
+		fsType = diskFormat
+	}
+
+	return volume.MountVolume(devicePath, mountPath, fsType, mountOptions)
 }
 
 func (m *ShareManager) runHealthCheck() {
