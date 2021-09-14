@@ -51,6 +51,19 @@ func (m *ShareManager) Run() error {
 	mountPath := filepath.Join(exportPath, vol.Name)
 	devicePath := filepath.Join(devPath, "longhorn", vol.Name)
 
+	defer func() {
+		// if the server is exiting, try to unmount & teardown device before we terminate the container
+		if err := volume.UnmountVolume(mountPath); err != nil {
+			m.logger.WithError(err).Error("failed to unmount volume")
+		}
+
+		if err := tearDownDevice(m.logger, vol); err != nil {
+			m.logger.WithError(err).Error("failed to tear down volume")
+		}
+
+		m.Shutdown()
+	}()
+
 	for ; ; time.Sleep(waitBetweenChecks) {
 		select {
 		case <-m.context.Done():
@@ -68,13 +81,13 @@ func (m *ShareManager) Run() error {
 			}
 
 			if err := volume.MountVolume(devicePath, mountPath, vol.FsType, vol.MountOptions); err != nil {
-				m.logger.Warn("waiting with nfs server start, failed to mount volume")
-				break
+				m.logger.WithError(err).Warn("failed to mount volume")
+				return err
 			}
 
 			if err := volume.SetPermissions(mountPath, 0777); err != nil {
 				m.logger.WithError(err).Error("failed to set permissions for volume")
-				break
+				return err
 			}
 
 			m.logger.Info("starting nfs server, volume is ready for export")
@@ -84,17 +97,6 @@ func (m *ShareManager) Run() error {
 			if err := m.nfsServer.Run(m.context); err != nil {
 				m.logger.WithError(err).Error("nfs server exited with error")
 			}
-
-			// if the server is exiting, try to unmount & teardown device before we terminate the container
-			if err := volume.UnmountVolume(mountPath); err != nil {
-				m.logger.WithError(err).Error("failed to unmount volume")
-			}
-
-			if err := tearDownDevice(m.logger, vol); err != nil {
-				m.logger.WithError(err).Error("failed to tear down volume")
-			}
-
-			m.Shutdown()
 			return err
 		}
 	}
