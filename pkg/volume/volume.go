@@ -3,7 +3,6 @@ package volume
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"k8s.io/kubernetes/pkg/volume/util/hostutil"
 	utilexec "k8s.io/utils/exec"
@@ -43,20 +42,6 @@ func MountVolume(devicePath, mountPath, fsType string, mountOptions []string) er
 
 	if CheckMountValid(mountPath) {
 		return nil
-	}
-
-	// https://github.com/longhorn/longhorn/issues/2991
-	// pre v1.2 we ignored the fsType and always formatted as ext4
-	// after v1.2 we include the user specified fsType to be able to
-	// mount priorly created volumes we need to switch to the existing fsType
-	diskFormat, err := GetDiskFormat(devicePath)
-	if err != nil {
-		return err
-	}
-
-	// `unknown data, probably partitions` is used when the disk contains a partition table
-	if diskFormat != "" && !strings.Contains(diskFormat, "unknown data") && fsType != diskFormat {
-		fsType = diskFormat
 	}
 
 	mounter := &mount.SafeFormatAndMount{Interface: mount.New(""), Exec: utilexec.New()}
