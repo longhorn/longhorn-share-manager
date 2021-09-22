@@ -86,6 +86,11 @@ func (m *ShareManager) Run() error {
 				return err
 			}
 
+			if err := resizeVolume(m.logger, devicePath, mountPath); err != nil {
+				m.logger.WithError(err).Warn("failed to resize volume after mount")
+				return err
+			}
+
 			if err := volume.SetPermissions(mountPath, 0777); err != nil {
 				m.logger.WithError(err).Error("failed to set permissions for volume")
 				return err
@@ -177,6 +182,17 @@ func mountVolume(logger logrus.FieldLogger, vol volume.Volume, devicePath, mount
 	}
 
 	return volume.MountVolume(devicePath, mountPath, fsType, mountOptions)
+}
+
+func resizeVolume(logger logrus.FieldLogger, devicePath, mountPath string) error {
+	if resized, err := volume.ResizeVolume(devicePath, mountPath); err != nil {
+		logger.WithError(err).Error("failed to resize filesystem for volume")
+		return err
+	} else if resized {
+		logger.Infof("resized filesystem for volume after mount")
+	}
+
+	return nil
 }
 
 func (m *ShareManager) runHealthCheck() {

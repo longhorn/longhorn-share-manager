@@ -59,6 +59,23 @@ func MountVolume(devicePath, mountPath, fsType string, mountOptions []string) er
 	return mounter.FormatAndMount(devicePath, mountPath, fsType, mountOptions)
 }
 
+func ResizeVolume(devicePath, mountPath string) (bool, error) {
+	// check if we need to resize the fs
+	// this is important since cloned volumes of bigger size don't trigger NodeExpandVolume
+	// therefore NodeExpandVolume is kind of redundant since we have to do this anyway
+	// some refs below for more details
+	// https://github.com/kubernetes/kubernetes/issues/94929
+	// https://github.com/kubernetes-sigs/aws-ebs-csi-driver/pull/753
+	resizer := mount.NewResizeFs(utilexec.New())
+	if needsResize, err := resizer.NeedResize(devicePath, mountPath); err != nil {
+		return false, err
+	} else if needsResize {
+		return resizer.Resize(devicePath, mountPath)
+	}
+
+	return false, nil
+}
+
 func SetPermissions(mountPath string, mode os.FileMode) error {
 	if !CheckMountValid(mountPath) {
 		return fmt.Errorf("cannot set permissions %v for path %v invalid mount point", mode, mountPath)
