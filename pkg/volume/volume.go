@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"k8s.io/kubernetes/pkg/volume/util/hostutil"
+	"k8s.io/mount-utils"
 	utilexec "k8s.io/utils/exec"
-	"k8s.io/utils/mount"
 )
 
 type Volume struct {
