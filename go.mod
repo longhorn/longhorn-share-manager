@@ -41,6 +41,7 @@ require (
 	k8s.io/client-go v0.18.19 // indirect
 	k8s.io/kubernetes v1.18.19
 	k8s.io/metrics v0.18.19 // indirect
-	k8s.io/utils v0.0.0-20200324210504-a9aa75ae1b89
+	k8s.io/mount-utils v0.22.2
+	k8s.io/utils v0.0.0-20210819203725-bdf08cb9a70a
 	sigs.k8s.io/yaml v1.2.0 // indirect
 )
