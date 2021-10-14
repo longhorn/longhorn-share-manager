@@ -10,11 +10,6 @@ import (
 )
 
 // following variables will be filled by `-ldflags "-X ..."`
-var (
-	Version   string
-	GitCommit string
-	BuildDate string
-)
 
 func main() {
 	a := cli.NewApp()
