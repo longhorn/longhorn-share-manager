@@ -24,7 +24,28 @@ steps:
   - name: socket
     path: /var/run/docker.sock
 
-- name: publish-master-image
+- name: fossa
+  image: registry.suse.com/suse/sle15:15.3.17.8.1
+  failure: ignore
+  environment:
+    FOSSA_API_KEY:
+      from_secret: FOSSA_API_KEY
+  commands:
+    - zypper -n install curl unzip
+    - "curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/spectrometer/master/install.sh | sh"
+    - fossa analyze
+    - fossa test
+  when:
+    instance:
+      - drone-publish.longhorn.io
+    ref:
+      include:
+        - "refs/heads/master"
+    event:
+      - push
+      - tag
+
+- name: publish-image
   image: plugins/docker
   settings:
     build_args:
@@ -34,14 +55,14 @@ steps:
     password:
       from_secret: docker_password
     repo: longhornio/longhorn-share-manager
-    tag: "master-amd64"
+    tag: "${DRONE_BRANCH}-head-amd64"
     username:
       from_secret: docker_username
   when:
-    branch:
-    - master
     event:
     - push
+    instance:
+      - drone-publish.longhorn.io
 
 - name: publish-tagged-image
   image: plugins/docker
@@ -57,10 +78,10 @@ steps:
     username:
       from_secret: docker_username
   when:
-    branch:
-    - master
     event:
     - tag
+    instance:
+      - drone-publish.longhorn.io
 
 - name: slack_notify
   image: plugins/slack
@@ -110,7 +131,7 @@ steps:
   - name: socket
     path: /var/run/docker.sock
 
-- name: publish-master-image
+- name: publish-image
   image: plugins/docker
   settings:
     build_args:
@@ -120,14 +141,14 @@ steps:
     password:
       from_secret: docker_password
     repo: longhornio/longhorn-share-manager
-    tag: "master-arm64"
+    tag: "${DRONE_BRANCH}-head-arm64"
     username:
       from_secret: docker_username
   when:
-    branch:
-    - master
     event:
     - push
+    instance:
+      - drone-publish.longhorn.io
 
 - name: publish-tagged-image
   image: plugins/docker
@@ -143,10 +164,10 @@ steps:
     username:
       from_secret: docker_username
   when:
-    branch:
-    - master
     event:
     - tag
+    instance:
+      - drone-publish.longhorn.io
 
 - name: slack_notify
   image: plugins/slack
@@ -179,7 +200,7 @@ platform:
   arch: amd64
 
 steps:
-- name: manifest-master
+- name: manifest
   image: plugins/manifest:1
   settings:
     username:
@@ -189,13 +210,11 @@ steps:
     platforms:
       - linux/amd64
       - linux/arm64
-    target: "longhornio/longhorn-share-manager:master"
-    template: "longhornio/longhorn-share-manager:master-ARCH"
+    target: "longhornio/longhorn-share-manager:${DRONE_BRANCH}-head"
+    template: "longhornio/longhorn-share-manager:${DRONE_BRANCH}-head-ARCH"
   when:
     instance:
     - drone-publish.longhorn.io
-    branch:
-    - master
     event:
     - push
 
@@ -214,8 +233,6 @@ steps:
   when:
     instance:
     - drone-publish.longhorn.io
-    branch:
-    - master
     event:
     - tag
 
