@@ -24,8 +24,12 @@ RUN zypper -n install cmake wget curl git less file libkmod2 libnl3-devel linux-
 # needed for ${!var} substitution
 RUN rm -f /bin/sh && ln -s /bin/bash /bin/sh
 
+RUN if [ ${ARCH} == "s390x" ]; then \
+        ln -s /usr/bin/gcc /usr/bin/s390x-linux-gnu-gcc;\
+    fi
+    
 # Install Go & tools
-ENV GOLANG_ARCH_amd64=amd64 GOLANG_ARCH_arm64=arm64 GOLANG_ARCH=GOLANG_ARCH_${ARCH} \
+ENV GOLANG_ARCH_amd64=amd64 GOLANG_ARCH_arm64=arm64 GOLANG_ARCH_s390x=s390x GOLANG_ARCH=GOLANG_ARCH_${ARCH} \
     GOPATH=/go PATH=/go/bin:/usr/local/go/bin:${PATH} SHELL=/bin/bash
 RUN wget -O - https://storage.googleapis.com/golang/go1.14.15.linux-${!GOLANG_ARCH}.tar.gz | tar -xzf - -C /usr/local && \
     go get github.com/rancher/trash && go get -u golang.org/x/lint/golint
@@ -34,6 +38,7 @@ RUN wget -O - https://storage.googleapis.com/golang/go1.14.15.linux-${!GOLANG_AR
 # GRPC health probe
 ENV GRPC_HEALTH_PROBE_amd64=https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.3.2/grpc_health_probe-linux-amd64 \
     GRPC_HEALTH_PROBE_arm64=https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.3.2/grpc_health_probe-linux-arm64 \
+    GRPC_HEALTH_PROBE_s390x=https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.3.2/grpc_health_probe-linux-s390x \
 		GRPC_HEALTH_PROBE=GRPC_HEALTH_PROBE_${ARCH}
 
 RUN wget ${!GRPC_HEALTH_PROBE} -O /usr/local/bin/grpc_health_probe && \
@@ -42,6 +47,7 @@ RUN wget ${!GRPC_HEALTH_PROBE} -O /usr/local/bin/grpc_health_probe && \
 # protoc
 ENV PROTOC_amd64=https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip \
 	PROTOC_arm64=https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip \
+	PROTOC_s390x=https://github.com/protocolbuffers/protobuf/releases/download/v3.18.1/protoc-3.18.1-linux-s390_64.zip \
 		PROTOC=PROTOC_${ARCH}
 
 RUN cd /usr/src && \
