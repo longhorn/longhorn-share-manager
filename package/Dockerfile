@@ -1,36 +1,20 @@
+FROM registry.suse.com/bci/bci-base:15.3
+
 ARG ARCH=amd64
 
 # Based on https://github.com/kubernetes-sigs/nfs-ganesha-server-and-external-provisioner/blob/master/deploy/docker/x86_64/Dockerfile
-FROM ubuntu:20.04 AS build
-
-ENV DEBIAN_FRONTEND=noninteractive
+FROM registry.suse.com/suse/sle15:15.3 AS build
 
 # Build ganesha from source, install it to /usr/local and a use multi stage build to have a smaller image
 # RUN dnf install -y tar gcc cmake-3.14.2-1.fc30 autoconf libtool bison flex make gcc-c++ krb5-devel dbus-devel jemalloc-devel libnfsidmap-devel libnsl2-devel userspace-rcu-devel patch libblkid-devel
-RUN apt-get update && \
-    apt-get dist-upgrade -y && \
-    apt-get install -y \
-    autoconf \
-    build-essential \
-    bison \
-    curl \
-    cmake \
-    doxygen \
-    make \
-    git \
-    g++ \
-    flex \
-    libboost-dev \
-    libglu1-mesa-dev \
-    libc6-dev \
-    libkrb5-dev \
-    libdbus-1-dev \
-    libnfsidmap-dev \
-    liburcu-dev \
-    libblkid-dev \
-    xfsprogs \
-    e2fsprogs \
-    && rm -rf /var/lib/apt/lists/*
+RUN zypper -n addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/SLE_15/ snappy && \
+    zypper -n addrepo --refresh https://download.opensuse.org/repositories/devel:/tools:/building/SLE_15_SP2/devel:tools:building.repo && \
+    zypper --gpg-auto-import-keys ref
+
+RUN zypper -n install autoconf bison curl cmake doxygen make git gcc-c++ flex Mesa-libGL-devel libdbus-1-3 \
+    nfsidmap-devel liburcu-devel libblkid-devel e2fsprogs e2fsprogs-devel xfsprogs xfsprogs-devel \
+    tar gzip dbus-1-devel lsb-release graphviz-devel libnsl-devel && \
+    rm -rf /var/cache/zypp/*
 
 RUN curl -L https://github.com/longhorn/nfs-ganesha/archive/v3_20210302.tar.gz | tar zx \
 	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/v3.4.tar.gz | tar zx \
@@ -48,6 +32,7 @@ RUN mkdir -p /usr/local \
     -DUSE_RADOS_RECOV=OFF -DRADOS_URLS=OFF -DUSE_FSAL_VFS=ON -DUSE_FSAL_XFS=OFF \
     -DUSE_FSAL_PROXY_V4=OFF -DUSE_FSAL_PROXY_V3=OFF -DUSE_FSAL_LUSTRE=OFF -DUSE_FSAL_LIZARDFS=OFF \
     -DUSE_FSAL_KVSFS=OFF -DUSE_FSAL_CEPH=OFF -DUSE_FSAL_GPFS=OFF -DUSE_FSAL_PANFS=OFF -DUSE_FSAL_GLUSTER=OFF \
+    -DUSE_GSS=NO \
     -DCMAKE_INSTALL_PREFIX=/usr/local src/ \
     && sed -i 's|@SYSSTATEDIR@/lib/nfs/ganesha|/tmp|' src/include/config-h.in.cmake \
 	  && make \
@@ -56,28 +41,16 @@ RUN mkdir -p /ganesha-extra \
     && mkdir -p /ganesha-extra/etc/dbus-1/system.d \
     && cp src/scripts/ganeshactl/org.ganesha.nfsd.conf /ganesha-extra/etc/dbus-1/system.d/
 
-FROM ubuntu:20.04
+FROM registry.suse.com/suse/sle15:15.3
 
-ENV DEBIAN_FRONTEND=noninteractive
+RUN zypper addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/SLE_15/ snappy && \
+    zypper --gpg-auto-import-keys ref
 
 # RUN microdnf install -y nano tar lsof e2fsprogs fuse-libs libss libblkid userspace-rcu dbus-x11 rpcbind hostname nfs-utils xfsprogs jemalloc libnfsidmap && microdnf clean all
-RUN apt-get update && \
-    apt-get dist-upgrade -y && \
-    apt-get install -y \
-    rpcbind \
-    hostname \
-    libblkid1 \
-    liburcu6 \
-    dbus-x11 \
-    dbus \
-    libnfsidmap2 \
-    nfs-common \
-    xfsprogs \
-    e2fsprogs \
-    && rm -rf /var/lib/apt/lists/*
+RUN zypper -n install rpcbind hostname libblkid1 liburcu6 dbus-1-x11 dbus-1 nfsidmap-devel nfs-kernel-server nfs-client nfs4-acl-tools xfsprogs e2fsprogs && \
+    rm -rf /var/cache/zypp/*
 
-RUN mkdir -p /var/run/dbus \
-    && mkdir -p /export
+RUN mkdir -p /var/run/dbus && mkdir -p /export
 
 # add libs from /usr/local/lib64
 RUN echo /usr/local/lib64 > /etc/ld.so.conf.d/local_libs.conf
