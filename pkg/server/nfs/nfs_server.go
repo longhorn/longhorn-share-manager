@@ -6,14 +6,18 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"os/signal"
+	"runtime"
 	"syscall"
 
 	"github.com/sirupsen/logrus"
 )
 
 const (
-	defaultLogFile = "/tmp/ganesha.log"
-	defaultPidFile = "/var/run/ganesha.pid"
+	defaultLogFile     = "/tmp/ganesha.log"
+	defaultPidFile     = "/var/run/ganesha.pid"
+	minStackBufferSize = 1e6
+	maxStackBufferSize = 100e6
 )
 
 var defaultConfig = []byte(`
@@ -104,6 +108,8 @@ func NewServer(logger logrus.FieldLogger, configPath, exportPath, volume string)
 
 func (s *Server) Run(ctx context.Context) error {
 	// Start ganesha.nfsd
+
+	go dumpLogAfterReceiveQuite()
 	s.logger.Info("Running NFS server!")
 	cmd := exec.CommandContext(ctx, "ganesha.nfsd", "-F", "-L", defaultLogFile, "-p", defaultPidFile, "-f", s.configPath)
 	if out, err := cmd.CombinedOutput(); err != nil {
@@ -132,4 +138,27 @@ func setRlimitNOFILE(logger logrus.FieldLogger) error {
 	}
 	logger.Infof("ending RLIMIT_NOFILE rlimit.Cur %d, rlimit.Max %d", rlimit.Cur, rlimit.Max)
 	return nil
+}
+
+func dumpLogAfterReceiveQuite() {
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGQUIT)
+	for {
+		var (
+			buf      []byte
+			bufsize  int
+			stacklen int
+		)
+		<-sigs
+		fmt.Fprintln(os.Stderr, "Received SIGQUIT and start to dump log:")
+		for bufsize = 1e6; bufsize < 100e6; bufsize *= 2 {
+			buf = make([]byte, bufsize)
+			stacklen = runtime.Stack(buf, true)
+			if stacklen < bufsize {
+				break
+			}
+		}
+		fmt.Fprintln(os.Stderr, string(buf[:stacklen]))
+		fmt.Fprintln(os.Stderr, "End of dump.")
+	}
 }
