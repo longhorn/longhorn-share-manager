@@ -109,7 +109,7 @@ func NewServer(logger logrus.FieldLogger, configPath, exportPath, volume string)
 func (s *Server) Run(ctx context.Context) error {
 	// Start ganesha.nfsd
 
-	go dumpLogAfterReceiveQuite()
+	go dumpLogAfterReceiveQuite(s.logger)
 	s.logger.Info("Running NFS server!")
 	cmd := exec.CommandContext(ctx, "ganesha.nfsd", "-F", "-L", defaultLogFile, "-p", defaultPidFile, "-f", s.configPath)
 	if out, err := cmd.CombinedOutput(); err != nil {
@@ -140,7 +140,7 @@ func setRlimitNOFILE(logger logrus.FieldLogger) error {
 	return nil
 }
 
-func dumpLogAfterReceiveQuite() {
+func dumpLogAfterReceiveQuite(logger logrus.FieldLogger) {
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGQUIT)
 	for {
@@ -150,7 +150,7 @@ func dumpLogAfterReceiveQuite() {
 			stacklen int
 		)
 		<-sigs
-		fmt.Fprintln(os.Stderr, "Received SIGQUIT and start to dump log:")
+		logger.Infof("Received SIGQUIT and start to dump log:")
 		for bufsize = 1e6; bufsize < 100e6; bufsize *= 2 {
 			buf = make([]byte, bufsize)
 			stacklen = runtime.Stack(buf, true)
@@ -158,7 +158,7 @@ func dumpLogAfterReceiveQuite() {
 				break
 			}
 		}
-		fmt.Fprintln(os.Stderr, string(buf[:stacklen]))
-		fmt.Fprintln(os.Stderr, "End of dump.")
+		logger.Infof(string(buf[:stacklen]))
+		logger.Infof("End of dump.")
 	}
 }
