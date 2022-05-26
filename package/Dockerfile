@@ -47,7 +47,7 @@ RUN zypper addrepo --refresh https://download.opensuse.org/repositories/system:/
     zypper --gpg-auto-import-keys ref
 
 # RUN microdnf install -y nano tar lsof e2fsprogs fuse-libs libss libblkid userspace-rcu dbus-x11 rpcbind hostname nfs-utils xfsprogs jemalloc libnfsidmap && microdnf clean all
-RUN zypper -n install rpcbind hostname libblkid1 liburcu6 dbus-1-x11 dbus-1 nfsidmap-devel nfs-kernel-server nfs-client nfs4-acl-tools xfsprogs e2fsprogs && \
+RUN zypper -n install rpcbind hostname libblkid1 liburcu6 dbus-1-x11 dbus-1 nfsidmap-devel nfs-kernel-server nfs-client nfs4-acl-tools xfsprogs e2fsprogs awk && \
     rm -rf /var/cache/zypp/*
 
 RUN mkdir -p /var/run/dbus && mkdir -p /export
