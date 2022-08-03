@@ -16,12 +16,12 @@ RUN zypper -n install autoconf bison curl cmake doxygen make git gcc-c++ flex Me
     tar gzip dbus-1-devel lsb-release graphviz-devel libnsl-devel && \
     rm -rf /var/cache/zypp/*
 
-RUN curl -L https://github.com/longhorn/nfs-ganesha/archive/v3_20210302.tar.gz | tar zx \
-	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/v3.4.tar.gz | tar zx \
-	  && mv nfs-ganesha-3_20210302 nfs-ganesha-3.4 \
-	  && rm -r nfs-ganesha-3.4/src/libntirpc \
-	  && mv ntirpc-3.4 nfs-ganesha-3.4/src/libntirpc
-WORKDIR /nfs-ganesha-3.4
+RUN curl -L https://github.com/longhorn/nfs-ganesha/archive/refs/tags/v4_20220803.tar.gz | tar zx \
+	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/v4.0.tar.gz | tar zx \
+	  && mv nfs-ganesha-4_20220803 nfs-ganesha-4.0 \
+	  && rm -r nfs-ganesha-4.0/src/libntirpc \
+	  && mv ntirpc-4.0 nfs-ganesha-4.0/src/libntirpc
+WORKDIR /nfs-ganesha-4.0
 
 # build ganesha only supporting nfsv4 and vfs
 # Set NFS_V4_RECOV_ROOT to /tmp we don't support recovery in this release
@@ -34,7 +34,6 @@ RUN mkdir -p /usr/local \
     -DUSE_FSAL_KVSFS=OFF -DUSE_FSAL_CEPH=OFF -DUSE_FSAL_GPFS=OFF -DUSE_FSAL_PANFS=OFF -DUSE_FSAL_GLUSTER=OFF \
     -DUSE_GSS=NO \
     -DCMAKE_INSTALL_PREFIX=/usr/local src/ \
-    && sed -i 's|@SYSSTATEDIR@/lib/nfs/ganesha|/tmp|' src/include/config-h.in.cmake \
 	  && make \
 	  && make install
 RUN mkdir -p /ganesha-extra \
