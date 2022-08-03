@@ -39,6 +39,7 @@ NFSV4
     Grace_Period = 0;
     Minor_Versions = 1, 2;
     RecoveryBackend = fs_ng;
+    RecoveryRoot = /tmp;
     Only_Numeric_Owners = true;
 }
 
