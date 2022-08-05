@@ -10,7 +10,7 @@ github.com/cpuguy83/go-md2man/v2/md2man
 # github.com/go-logr/logr v1.2.0
 ## explicit; go 1.16
 github.com/go-logr/logr
-# github.com/longhorn/go-iscsi-helper v0.0.0-20210330030558-49a327fb024e
+# github.com/longhorn/go-iscsi-helper v0.0.0-20220805034259-7b59e22574bb
 ## explicit; go 1.13
 github.com/longhorn/go-iscsi-helper/util
 # github.com/opencontainers/selinux v1.8.2
