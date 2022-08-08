@@ -46,11 +46,9 @@ LOG {
 NFSV4
 {
     Lease_Lifetime = 60;
-    Graceless = true;
-    Grace_Period = 0;
+    Grace_Period = 90;
     Minor_Versions = 1, 2;
-    RecoveryBackend = fs_ng;
-    RecoveryRoot = /tmp;
+    RecoveryBackend = longhorn;
     Only_Numeric_Owners = true;
 }
 
