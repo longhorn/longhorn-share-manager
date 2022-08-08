@@ -13,7 +13,7 @@ RUN zypper -n addrepo --refresh https://download.opensuse.org/repositories/syste
 
 RUN zypper -n install autoconf bison curl cmake doxygen make git gcc-c++ flex Mesa-libGL-devel libdbus-1-3 \
     nfsidmap-devel liburcu-devel libblkid-devel e2fsprogs e2fsprogs-devel xfsprogs xfsprogs-devel \
-    tar gzip dbus-1-devel lsb-release graphviz-devel libnsl-devel && \
+    tar gzip dbus-1-devel lsb-release graphviz-devel libnsl-devel libcurl-devel libjson-c-devel && \
     rm -rf /var/cache/zypp/*
 
 RUN curl -L https://github.com/longhorn/nfs-ganesha/archive/refs/tags/v4_20220803.tar.gz | tar zx \
