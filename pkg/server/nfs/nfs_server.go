@@ -69,6 +69,15 @@ Export_defaults
 #    Pseudo = /;
 #    FSAL { Name = VFS; }
 #}
+
+LOG {
+	Default_Log_Level = INFO;
+	Facility {
+		name = FILE;
+		destination = "/dev/stdout";
+		enable = active;
+	}
+}
 `)
 
 type Server struct {
