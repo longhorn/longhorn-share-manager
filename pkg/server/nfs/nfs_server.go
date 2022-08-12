@@ -28,8 +28,6 @@ NFS_Core_Param
     Protocols = 4;
 }
 
-
-# LOG {  }
 LOG {
 	Default_Log_Level = INFO;
 
