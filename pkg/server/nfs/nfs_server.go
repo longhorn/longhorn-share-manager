@@ -12,7 +12,6 @@ import (
 )
 
 const (
-	defaultLogFile = "/tmp/ganesha.log"
 	defaultPidFile = "/var/run/ganesha.pid"
 )
 
@@ -29,8 +28,20 @@ NFS_Core_Param
     Protocols = 4;
 }
 
-# uncomment to enable debug logging
-# LOG { COMPONENTS { NFS_V4 = FULL_DEBUG; } }
+
+# LOG {  }
+LOG {
+	Default_Log_Level = INFO;
+
+# 	uncomment to enable debug logging
+#	COMPONENTS { NFS_V4 = FULL_DEBUG; }
+
+	Facility {
+		name = FILE;
+		destination = "/proc/1/fd/1";
+		enable = active;
+	}
+}
 
 NFSV4
 {
@@ -65,15 +76,6 @@ Export_defaults
 #    Pseudo = /;
 #    FSAL { Name = VFS; }
 #}
-
-LOG {
-	Default_Log_Level = INFO;
-	Facility {
-		name = FILE;
-		destination = "/dev/stdout";
-		enable = active;
-	}
-}
 `)
 
 type Server struct {
@@ -113,9 +115,8 @@ func NewServer(logger logrus.FieldLogger, configPath, exportPath, volume string)
 
 func (s *Server) Run(ctx context.Context) error {
 	// Start ganesha.nfsd
-
 	s.logger.Info("Running NFS server!")
-	cmd := exec.CommandContext(ctx, "ganesha.nfsd", "-F", "-L", defaultLogFile, "-p", defaultPidFile, "-f", s.configPath)
+	cmd := exec.CommandContext(ctx, "ganesha.nfsd", "-F", "-p", defaultPidFile, "-f", s.configPath)
 	if out, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("ganesha.nfsd failed with error: %v, output: %s", err, out)
 	}
