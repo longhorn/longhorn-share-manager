@@ -15,7 +15,9 @@ const (
 	defaultPidFile = "/var/run/ganesha.pid"
 )
 
-var defaultConfig = []byte(`
+var (
+	defaultLogLevel = "INFO"
+	defaultConfig   = []byte(`
 NFS_Core_Param
 {
     NLM_Port = 0;
@@ -29,7 +31,7 @@ NFS_Core_Param
 }
 
 LOG {
-	Default_Log_Level = INFO;
+	Default_Log_Level = %[1]s;
 
 # 	uncomment to enable debug logging
 #	COMPONENTS { NFS_V4 = FULL_DEBUG; }
@@ -75,6 +77,7 @@ Export_defaults
 #    FSAL { Name = VFS; }
 #}
 `)
+)
 
 type Server struct {
 	logger     logrus.FieldLogger
@@ -89,6 +92,7 @@ func NewServer(logger logrus.FieldLogger, configPath, exportPath, volume string)
 	}
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		SetConfigParams()
 		if err = ioutil.WriteFile(configPath, defaultConfig, 0600); err != nil {
 			return nil, fmt.Errorf("error writing nfs config %s: %v", configPath, err)
 		}
@@ -109,6 +113,16 @@ func NewServer(logger logrus.FieldLogger, configPath, exportPath, volume string)
 		exportPath: exportPath,
 		exporter:   exporter,
 	}, nil
+}
+
+func SetConfigParams() {
+	switch logrus.GetLevel() {
+	case logrus.DebugLevel:
+		defaultLogLevel = "FULL_DEBUG"
+	default:
+		defaultLogLevel = "INFO"
+	}
+	defaultConfig = []byte(fmt.Sprintf(string(defaultConfig), defaultLogLevel))
 }
 
 func (s *Server) Run(ctx context.Context) error {
