@@ -151,7 +151,7 @@ func getUpdatedGaneshConfig(config []byte) []byte {
 		logPath string
 	)
 
-	if os.Getppid() == 1 {
+	if os.Getpid() == 1 {
 		logPath = "/proc/1/fd/1"
 	} else {
 		logPath = "/tmp/ganesha.log"
@@ -164,5 +164,6 @@ func getUpdatedGaneshConfig(config []byte) []byte {
 	}
 
 	template.Must(template.New("Ganesha_Config").Parse(string(config))).Execute(&tmplBuf, tmplVals)
+
 	return tmplBuf.Bytes()
 }
