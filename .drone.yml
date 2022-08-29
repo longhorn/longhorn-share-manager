@@ -225,8 +225,6 @@ steps:
   when:
     instance:
     - drone-publish.longhorn.io
-    branch:
-    - master
     event:
     - tag
 
