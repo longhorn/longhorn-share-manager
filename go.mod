@@ -38,7 +38,7 @@ replace (
 require (
 	github.com/longhorn/go-iscsi-helper v0.0.0-20220805034259-7b59e22574bb
 	github.com/sirupsen/logrus v1.8.1
-	github.com/urfave/cli v1.22.2
+	github.com/urfave/cli v1.22.10
 	k8s.io/kubernetes v1.23.6
 	k8s.io/mount-utils v0.23.6
 	k8s.io/utils v0.0.0-20211116205334-6203023598ed
