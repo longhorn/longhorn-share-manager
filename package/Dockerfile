@@ -13,15 +13,16 @@ RUN zypper -n addrepo --refresh https://download.opensuse.org/repositories/syste
 
 RUN zypper -n install autoconf bison curl cmake doxygen make git gcc-c++ flex Mesa-libGL-devel libdbus-1-3 \
     nfsidmap-devel liburcu-devel libblkid-devel e2fsprogs e2fsprogs-devel xfsprogs xfsprogs-devel \
-    tar gzip dbus-1-devel lsb-release graphviz-devel libnsl-devel libcurl-devel libjson-c-devel && \
+    tar gzip dbus-1-devel lsb-release graphviz-devel libnsl-devel libcurl-devel libjson-c-devel libacl-devel && \
     rm -rf /var/cache/zypp/*
 
-RUN curl -L https://github.com/longhorn/nfs-ganesha/archive/refs/tags/v4_20220824.tar.gz | tar zx \
-	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/v4.0.tar.gz | tar zx \
-	  && mv nfs-ganesha-4_20220824 nfs-ganesha-4.0 \
-	  && rm -r nfs-ganesha-4.0/src/libntirpc \
-	  && mv ntirpc-4.0 nfs-ganesha-4.0/src/libntirpc
-WORKDIR /nfs-ganesha-4.0
+RUN curl -L https://github.com/longhorn/nfs-ganesha/archive/refs/tags/v4_20221216.tar.gz | tar zx \
+	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/v4.2.tar.gz | tar zx \
+	  && mv nfs-ganesha-4_20221216 nfs-ganesha-4.2 \
+	  && rm -r nfs-ganesha-4.2/src/libntirpc \
+	  && mv ntirpc-4.2 nfs-ganesha-4.2/src/libntirpc
+WORKDIR /nfs-ganesha-4.2
+
 
 # build ganesha only supporting nfsv4 and vfs
 # Set NFS_V4_RECOV_ROOT to /tmp we don't support recovery in this release
@@ -32,7 +33,7 @@ RUN mkdir -p /usr/local \
     -DUSE_RADOS_RECOV=OFF -DRADOS_URLS=OFF -DUSE_FSAL_VFS=ON -DUSE_FSAL_XFS=OFF \
     -DUSE_FSAL_PROXY_V4=OFF -DUSE_FSAL_PROXY_V3=OFF -DUSE_FSAL_LUSTRE=OFF -DUSE_FSAL_LIZARDFS=OFF \
     -DUSE_FSAL_KVSFS=OFF -DUSE_FSAL_CEPH=OFF -DUSE_FSAL_GPFS=OFF -DUSE_FSAL_PANFS=OFF -DUSE_FSAL_GLUSTER=OFF \
-    -DUSE_GSS=NO \
+    -DUSE_GSS=NO -DHAVE_ACL_GET_FD_NP=ON -DHAVE_ACL_SET_FD_NP=ON \
     -DCMAKE_INSTALL_PREFIX=/usr/local src/ \
 	  && make \
 	  && make install
