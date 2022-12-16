@@ -1,7 +1,6 @@
 package nfs
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -10,6 +9,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -34,7 +34,7 @@ var exportRegex = regexp.MustCompile("Export_Id = ([0-9]+);#Volume=(.+)")
 
 func newExporter(logger logrus.FieldLogger, configPath, exportPath string) (*exporter, error) {
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		return nil, fmt.Errorf("nfs server config file %v does not exist", configPath)
+		return nil, errors.Wrapf(err, "nfs server config file %v does not exist", configPath)
 	}
 
 	exportIDs, err := getIDsFromConfig(configPath)
@@ -133,7 +133,7 @@ func (e *exporter) CreateExport(volume string) (uint16, error) {
 
 	if err := e.addToConfig(block); err != nil {
 		e.deleteID(exportID)
-		return 0, fmt.Errorf("error adding export block %s to config %s: %v", block, e.configPath, err)
+		return 0, errors.Wrapf(err, "error adding export block %s to config %s", block, e.configPath)
 	}
 	return exportID, nil
 }
