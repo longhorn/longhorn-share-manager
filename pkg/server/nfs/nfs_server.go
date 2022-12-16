@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"text/template"
 
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -86,18 +87,18 @@ type Server struct {
 
 func NewServer(logger logrus.FieldLogger, configPath, exportPath, volume string) (*Server, error) {
 	if err := setRlimitNOFILE(logger); err != nil {
-		logger.Warnf("Error setting RLIMIT_NOFILE, there may be 'Too many open files' errors later: %v", err)
+		logger.WithError(err).Warn("Error setting RLIMIT_NOFILE, there may be 'Too many open files' errors later")
 	}
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		if err = ioutil.WriteFile(configPath, getUpdatedGaneshConfig(defaultConfig), 0600); err != nil {
-			return nil, fmt.Errorf("error writing nfs config %s: %v", configPath, err)
+			return nil, errors.Wrapf(err, "error writing nfs config %s", configPath)
 		}
 	}
 
 	exporter, err := newExporter(logger, configPath, exportPath)
 	if err != nil {
-		return nil, fmt.Errorf("error creating nfs exporter: %v", err)
+		return nil, errors.Wrap(err, "error creating nfs exporter")
 	}
 
 	if _, err := exporter.CreateExport(volume); err != nil {
@@ -128,7 +129,7 @@ func setRlimitNOFILE(logger logrus.FieldLogger) error {
 	var rlimit syscall.Rlimit
 	err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rlimit)
 	if err != nil {
-		return fmt.Errorf("error getting RLIMIT_NOFILE: %v", err)
+		return errors.Wrap(err, "error getting RLIMIT_NOFILE")
 	}
 	logger.Infof("starting RLIMIT_NOFILE rlimit.Cur %d, rlimit.Max %d", rlimit.Cur, rlimit.Max)
 	rlimit.Max = 1024 * 1024
@@ -139,9 +140,9 @@ func setRlimitNOFILE(logger logrus.FieldLogger) error {
 	}
 	err = syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rlimit)
 	if err != nil {
-		return fmt.Errorf("error getting RLIMIT_NOFILE: %v", err)
+		return errors.Wrap(err, "error getting RLIMIT_NOFILE")
 	}
-	logger.Infof("ending RLIMIT_NOFILE rlimit.Cur %d, rlimit.Max %d", rlimit.Cur, rlimit.Max)
+	logger.Infof("Ending RLIMIT_NOFILE rlimit.Cur %d, rlimit.Max %d", rlimit.Cur, rlimit.Max)
 	return nil
 }
 
