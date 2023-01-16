@@ -39,7 +39,7 @@ require (
 	github.com/longhorn/go-iscsi-helper v0.0.0-20220805034259-7b59e22574bb
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.0
-	github.com/urfave/cli v1.22.10
+	github.com/urfave/cli v1.22.11
 	k8s.io/kubernetes v1.23.6
 	k8s.io/mount-utils v0.23.6
 	k8s.io/utils v0.0.0-20211116205334-6203023598ed
