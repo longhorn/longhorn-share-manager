@@ -4,8 +4,8 @@ github.com/bits-and-blooms/bitset
 # github.com/c9s/goprocinfo v0.0.0-20170724085704-0010a05ce49f
 ## explicit
 github.com/c9s/goprocinfo/linux
-# github.com/cpuguy83/go-md2man/v2 v2.0.0
-## explicit; go 1.12
+# github.com/cpuguy83/go-md2man/v2 v2.0.2
+## explicit; go 1.11
 github.com/cpuguy83/go-md2man/v2/md2man
 # github.com/go-logr/logr v1.2.0
 ## explicit; go 1.16
@@ -20,16 +20,13 @@ github.com/opencontainers/selinux/pkg/pwalk
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
-# github.com/russross/blackfriday/v2 v2.0.1
+# github.com/russross/blackfriday/v2 v2.1.0
 ## explicit
 github.com/russross/blackfriday/v2
-# github.com/shurcooL/sanitized_anchor_name v1.0.0
-## explicit
-github.com/shurcooL/sanitized_anchor_name
 # github.com/sirupsen/logrus v1.9.0
 ## explicit; go 1.13
 github.com/sirupsen/logrus
-# github.com/urfave/cli v1.22.10
+# github.com/urfave/cli v1.22.12
 ## explicit; go 1.11
 github.com/urfave/cli
 # golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8
