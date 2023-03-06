@@ -40,18 +40,17 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/urfave/cli v1.22.12
-	k8s.io/kubernetes v1.23.6
+	k8s.io/kubernetes v1.26.2
 	k8s.io/mount-utils v0.23.6
-	k8s.io/utils v0.0.0-20211116205334-6203023598ed
+	k8s.io/utils v0.0.0-20221107191617-1a15be271d1d
 )
 
 require (
-	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/c9s/goprocinfo v0.0.0-20170724085704-0010a05ce49f // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
-	github.com/go-logr/logr v1.2.0 // indirect
-	github.com/opencontainers/selinux v1.8.2 // indirect
+	github.com/go-logr/logr v1.2.3 // indirect
+	github.com/opencontainers/selinux v1.10.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
-	k8s.io/klog/v2 v2.30.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
+	k8s.io/klog/v2 v2.80.1 // indirect
 )
