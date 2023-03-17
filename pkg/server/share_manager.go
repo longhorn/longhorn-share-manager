@@ -22,7 +22,7 @@ const waitBetweenChecks = time.Second * 5
 const healthCheckInterval = time.Second * 10
 const exportPath = "/export"
 const configPath = "/tmp/vfs.conf"
-const devPath = "/dev"
+const DevPath = "/dev"
 
 const (
 	UnhealthyErr = "UNHEALTHY: volume with mount path %v is unhealthy"
@@ -32,7 +32,7 @@ const (
 type ShareManager struct {
 	logger logrus.FieldLogger
 
-	volume volume.Volume
+	Volume volume.Volume
 
 	context  context.Context
 	shutdown context.CancelFunc
@@ -42,7 +42,7 @@ type ShareManager struct {
 
 func NewShareManager(logger logrus.FieldLogger, volume volume.Volume) (*ShareManager, error) {
 	m := &ShareManager{
-		volume: volume,
+		Volume: volume,
 		logger: logger.WithField("volume", volume.Name).WithField("encrypted", volume.IsEncrypted()),
 	}
 	m.context, m.shutdown = context.WithCancel(context.Background())
@@ -56,9 +56,9 @@ func NewShareManager(logger logrus.FieldLogger, volume volume.Volume) (*ShareMan
 }
 
 func (m *ShareManager) Run() error {
-	vol := m.volume
+	vol := m.Volume
 	mountPath := filepath.Join(exportPath, vol.Name)
-	devicePath := filepath.Join(devPath, "longhorn", vol.Name)
+	devicePath := filepath.Join(DevPath, "longhorn", vol.Name)
 
 	defer func() {
 		// if the server is exiting, try to unmount & teardown device before we terminate the container
@@ -249,7 +249,7 @@ func (m *ShareManager) hasHealthyVolume() error {
 }
 
 func (m *ShareManager) recoverReadOnlyVolume() error {
-	mountPath := types.GetMountPath(m.volume.Name)
+	mountPath := types.GetMountPath(m.Volume.Name)
 
 	cmd := exec.CommandContext(m.context, "mount", "-o", "remount,rw", mountPath)
 	if out, err := cmd.CombinedOutput(); err != nil {
