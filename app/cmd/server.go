@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"net"
 	"os"
 	"os/signal"
 	"syscall"
@@ -8,9 +9,18 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 
+	"google.golang.org/grpc"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/reflection"
+
+	smrpc "github.com/longhorn/longhorn-share-manager/pkg/rpc"
 	"github.com/longhorn/longhorn-share-manager/pkg/server"
 	"github.com/longhorn/longhorn-share-manager/pkg/util"
 	"github.com/longhorn/longhorn-share-manager/pkg/volume"
+)
+
+const (
+	listenPort = ":9600"
 )
 
 func ServerCmd() cli.Command {
@@ -75,6 +85,26 @@ func start(vol volume.Volume) error {
 	shutdownCh := make(chan error)
 	go func() {
 		err := manager.Run()
+		shutdownCh <- err
+	}()
+
+	go func() {
+		listen, err := net.Listen("tcp", listenPort)
+		if err != nil {
+			logrus.WithError(err).Warnf("Failed to listen on port %v", listenPort)
+			shutdownCh <- err
+			return
+		}
+
+		s := grpc.NewServer()
+		srv := smrpc.NewShareManagerServer(manager)
+		smrpc.RegisterShareManagerServiceServer(s, srv)
+		healthpb.RegisterHealthServer(s, smrpc.NewShareManagerHealthCheckServer(srv))
+		reflection.Register(s)
+
+		logrus.Infof("Listening on share manager gRPC server %s", listenPort)
+		err = s.Serve(listen)
+		logrus.WithError(err).Warnf("Share manager gRPC server at %v is down", listenPort)
 		shutdownCh <- err
 	}()
 

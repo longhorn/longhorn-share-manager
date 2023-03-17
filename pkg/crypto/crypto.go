@@ -10,12 +10,12 @@ import (
 )
 
 const (
-	mapperFilePathPrefix = "/dev/mapper"
+	MapperFilePathPrefix = "/dev/mapper"
 )
 
 // VolumeMapper returns the path for mapped encrypted device.
 func VolumeMapper(volume string) string {
-	return path.Join(mapperFilePathPrefix, volume)
+	return path.Join(MapperFilePathPrefix, volume)
 }
 
 // EncryptVolume encrypts provided device with LUKS.
@@ -59,10 +59,10 @@ func IsDeviceOpen(device string) (bool, error) {
 // and if so what the device is and the mapper name as used by LUKS.
 // If not, just returns the original device and an empty string.
 func DeviceEncryptionStatus(devicePath string) (mappedDevice, mapper string, err error) {
-	if !strings.HasPrefix(devicePath, mapperFilePathPrefix) {
+	if !strings.HasPrefix(devicePath, MapperFilePathPrefix) {
 		return devicePath, "", nil
 	}
-	volume := strings.TrimPrefix(devicePath, mapperFilePathPrefix+"/")
+	volume := strings.TrimPrefix(devicePath, MapperFilePathPrefix+"/")
 	stdout, err := luksStatus(volume)
 	if err != nil {
 		logrus.WithError(err).Debugf("Device %s is not an active LUKS device", devicePath)
