@@ -2,21 +2,12 @@ package crypto
 
 import (
 	"fmt"
-	"path"
 	"strings"
 
+	"github.com/longhorn/longhorn-share-manager/pkg/types"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
-
-const (
-	MapperFilePathPrefix = "/dev/mapper"
-)
-
-// VolumeMapper returns the path for mapped encrypted device.
-func VolumeMapper(volume string) string {
-	return path.Join(MapperFilePathPrefix, volume)
-}
 
 // EncryptVolume encrypts provided device with LUKS.
 func EncryptVolume(devicePath, passphrase string) error {
@@ -29,8 +20,9 @@ func EncryptVolume(devicePath, passphrase string) error {
 
 // OpenVolume opens volume so that it can be used by the client.
 func OpenVolume(volume, devicePath, passphrase string) error {
-	if isOpen, _ := IsDeviceOpen(VolumeMapper(volume)); isOpen {
-		logrus.Debugf("Device %s is already opened at %s", devicePath, VolumeMapper(volume))
+	devPath := types.GetVolumeDevicePath(volume, true)
+	if isOpen, _ := IsDeviceOpen(devPath); isOpen {
+		logrus.Debugf("Device %s is already opened at %s", devicePath, devPath)
 		return nil
 	}
 
@@ -59,10 +51,10 @@ func IsDeviceOpen(device string) (bool, error) {
 // and if so what the device is and the mapper name as used by LUKS.
 // If not, just returns the original device and an empty string.
 func DeviceEncryptionStatus(devicePath string) (mappedDevice, mapper string, err error) {
-	if !strings.HasPrefix(devicePath, MapperFilePathPrefix) {
+	if !strings.HasPrefix(devicePath, types.MapperDevPath) {
 		return devicePath, "", nil
 	}
-	volume := strings.TrimPrefix(devicePath, MapperFilePathPrefix+"/")
+	volume := strings.TrimPrefix(devicePath, types.MapperDevPath+"/")
 	stdout, err := luksStatus(volume)
 	if err != nil {
 		logrus.WithError(err).Debugf("Device %s is not an active LUKS device", devicePath)
