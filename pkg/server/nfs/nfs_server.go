@@ -3,7 +3,6 @@ package nfs
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"syscall"
@@ -86,7 +85,7 @@ func NewServer(logger logrus.FieldLogger, configPath, volume string) (*Server, e
 	}
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		if err = ioutil.WriteFile(configPath, defaultConfig, 0600); err != nil {
+		if err = os.WriteFile(configPath, defaultConfig, 0600); err != nil {
 			return nil, fmt.Errorf("error writing nfs config %s: %v", configPath, err)
 		}
 	}
