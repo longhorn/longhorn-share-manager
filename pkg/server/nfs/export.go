@@ -1,7 +1,6 @@
 package nfs
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -180,7 +179,7 @@ func generateExportBlock(exportBase, volume string, id uint16) string {
 // file using the given regexp. Regexp must have a "digits" submatch.
 func getIDsFromConfig(configPath string) (map[uint16]string, error) {
 	ids := map[uint16]string{}
-	config, err := ioutil.ReadFile(configPath)
+	config, err := os.ReadFile(configPath)
 	if err != nil {
 		return ids, err
 	}
@@ -224,13 +223,13 @@ func (e *exporter) removeFromConfig(block string) error {
 	e.fileMutex.Lock()
 	defer e.fileMutex.Unlock()
 
-	config, err := ioutil.ReadFile(e.configPath)
+	config, err := os.ReadFile(e.configPath)
 	if err != nil {
 		return err
 	}
 
 	newConfig := strings.Replace(string(config), block, "", -1)
-	err = ioutil.WriteFile(e.configPath, []byte(newConfig), 0)
+	err = os.WriteFile(e.configPath, []byte(newConfig), 0)
 	if err != nil {
 		return err
 	}
