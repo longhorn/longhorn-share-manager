@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"syscall"
@@ -91,7 +90,7 @@ func NewServer(logger logrus.FieldLogger, configPath, exportPath, volume string)
 	}
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		if err = ioutil.WriteFile(configPath, getUpdatedGaneshConfig(defaultConfig), 0600); err != nil {
+		if err = os.WriteFile(configPath, getUpdatedGaneshConfig(defaultConfig), 0600); err != nil {
 			return nil, errors.Wrapf(err, "error writing nfs config %s", configPath)
 		}
 	}
