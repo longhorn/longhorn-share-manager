@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0bsmrpc.proto\x1a\x1bgoogle/protobuf/empty.proto\"1\n\x15\x46ilesystemTrimRequest\x12\x18\n\x10\x65ncrypted_device\x18\x01 \x01(\x08\x32Y\n\x13ShareManagerService\x12\x42\n\x0e\x46ilesystemTrim\x12\x16.FilesystemTrimRequest\x1a\x16.google.protobuf.Empty\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x0bsmrpc.proto\x1a\x1bgoogle/protobuf/empty.proto\"1\n\x15\x46ilesystemTrimRequest\x12\x18\n\x10\x65ncrypted_device\x18\x01 \x01(\x08\"=\n\x1d\x46ilesystemMountStatusResponse\x12\r\n\x05state\x18\x01 \x01(\t\x12\r\n\x05\x65rror\x18\x02 \x01(\t2\xf1\x01\n\x13ShareManagerService\x12\x42\n\x0e\x46ilesystemTrim\x12\x16.FilesystemTrimRequest\x1a\x16.google.protobuf.Empty\"\x00\x12\x43\n\x0f\x46ilesystemMount\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x00\x12Q\n\x15\x46ilesystemMountStatus\x12\x16.google.protobuf.Empty\x1a\x1e.FilesystemMountStatusResponse\"\x00\x62\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR,])
 
@@ -58,7 +58,46 @@ _FILESYSTEMTRIMREQUEST = _descriptor.Descriptor(
   serialized_end=93,
 )
 
+
+_FILESYSTEMMOUNTSTATUSRESPONSE = _descriptor.Descriptor(
+  name='FilesystemMountStatusResponse',
+  full_name='FilesystemMountStatusResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='state', full_name='FilesystemMountStatusResponse.state', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='error', full_name='FilesystemMountStatusResponse.error', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=95,
+  serialized_end=156,
+)
+
 DESCRIPTOR.message_types_by_name['FilesystemTrimRequest'] = _FILESYSTEMTRIMREQUEST
+DESCRIPTOR.message_types_by_name['FilesystemMountStatusResponse'] = _FILESYSTEMMOUNTSTATUSRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 FilesystemTrimRequest = _reflection.GeneratedProtocolMessageType('FilesystemTrimRequest', (_message.Message,), {
@@ -68,6 +107,13 @@ FilesystemTrimRequest = _reflection.GeneratedProtocolMessageType('FilesystemTrim
   })
 _sym_db.RegisterMessage(FilesystemTrimRequest)
 
+FilesystemMountStatusResponse = _reflection.GeneratedProtocolMessageType('FilesystemMountStatusResponse', (_message.Message,), {
+  'DESCRIPTOR' : _FILESYSTEMMOUNTSTATUSRESPONSE,
+  '__module__' : 'smrpc_pb2'
+  # @@protoc_insertion_point(class_scope:FilesystemMountStatusResponse)
+  })
+_sym_db.RegisterMessage(FilesystemMountStatusResponse)
+
 
 
 _SHAREMANAGERSERVICE = _descriptor.ServiceDescriptor(
@@ -76,8 +122,8 @@ _SHAREMANAGERSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=95,
-  serialized_end=184,
+  serialized_start=159,
+  serialized_end=400,
   methods=[
   _descriptor.MethodDescriptor(
     name='FilesystemTrim',
@@ -86,6 +132,24 @@ _SHAREMANAGERSERVICE = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_FILESYSTEMTRIMREQUEST,
     output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='FilesystemMount',
+    full_name='ShareManagerService.FilesystemMount',
+    index=1,
+    containing_service=None,
+    input_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='FilesystemMountStatus',
+    full_name='ShareManagerService.FilesystemMountStatus',
+    index=2,
+    containing_service=None,
+    input_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    output_type=_FILESYSTEMMOUNTSTATUSRESPONSE,
     serialized_options=None,
   ),
 ])
