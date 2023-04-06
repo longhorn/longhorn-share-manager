@@ -11,7 +11,9 @@ import (
 
 	empty "github.com/golang/protobuf/ptypes/empty"
 	"golang.org/x/net/context"
+	grpccodes "google.golang.org/grpc/codes"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
+	grpcstatus "google.golang.org/grpc/status"
 
 	iscsiutil "github.com/longhorn/go-iscsi-helper/util"
 
@@ -42,23 +44,23 @@ func (s *ShareManagerServer) FilesystemTrim(ctx context.Context, req *Filesystem
 
 	devicePath := types.GetVolumeDevicePath(volumeName, req.EncryptedDevice)
 	if !volume.CheckDeviceValid(devicePath) {
-		return &empty.Empty{}, fmt.Errorf("volume %v is not valid", volumeName)
+		return &empty.Empty{}, grpcstatus.Errorf(grpccodes.FailedPrecondition, "volume %v is not valid", volumeName)
 	}
 
 	mountPath := types.GetMountPath(volumeName)
 
 	mnt, err := filesystem.GetMount(mountPath)
 	if err != nil {
-		return &empty.Empty{}, err
+		return &empty.Empty{}, grpcstatus.Error(grpccodes.Internal, err.Error())
 	}
 
 	deviceNumber, err := util.GetDeviceNumber(devicePath)
 	if err != nil {
-		return &empty.Empty{}, err
+		return &empty.Empty{}, grpcstatus.Error(grpccodes.Internal, err.Error())
 	}
 
 	if uint64(mnt.DeviceNumber) != uint64(deviceNumber) {
-		return &empty.Empty{}, fmt.Errorf("the device of mount point %v is not expected", mountPath)
+		return &empty.Empty{}, grpcstatus.Errorf(grpccodes.InvalidArgument, "the device of mount point %v is not expected", mountPath)
 	}
 
 	logrus.Infof("Trimming mounted filesystem %v for volume %v", mountPath, volumeName)
@@ -66,19 +68,19 @@ func (s *ShareManagerServer) FilesystemTrim(ctx context.Context, req *Filesystem
 	mounter := mount.New("")
 	notMounted, err := mount.IsNotMountPoint(mounter, mountPath)
 	if notMounted {
-		return &empty.Empty{}, fmt.Errorf("%v is not a mount point", mountPath)
+		return &empty.Empty{}, grpcstatus.Errorf(grpccodes.InvalidArgument, "%v is not a mount point", mountPath)
 	}
 	if err != nil {
-		return &empty.Empty{}, err
+		return &empty.Empty{}, grpcstatus.Error(grpccodes.Internal, err.Error())
 	}
 
 	if _, err := ioutil.ReadDir(mountPath); err != nil {
-		return &empty.Empty{}, err
+		return &empty.Empty{}, grpcstatus.Error(grpccodes.Internal, err.Error())
 	}
 
 	_, err = iscsiutil.Execute("fstrim", []string{mountPath})
 	if err != nil {
-		return &empty.Empty{}, err
+		return &empty.Empty{}, grpcstatus.Error(grpccodes.Internal, err.Error())
 	}
 
 	logrus.Infof("Finished trimming mounted filesystem %v on volume %v", mountPath, volumeName)
