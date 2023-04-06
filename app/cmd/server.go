@@ -85,7 +85,7 @@ func start(vol volume.Volume) error {
 	shutdownCh := make(chan error)
 	defer close(shutdownCh)
 	go func() {
-		err := manager.Run()
+		err := manager.StartNfsServer()
 		shutdownCh <- err
 	}()
 
@@ -113,7 +113,7 @@ func start(vol volume.Volume) error {
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		sig := <-sigs
-		logger.Infof("share manager received signal %v to exit", sig)
+		logger.Infof("Share manager received signal %v to exit", sig)
 		manager.Shutdown()
 	}()
 
