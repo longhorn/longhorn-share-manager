@@ -83,6 +83,7 @@ func start(vol volume.Volume) error {
 	}
 
 	shutdownCh := make(chan error)
+	defer close(shutdownCh)
 	go func() {
 		err := manager.Run()
 		shutdownCh <- err
