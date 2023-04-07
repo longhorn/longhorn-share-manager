@@ -36,6 +36,7 @@ replace (
 )
 
 require (
+	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/golang/protobuf v1.5.2
 	github.com/google/fscrypt v0.3.4
 	github.com/longhorn/go-iscsi-helper v0.0.0-20220805034259-7b59e22574bb

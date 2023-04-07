@@ -8,8 +8,11 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/avast/retry-go"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+
+	"k8s.io/mount-utils"
 
 	"github.com/longhorn/longhorn-share-manager/pkg/crypto"
 	"github.com/longhorn/longhorn-share-manager/pkg/server/nfs"
@@ -142,6 +145,34 @@ func (m *ShareManager) Run() error {
 		err = m.nfsServer.ReloadExports()
 		if err != nil {
 			m.logger.WithError(err).Error("Failed to reload NFS exports")
+			return
+		}
+
+		mounter := mount.New("")
+		opts := []retry.Option{
+			retry.Context(m.context),
+			retry.Attempts(240),
+			retry.DelayType(retry.FixedDelay),
+			retry.LastErrorOnly(true),
+			retry.Delay(250 * time.Millisecond),
+			retry.RetryIf(func(err error) bool {
+				return err != nil
+			}),
+		}
+		err = retry.Do(func() (err error) {
+			notMnt, err := mount.IsNotMountPoint(mounter, mountPath)
+			m.logger.WithError(err).Infof("Checking mount point %v: mounted=%v", mountPath, !notMnt)
+			if err != nil {
+				return err
+			}
+			if notMnt {
+				return fmt.Errorf("volume %v is not mounted", vol.Name)
+			}
+			return nil
+		}, opts...)
+
+		if err != nil {
+			m.logger.WithError(err).Errorf("Failed to check the mount point %v", mountPath)
 			return
 		}
 
