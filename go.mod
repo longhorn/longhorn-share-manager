@@ -41,7 +41,7 @@ require (
 	github.com/longhorn/go-iscsi-helper v0.0.0-20220805034259-7b59e22574bb
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.0
-	github.com/urfave/cli v1.22.12
+	github.com/urfave/cli v1.22.13
 	golang.org/x/net v0.0.0-20211209124913-491a49abca63
 	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8
 	google.golang.org/grpc v1.40.0
