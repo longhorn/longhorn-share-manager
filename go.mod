@@ -43,7 +43,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/urfave/cli v1.22.12
 	golang.org/x/net v0.0.0-20211209124913-491a49abca63
-	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8
+	golang.org/x/sys v0.7.0
 	google.golang.org/grpc v1.40.0
 	k8s.io/kubernetes v1.23.6
 	k8s.io/mount-utils v0.23.6
