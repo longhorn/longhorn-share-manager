@@ -45,6 +45,30 @@ func ServerCmd() cli.Command {
 				Required: false,
 			},
 			cli.StringFlag{
+				Name:     "crytpokeycipher",
+				Usage:    "contains the encryption algorithm in dm-crypt notation",
+				EnvVar:   "CRYPTOKEYCIPHER",
+				Required: false,
+			},
+			cli.StringFlag{
+				Name:     "crytpokeyhash",
+				Usage:    "contains the hash algorithm for the checksum resilience mode",
+				EnvVar:   "CRYPTOKEYHASH",
+				Required: false,
+			},
+			cli.StringFlag{
+				Name:     "crytpokeysize",
+				Usage:    "contains the encryption key size",
+				EnvVar:   "CRYPTOKEYSIZE",
+				Required: false,
+			},
+			cli.StringFlag{
+				Name:     "crytpopbkdf",
+				Usage:    "contains the Password-Based Key Derivation Function (PBKDF) algorithm for LUKS keyslot",
+				EnvVar:   "CRYPTOPBKDF",
+				Required: false,
+			},
+			cli.StringFlag{
 				Name:     "fs",
 				Usage:    "the filesystem to use for the volume",
 				Value:    "ext4",
@@ -58,10 +82,14 @@ func ServerCmd() cli.Command {
 		},
 		Action: func(c *cli.Context) {
 			vol := volume.Volume{
-				Name:         c.String("volume"),
-				Passphrase:   c.String("passphrase"),
-				FsType:       c.String("fs"),
-				MountOptions: c.StringSlice("mount"),
+				Name:            c.String("volume"),
+				Passphrase:      c.String("passphrase"),
+				CryptoKeyCipher: c.String("crytpokeycipher"),
+				CryptoKeyHash:   c.String("crytpokeyhash"),
+				CryptoKeySize:   c.String("crytpokeysize"),
+				CryptoPBKDF:     c.String("crytpopbkdf"),
+				FsType:          c.String("fs"),
+				MountOptions:    c.StringSlice("mount"),
 			}
 
 			if c.Bool("encrypted") && len(vol.Passphrase) == 0 {
