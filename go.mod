@@ -33,6 +33,7 @@ replace (
 
 require (
 	github.com/google/fscrypt v0.3.4
+	github.com/longhorn/go-common-libs v0.0.0-20231201083854-bf0165ef3a22
 	github.com/longhorn/go-iscsi-helper v0.0.0-20231220091133-38e296e68ad2
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
@@ -51,11 +52,14 @@ require (
 	github.com/c9s/goprocinfo v0.0.0-20210130143923-c95fcf8c64a8 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
+	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/longhorn/go-common-libs v0.0.0-20231201083854-bf0165ef3a22 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/opencontainers/selinux v1.10.0 // indirect
+	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/stretchr/testify v1.8.4 // indirect
+	github.com/shirou/gopsutil/v3 v3.23.7 // indirect
+	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230711160842-782d3b101e98 // indirect
 	k8s.io/klog/v2 v2.100.1 // indirect
