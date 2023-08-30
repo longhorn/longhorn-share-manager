@@ -14,6 +14,7 @@ import (
 
 	"github.com/longhorn/longhorn-share-manager/pkg/crypto"
 	"github.com/longhorn/longhorn-share-manager/pkg/server/nfs"
+	"github.com/longhorn/longhorn-share-manager/pkg/types"
 	"github.com/longhorn/longhorn-share-manager/pkg/volume"
 )
 
@@ -231,12 +232,6 @@ func (m *ShareManager) runHealthCheck() {
 	}
 }
 
-<<<<<<< HEAD
-func (m *ShareManager) hasHealthyVolume() bool {
-	mountPath := filepath.Join(exportPath, m.volume.Name)
-	err := exec.CommandContext(m.context, "ls", mountPath).Run()
-	return err == nil
-=======
 func (m *ShareManager) hasHealthyVolume() error {
 	mountPath := types.GetMountPath(m.volume.Name)
 	if err := exec.CommandContext(m.context, "ls", mountPath).Run(); err != nil {
@@ -271,7 +266,6 @@ func isMountPointReadOnly(mp mount.MountPoint) bool {
 		}
 	}
 	return false
->>>>>>> 48398b9 (fix(share-manager): remount volume if mount point became ro)
 }
 
 func (m *ShareManager) Shutdown() {
