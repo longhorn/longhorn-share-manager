@@ -20,6 +20,11 @@ class ShareManagerServiceStub(object):
         request_serializer=smrpc__pb2.FilesystemTrimRequest.SerializeToString,
         response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
         )
+    self.Unmount = channel.unary_unary(
+        '/ShareManagerService/Unmount',
+        request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+        response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+        )
 
 
 class ShareManagerServiceServicer(object):
@@ -33,12 +38,24 @@ class ShareManagerServiceServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def Unmount(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_ShareManagerServiceServicer_to_server(servicer, server):
   rpc_method_handlers = {
       'FilesystemTrim': grpc.unary_unary_rpc_method_handler(
           servicer.FilesystemTrim,
           request_deserializer=smrpc__pb2.FilesystemTrimRequest.FromString,
+          response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+      ),
+      'Unmount': grpc.unary_unary_rpc_method_handler(
+          servicer.Unmount,
+          request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
           response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
       ),
   }
