@@ -39,6 +39,7 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/google/fscrypt v0.3.4
 	github.com/longhorn/go-iscsi-helper v0.0.0-20220805034259-7b59e22574bb
+	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/urfave/cli v1.22.12
