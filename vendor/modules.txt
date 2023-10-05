@@ -27,6 +27,9 @@ github.com/google/fscrypt/util
 # github.com/longhorn/go-iscsi-helper v0.0.0-20220805034259-7b59e22574bb
 ## explicit; go 1.13
 github.com/longhorn/go-iscsi-helper/util
+# github.com/mitchellh/go-ps v1.0.0
+## explicit; go 1.13
+github.com/mitchellh/go-ps
 # github.com/opencontainers/selinux v1.8.2
 ## explicit; go 1.13
 github.com/opencontainers/selinux/go-selinux
