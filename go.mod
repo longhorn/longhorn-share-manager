@@ -1,6 +1,6 @@
 module github.com/longhorn/longhorn-share-manager
 
-go 1.20
+go 1.21
 
 // install the below required grpc/protobuf versions
 // https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
