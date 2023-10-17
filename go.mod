@@ -43,8 +43,8 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/urfave/cli v1.22.12
-	golang.org/x/net v0.0.0-20211209124913-491a49abca63
-	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8
+	golang.org/x/net v0.17.0
+	golang.org/x/sys v0.13.0
 	google.golang.org/grpc v1.40.0
 	k8s.io/kubernetes v1.23.6
 	k8s.io/mount-utils v0.23.6
@@ -58,7 +58,7 @@ require (
 	github.com/go-logr/logr v1.2.0 // indirect
 	github.com/opencontainers/selinux v1.8.2 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	google.golang.org/genproto v0.0.0-20210831024726-fe130286e0e2 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	k8s.io/klog/v2 v2.30.0 // indirect
