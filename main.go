@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"path"
+	"runtime"
 
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -18,6 +21,16 @@ var (
 
 func main() {
 	a := cli.NewApp()
+
+	logrus.SetReportCaller(true)
+	logrus.SetFormatter(&logrus.TextFormatter{
+		CallerPrettyfier: func(f *runtime.Frame) (function string, file string) {
+			fileName := fmt.Sprintf("%s:%d", path.Base(f.File), f.Line)
+			funcName := path.Base(f.Function)
+			return funcName, fileName
+		},
+		FullTimestamp: true,
+	})
 
 	a.Before = func(c *cli.Context) error {
 		if c.GlobalBool("debug") {
