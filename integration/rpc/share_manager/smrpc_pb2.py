@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0bsmrpc.proto\x1a\x1bgoogle/protobuf/empty.proto\"1\n\x15\x46ilesystemTrimRequest\x12\x18\n\x10\x65ncrypted_device\x18\x01 \x01(\x08\x32\x96\x01\n\x13ShareManagerService\x12\x42\n\x0e\x46ilesystemTrim\x12\x16.FilesystemTrimRequest\x1a\x16.google.protobuf.Empty\"\x00\x12;\n\x07Unmount\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x0bsmrpc.proto\x1a\x1bgoogle/protobuf/empty.proto\"1\n\x15\x46ilesystemTrimRequest\x12\x18\n\x10\x65ncrypted_device\x18\x01 \x01(\x08\x32\xd1\x01\n\x13ShareManagerService\x12\x42\n\x0e\x46ilesystemTrim\x12\x16.FilesystemTrimRequest\x1a\x16.google.protobuf.Empty\"\x00\x12;\n\x07Unmount\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x00\x12\x39\n\x05Mount\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x00\x62\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR,])
 
@@ -77,7 +77,7 @@ _SHAREMANAGERSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   serialized_start=96,
-  serialized_end=246,
+  serialized_end=305,
   methods=[
   _descriptor.MethodDescriptor(
     name='FilesystemTrim',
@@ -92,6 +92,15 @@ _SHAREMANAGERSERVICE = _descriptor.ServiceDescriptor(
     name='Unmount',
     full_name='ShareManagerService.Unmount',
     index=1,
+    containing_service=None,
+    input_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Mount',
+    full_name='ShareManagerService.Mount',
+    index=2,
     containing_service=None,
     input_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
     output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
