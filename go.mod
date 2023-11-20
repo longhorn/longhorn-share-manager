@@ -2,10 +2,6 @@ module github.com/longhorn/longhorn-share-manager
 
 go 1.21
 
-// install the below required grpc/protobuf versions
-// https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
-// https://github.com/golang/protobuf.git # git checkout v1.3.2 # cd protoc-gen-go # go install
-
 replace (
 	k8s.io/api => k8s.io/api v0.23.6
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.23.6
@@ -36,7 +32,6 @@ replace (
 )
 
 require (
-	github.com/golang/protobuf v1.5.3
 	github.com/google/fscrypt v0.3.4
 	github.com/longhorn/go-iscsi-helper v0.0.0-20220805034259-7b59e22574bb
 	github.com/mitchellh/go-ps v1.0.0
@@ -45,7 +40,8 @@ require (
 	github.com/urfave/cli v1.22.12
 	golang.org/x/net v0.17.0
 	golang.org/x/sys v0.13.0
-	google.golang.org/grpc v1.54.0
+	google.golang.org/grpc v1.58.1
+	google.golang.org/protobuf v1.31.0
 	k8s.io/kubernetes v1.28.2
 	k8s.io/mount-utils v0.28.2
 	k8s.io/utils v0.0.0-20230406110748-d93618cff8a2
@@ -55,10 +51,10 @@ require (
 	github.com/c9s/goprocinfo v0.0.0-20170724085704-0010a05ce49f // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/opencontainers/selinux v1.10.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230525234030-28d5490b6b19 // indirect
-	google.golang.org/protobuf v1.30.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230711160842-782d3b101e98 // indirect
 	k8s.io/klog/v2 v2.100.1 // indirect
 )
