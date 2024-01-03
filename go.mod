@@ -34,14 +34,14 @@ replace (
 require (
 	github.com/golang/protobuf v1.5.3
 	github.com/google/fscrypt v0.3.4
-	github.com/longhorn/go-common-libs v0.0.0-20231201083854-bf0165ef3a22
+	github.com/longhorn/go-common-libs v0.0.0-20240103081802-3993c5908447
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli v1.22.12
 	golang.org/x/net v0.17.0
 	golang.org/x/sys v0.13.0
-	google.golang.org/grpc v1.58.3
+	google.golang.org/grpc v1.60.1
 	google.golang.org/protobuf v1.31.0
 	k8s.io/kubernetes v1.28.2
 	k8s.io/mount-utils v0.28.2
@@ -53,13 +53,13 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
-	github.com/google/uuid v1.3.0 // indirect
+	github.com/google/uuid v1.3.1 // indirect
 	github.com/opencontainers/selinux v1.10.0 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shirou/gopsutil/v3 v3.23.7 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	golang.org/x/text v0.13.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230711160842-782d3b101e98 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20231002182017-d307bd883b97 // indirect
 	k8s.io/klog/v2 v2.100.1 // indirect
 )
