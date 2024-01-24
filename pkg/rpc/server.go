@@ -19,7 +19,7 @@ import (
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	grpcstatus "google.golang.org/grpc/status"
 
-	lhns "github.com/longhorn/go-common-libs/ns"
+	lhexec "github.com/longhorn/go-common-libs/exec"
 	lhtypes "github.com/longhorn/go-common-libs/types"
 
 	"github.com/longhorn/longhorn-share-manager/pkg/server"
@@ -104,13 +104,8 @@ func (s *ShareManagerServer) FilesystemTrim(ctx context.Context, req *Filesystem
 		return &empty.Empty{}, grpcstatus.Error(grpccodes.Internal, err.Error())
 	}
 
-	namespaces := []lhtypes.Namespace{lhtypes.NamespaceMnt, lhtypes.NamespaceNet}
-	nsexec, err := lhns.NewNamespaceExecutor(lhns.GetDefaultProcessName(), lhtypes.HostProcDirectory, namespaces)
-	if err != nil {
-		return &empty.Empty{}, grpcstatus.Error(grpccodes.Internal, err.Error())
-	}
-
-	_, err = nsexec.Execute(nil, lhtypes.BinaryFstrim, []string{mountPath}, lhtypes.ExecuteDefaultTimeout)
+	execute := lhexec.NewExecutor().Execute
+	_, err = execute([]string{}, lhtypes.BinaryFstrim, []string{mountPath}, lhtypes.ExecuteDefaultTimeout)
 	if err != nil {
 		return &empty.Empty{}, grpcstatus.Error(grpccodes.Internal, err.Error())
 	}
