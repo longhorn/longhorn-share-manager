@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "baseBranches": ["master", "main", "/^v\\d+\\.\\d+\\.x/"],
+  "packageRules": [
+    {
+      "matchBaseBranches": ["/^v\\d+\\.\\d+\\.x/"],
+      "matchUpdateTypes": ["patch"]
+    }
+  ]
+}
