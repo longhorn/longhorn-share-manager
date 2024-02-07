@@ -16,7 +16,7 @@
     },
     {
       "matchBaseBranches": ["master", "main"],
-      "matchUpdateTypes": ["minor"],
+      "matchUpdateTypes": ["minor", "digest"],
       "groupSlug": "group-minor"
     },
     {
