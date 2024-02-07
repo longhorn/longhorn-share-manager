@@ -66,7 +66,7 @@ COPY bin/longhorn-share-manager /longhorn-share-manager
 # run ldconfig after libs have been copied
 RUN ldconfig
 
-# onyl expose the nfsd since for v4 only that is necessary
+# only expose the nfsd since for v4 only that is necessary
 EXPOSE 2049/tcp
 
 ENTRYPOINT ["/longhorn-share-manager"]
