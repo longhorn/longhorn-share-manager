@@ -22,7 +22,7 @@ steps:
 
 - name: build
   pull: default
-  image: rancher/dapper:v0.5.3
+  image: rancher/dapper:v0.6.0
   commands:
   - dapper ci
   volumes:
@@ -137,7 +137,7 @@ steps:
 
 - name: build
   pull: default
-  image: rancher/dapper:v0.5.3
+  image: rancher/dapper:v0.6.0
   commands:
   - dapper ci
   volumes:
