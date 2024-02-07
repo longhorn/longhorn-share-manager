@@ -34,7 +34,7 @@ replace (
 require (
 	github.com/golang/protobuf v1.5.3
 	github.com/google/fscrypt v0.3.4
-	github.com/longhorn/go-common-libs v0.0.0-20240109042507-23627e6416b7
+	github.com/longhorn/go-common-libs v0.0.0-20240207150648-1e655f4e19ea
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
