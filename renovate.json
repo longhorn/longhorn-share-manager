@@ -6,14 +6,23 @@
   "baseBranches": ["master", "main", "/^v\\d+\\.\\d+\\.x/"],
   "packageRules": [
     {
-      "matchBaseBranches": ["master", "main"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "groupSlug": "group-minor-patch"
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true
     },
     {
-      "matchBaseBranches": ["/^v\\d+\\.\\d+\\.x/"],
-      "matchUpdateTypes": ["patch"],
-      "groupSlug": "group-patch"
+      "matchBaseBranches": ["master", "main"],
+      "matchUpdateTypes": ["major"],
+      "groupSlug": "group-major"
     },
+    {
+      "matchBaseBranches": ["master", "main"],
+      "matchUpdateTypes": ["minor"],
+      "groupSlug": "group-minor"
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "groupSlug": "group-patch",
+      "automerge": true
+    }
   ]
 }
