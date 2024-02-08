@@ -42,7 +42,7 @@ require (
 	golang.org/x/net v0.17.0
 	golang.org/x/sys v0.17.0
 	google.golang.org/grpc v1.60.1
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/protobuf v1.32.0
 	k8s.io/kubernetes v1.28.5
 	k8s.io/mount-utils v0.29.1
 	k8s.io/utils v0.0.0-20240102154912-e7106e64919e
