@@ -41,6 +41,8 @@ github.com/longhorn/go-common-libs v0.0.0-20240207150648-1e655f4e19ea h1:BsxiPf7
 github.com/longhorn/go-common-libs v0.0.0-20240207150648-1e655f4e19ea/go.mod h1:nIECQARppamt2zwFSdzADRTVKo/7izFwWIS3VWi7D/s=
 github.com/longhorn/go-common-libs v0.0.0-20240207153251-d5e1ceae50ac h1:Nz/fI1xZHmywhoQtgYCVA3m298wPGY7Mub6Od88WGoA=
 github.com/longhorn/go-common-libs v0.0.0-20240207153251-d5e1ceae50ac/go.mod h1:nIECQARppamt2zwFSdzADRTVKo/7izFwWIS3VWi7D/s=
+github.com/longhorn/go-common-libs v0.0.0-20240219094750-e7176c332156 h1:Jv1+UlfrzSodyIobaioQn8Vh4RQ+23FpN2Q60iFdqCU=
+github.com/longhorn/go-common-libs v0.0.0-20240219094750-e7176c332156/go.mod h1:nIECQARppamt2zwFSdzADRTVKo/7izFwWIS3VWi7D/s=
 github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0/go.mod h1:zJYVVT2jmtg6P3p1VtQj7WsuWi/y4VnjVBn7F8KPB3I=
 github.com/mitchellh/go-ps v1.0.0 h1:i6ampVEEF4wQFF+bkYfwYgY+F/uYJDktmvLPf7qIgjc=
 github.com/mitchellh/go-ps v1.0.0/go.mod h1:J4lOc8z8yJs6vUwklHw2XEIiT4z4C40KtWVN3nvg8Pg=
@@ -171,6 +173,8 @@ k8s.io/mount-utils v0.28.5 h1:JRBnrJ3uGHMGzJlk/CqzcL6wtayAOfTqecAugYZeff4=
 k8s.io/mount-utils v0.28.5/go.mod h1:ceMAZ+Nzlk8zOwN205YXXGJRGmf1o0/XIwsKnG44p0I=
 k8s.io/mount-utils v0.29.1 h1:veXlIm52Y4tm3H0pG03cOdkw0KOJxYDa0fQqhJCoqvQ=
 k8s.io/mount-utils v0.29.1/go.mod h1:9IWJTMe8tG0MYMLEp60xK9GYVeCdA3g4LowmnVi+t9Y=
+k8s.io/mount-utils v0.29.2 h1:FrUfgvOo63nqJRPXKoqN/DW1lMnR/y0pzpFErKh6p2o=
+k8s.io/mount-utils v0.29.2/go.mod h1:9IWJTMe8tG0MYMLEp60xK9GYVeCdA3g4LowmnVi+t9Y=
 k8s.io/utils v0.0.0-20230406110748-d93618cff8a2 h1:qY1Ad8PODbnymg2pRbkyMT/ylpTrCM8P2RJ0yroCyIk=
 k8s.io/utils v0.0.0-20230406110748-d93618cff8a2/go.mod h1:OLgZIPagt7ERELqWJFomSt595RzquPNLL48iOWgYOg0=
 k8s.io/utils v0.0.0-20240102154912-e7106e64919e h1:eQ/4ljkx21sObifjzXwlPKpdGLrCfRziVtos3ofG/sQ=
