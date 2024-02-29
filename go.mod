@@ -1,6 +1,6 @@
 module github.com/longhorn/longhorn-share-manager
 
-go 1.21
+go 1.21.7
 
 replace (
 	k8s.io/api => k8s.io/api v0.29.2
@@ -32,9 +32,9 @@ replace (
 )
 
 require (
-	github.com/golang/protobuf v1.5.3
 	github.com/google/fscrypt v0.3.4
 	github.com/longhorn/go-common-libs v0.0.0-20240219094750-e7176c332156
+	github.com/longhorn/types v0.0.0-imcompatible
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
@@ -54,6 +54,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/moby/sys/mountinfo v0.6.2 // indirect
 	github.com/opencontainers/selinux v1.11.0 // indirect
@@ -66,3 +67,5 @@ require (
 	k8s.io/apimachinery v0.0.0 // indirect
 	k8s.io/klog/v2 v2.110.1 // indirect
 )
+
+replace github.com/longhorn/types => github.com/FrankYang0529/types v0.0.0-20240229024041-25f1b5bbec5b

@@ -36,6 +36,9 @@ github.com/longhorn/go-common-libs/sync
 github.com/longhorn/go-common-libs/sys
 github.com/longhorn/go-common-libs/types
 github.com/longhorn/go-common-libs/utils
+# github.com/longhorn/types v0.0.0-imcompatible => github.com/FrankYang0529/types v0.0.0-20240229024041-25f1b5bbec5b
+## explicit; go 1.21.7
+github.com/longhorn/types/pkg/smrpc
 # github.com/mitchellh/go-ps v1.0.0
 ## explicit; go 1.13
 github.com/mitchellh/go-ps
@@ -237,3 +240,4 @@ k8s.io/utils/path
 # k8s.io/mount-utils => k8s.io/mount-utils v0.29.2
 # k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.29.2
 # k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.29.2
+# github.com/longhorn/types => github.com/FrankYang0529/types v0.0.0-20240229024041-25f1b5bbec5b
