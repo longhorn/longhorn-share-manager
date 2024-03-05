@@ -34,7 +34,7 @@ replace (
 require (
 	github.com/golang/protobuf v1.5.3
 	github.com/google/fscrypt v0.3.4
-	github.com/longhorn/go-common-libs v0.0.0-20240219094750-e7176c332156
+	github.com/longhorn/go-common-libs v0.0.0-20240305104227-2dc630b0df92
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
@@ -59,8 +59,8 @@ require (
 	github.com/opencontainers/selinux v1.11.0 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/shirou/gopsutil/v3 v3.23.7 // indirect
-	github.com/yusufpapurcu/wmi v1.2.3 // indirect
+	github.com/shirou/gopsutil/v3 v3.24.2 // indirect
+	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240123012728-ef4313101c80 // indirect
 	k8s.io/apimachinery v0.0.0 // indirect
