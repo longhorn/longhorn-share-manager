@@ -21,9 +21,25 @@ github.com/golang/protobuf/ptypes/timestamp
 github.com/google/fscrypt/filesystem
 github.com/google/fscrypt/metadata
 github.com/google/fscrypt/util
+<<<<<<< HEAD
 # github.com/longhorn/go-iscsi-helper v0.0.0-20220805034259-7b59e22574bb
 ## explicit; go 1.13
 github.com/longhorn/go-iscsi-helper/util
+=======
+# github.com/google/uuid v1.6.0
+## explicit
+github.com/google/uuid
+# github.com/longhorn/go-common-libs v0.0.0-20240307063052-6e77996eda29
+## explicit; go 1.21
+github.com/longhorn/go-common-libs/exec
+github.com/longhorn/go-common-libs/io
+github.com/longhorn/go-common-libs/ns
+github.com/longhorn/go-common-libs/proc
+github.com/longhorn/go-common-libs/sync
+github.com/longhorn/go-common-libs/sys
+github.com/longhorn/go-common-libs/types
+github.com/longhorn/go-common-libs/utils
+>>>>>>> 6e921c6 (refactor(utils): move is mount read only function to common lib)
 # github.com/mitchellh/go-ps v1.0.0
 ## explicit; go 1.13
 github.com/mitchellh/go-ps
@@ -66,8 +82,13 @@ golang.org/x/text/unicode/norm
 # google.golang.org/genproto/googleapis/rpc v0.0.0-20230525234030-28d5490b6b19
 ## explicit; go 1.19
 google.golang.org/genproto/googleapis/rpc/status
+<<<<<<< HEAD
 # google.golang.org/grpc v1.54.0
 ## explicit; go 1.17
+=======
+# google.golang.org/grpc v1.62.1
+## explicit; go 1.19
+>>>>>>> 6e921c6 (refactor(utils): move is mount read only function to common lib)
 google.golang.org/grpc
 google.golang.org/grpc/attributes
 google.golang.org/grpc/backoff

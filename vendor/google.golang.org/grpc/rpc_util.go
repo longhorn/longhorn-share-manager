@@ -725,6 +725,7 @@ type payloadInfo struct {
 	uncompressedBytes []byte
 }
 
+<<<<<<< HEAD
 func recvAndDecompress(p *parser, s *transport.Stream, dc Decompressor, maxReceiveMessageSize int, payInfo *payloadInfo, compressor encoding.Compressor) ([]byte, error) {
 	pf, d, err := p.recvMsg(maxReceiveMessageSize)
 	if err != nil {
@@ -732,10 +733,21 @@ func recvAndDecompress(p *parser, s *transport.Stream, dc Decompressor, maxRecei
 	}
 	if payInfo != nil {
 		payInfo.compressedLength = len(d)
+=======
+// recvAndDecompress reads a message from the stream, decompressing it if necessary.
+//
+// Cancelling the returned cancel function releases the buffer back to the pool. So the caller should cancel as soon as
+// the buffer is no longer needed.
+func recvAndDecompress(p *parser, s *transport.Stream, dc Decompressor, maxReceiveMessageSize int, payInfo *payloadInfo, compressor encoding.Compressor,
+) (uncompressedBuf []byte, cancel func(), err error) {
+	pf, compressedBuf, err := p.recvMsg(maxReceiveMessageSize)
+	if err != nil {
+		return nil, nil, err
+>>>>>>> 6e921c6 (refactor(utils): move is mount read only function to common lib)
 	}
 
 	if st := checkRecvPayload(pf, s.RecvCompress(), compressor != nil || dc != nil); st != nil {
-		return nil, st.Err()
+		return nil, nil, st.Err()
 	}
 
 	var size int
@@ -743,21 +755,46 @@ func recvAndDecompress(p *parser, s *transport.Stream, dc Decompressor, maxRecei
 		// To match legacy behavior, if the decompressor is set by WithDecompressor or RPCDecompressor,
 		// use this decompressor as the default.
 		if dc != nil {
+<<<<<<< HEAD
 			d, err = dc.Do(bytes.NewReader(d))
 			size = len(d)
 		} else {
 			d, size, err = decompress(compressor, d, maxReceiveMessageSize)
+=======
+			uncompressedBuf, err = dc.Do(bytes.NewReader(compressedBuf))
+			size = len(uncompressedBuf)
+		} else {
+			uncompressedBuf, size, err = decompress(compressor, compressedBuf, maxReceiveMessageSize)
+>>>>>>> 6e921c6 (refactor(utils): move is mount read only function to common lib)
 		}
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "grpc: failed to decompress the received message: %v", err)
+			return nil, nil, status.Errorf(codes.Internal, "grpc: failed to decompress the received message: %v", err)
 		}
 		if size > maxReceiveMessageSize {
 			// TODO: Revisit the error code. Currently keep it consistent with java
 			// implementation.
-			return nil, status.Errorf(codes.ResourceExhausted, "grpc: received message after decompression larger than max (%d vs. %d)", size, maxReceiveMessageSize)
+			return nil, nil, status.Errorf(codes.ResourceExhausted, "grpc: received message after decompression larger than max (%d vs. %d)", size, maxReceiveMessageSize)
+		}
+	} else {
+		uncompressedBuf = compressedBuf
+	}
+
+	if payInfo != nil {
+		payInfo.compressedLength = len(compressedBuf)
+		payInfo.uncompressedBytes = uncompressedBuf
+
+		cancel = func() {}
+	} else {
+		cancel = func() {
+			p.recvBufferPool.Put(&compressedBuf)
 		}
 	}
+<<<<<<< HEAD
 	return d, nil
+=======
+
+	return uncompressedBuf, cancel, nil
+>>>>>>> 6e921c6 (refactor(utils): move is mount read only function to common lib)
 }
 
 // Using compressor, decompress d, returning data and size.
@@ -777,6 +814,9 @@ func decompress(compressor encoding.Compressor, d []byte, maxReceiveMessageSize 
 			// size is used as an estimate to size the buffer, but we
 			// will read more data if available.
 			// +MinRead so ReadFrom will not reallocate if size is correct.
+			//
+			// TODO: If we ensure that the buffer size is the same as the DecompressedSize,
+			// we can also utilize the recv buffer pool here.
 			buf := bytes.NewBuffer(make([]byte, 0, size+bytes.MinRead))
 			bytesRead, err := buf.ReadFrom(io.LimitReader(dcReader, int64(maxReceiveMessageSize)+1))
 			return buf.Bytes(), int(bytesRead), err
@@ -791,6 +831,7 @@ func decompress(compressor encoding.Compressor, d []byte, maxReceiveMessageSize 
 // For the two compressor parameters, both should not be set, but if they are,
 // dc takes precedence over compressor.
 // TODO(dfawley): wrap the old compressor/decompressor using the new API?
+<<<<<<< HEAD
 func recv(p *parser, c baseCodec, s *transport.Stream, dc Decompressor, m interface{}, maxReceiveMessageSize int, payInfo *payloadInfo, compressor encoding.Compressor) error {
 	d, err := recvAndDecompress(p, s, dc, maxReceiveMessageSize, payInfo, compressor)
 	if err != nil {
@@ -802,6 +843,18 @@ func recv(p *parser, c baseCodec, s *transport.Stream, dc Decompressor, m interf
 	if payInfo != nil {
 		payInfo.uncompressedBytes = d
 	}
+=======
+func recv(p *parser, c baseCodec, s *transport.Stream, dc Decompressor, m any, maxReceiveMessageSize int, payInfo *payloadInfo, compressor encoding.Compressor) error {
+	buf, cancel, err := recvAndDecompress(p, s, dc, maxReceiveMessageSize, payInfo, compressor)
+	if err != nil {
+		return err
+	}
+	defer cancel()
+
+	if err := c.Unmarshal(buf, m); err != nil {
+		return status.Errorf(codes.Internal, "grpc: failed to unmarshal the received message: %v", err)
+	}
+>>>>>>> 6e921c6 (refactor(utils): move is mount read only function to common lib)
 	return nil
 }
 
