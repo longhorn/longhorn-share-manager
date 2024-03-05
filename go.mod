@@ -28,20 +28,18 @@ replace (
 	k8s.io/mount-utils => k8s.io/mount-utils v0.29.2
 	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.29.2
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.29.2
-
 )
 
 require (
-	github.com/golang/protobuf v1.5.3
 	github.com/google/fscrypt v0.3.4
-	github.com/longhorn/go-common-libs v0.0.0-20240305104227-2dc630b0df92
+	github.com/longhorn/go-common-libs v0.0.0-20240307063052-6e77996eda29
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli v1.22.14
 	golang.org/x/net v0.22.0
 	golang.org/x/sys v0.18.0
-	google.golang.org/grpc v1.62.0
+	google.golang.org/grpc v1.62.1
 	google.golang.org/protobuf v1.33.0
 	k8s.io/kubernetes v1.29.2
 	k8s.io/mount-utils v0.29.2
@@ -54,6 +52,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/moby/sys/mountinfo v0.6.2 // indirect
 	github.com/opencontainers/selinux v1.11.0 // indirect
