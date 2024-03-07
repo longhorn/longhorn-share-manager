@@ -32,7 +32,6 @@ replace (
 )
 
 require (
-	github.com/golang/protobuf v1.5.4
 	github.com/google/fscrypt v0.3.4
 	github.com/longhorn/go-common-libs v0.0.0-20240307063052-6e77996eda29
 	github.com/mitchellh/go-ps v1.0.0
@@ -53,6 +52,7 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/moby/sys/mountinfo v0.6.2 // indirect
 	github.com/opencontainers/selinux v1.10.0 // indirect
