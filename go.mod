@@ -38,27 +38,29 @@ replace (
 require (
 	github.com/golang/protobuf v1.5.4
 	github.com/google/fscrypt v0.3.4
+	github.com/longhorn/go-common-libs v0.0.0-20240307063052-6e77996eda29
 	github.com/longhorn/go-iscsi-helper v0.0.0-20220805034259-7b59e22574bb
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli v1.22.14
-	golang.org/x/net v0.17.0
-	golang.org/x/sys v0.13.0
-	google.golang.org/grpc v1.54.0
+	golang.org/x/net v0.20.0
+	golang.org/x/sys v0.18.0
+	google.golang.org/grpc v1.62.1
 	k8s.io/kubernetes v1.28.2
-	k8s.io/mount-utils v0.28.2
+	k8s.io/mount-utils v0.29.2
 	k8s.io/utils v0.0.0-20240102154912-e7106e64919e
 )
 
 require (
-	github.com/c9s/goprocinfo v0.0.0-20170724085704-0010a05ce49f // indirect
+	github.com/c9s/goprocinfo v0.0.0-20210130143923-c95fcf8c64a8 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
-	github.com/go-logr/logr v1.2.4 // indirect
+	github.com/go-logr/logr v1.3.0 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/opencontainers/selinux v1.10.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	golang.org/x/text v0.13.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230525234030-28d5490b6b19 // indirect
+	golang.org/x/text v0.14.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240123012728-ef4313101c80 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
-	k8s.io/klog/v2 v2.100.1 // indirect
+	k8s.io/klog/v2 v2.110.1 // indirect
 )
