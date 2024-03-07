@@ -75,7 +75,7 @@ func NewGZIPCompressorWithLevel(level int) (Compressor, error) {
 	}
 	return &gzipCompressor{
 		pool: sync.Pool{
-			New: func() interface{} {
+			New: func() any {
 				w, err := gzip.NewWriterLevel(io.Discard, level)
 				if err != nil {
 					panic(err)
@@ -188,6 +188,20 @@ type EmptyCallOption struct{}
 
 func (EmptyCallOption) before(*callInfo) error      { return nil }
 func (EmptyCallOption) after(*callInfo, *csAttempt) {}
+
+// StaticMethod returns a CallOption which specifies that a call is being made
+// to a method that is static, which means the method is known at compile time
+// and doesn't change at runtime. This can be used as a signal to stats plugins
+// that this method is safe to include as a key to a measurement.
+func StaticMethod() CallOption {
+	return StaticMethodCallOption{}
+}
+
+// StaticMethodCallOption is a CallOption that specifies that a call comes
+// from a static method.
+type StaticMethodCallOption struct {
+	EmptyCallOption
+}
 
 // Header returns a CallOptions that retrieves the header metadata
 // for a unary RPC.
@@ -577,6 +591,9 @@ type parser struct {
 	// The header of a gRPC message. Find more detail at
 	// https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md
 	header [5]byte
+
+	// recvBufferPool is the pool of shared receive buffers.
+	recvBufferPool SharedBufferPool
 }
 
 // recvMsg reads a complete gRPC message from the stream.
@@ -610,9 +627,7 @@ func (p *parser) recvMsg(maxReceiveMessageSize int) (pf payloadFormat, msg []byt
 	if int(length) > maxReceiveMessageSize {
 		return 0, nil, status.Errorf(codes.ResourceExhausted, "grpc: received message larger than max (%d vs. %d)", length, maxReceiveMessageSize)
 	}
-	// TODO(bradfitz,zhaoq): garbage. reuse buffer after proto decoding instead
-	// of making it for each message:
-	msg = make([]byte, int(length))
+	msg = p.recvBufferPool.Get(int(length))
 	if _, err := p.r.Read(msg); err != nil {
 		if err == io.EOF {
 			err = io.ErrUnexpectedEOF
@@ -625,7 +640,7 @@ func (p *parser) recvMsg(maxReceiveMessageSize int) (pf payloadFormat, msg []byt
 // encode serializes msg and returns a buffer containing the message, or an
 // error if it is too large to be transmitted by grpc.  If msg is nil, it
 // generates an empty message.
-func encode(c baseCodec, msg interface{}) ([]byte, error) {
+func encode(c baseCodec, msg any) ([]byte, error) {
 	if msg == nil { // NOTE: typed nils will not be caught by this check
 		return nil, nil
 	}
@@ -639,12 +654,16 @@ func encode(c baseCodec, msg interface{}) ([]byte, error) {
 	return b, nil
 }
 
-// compress returns the input bytes compressed by compressor or cp.  If both
-// compressors are nil, returns nil.
+// compress returns the input bytes compressed by compressor or cp.
+// If both compressors are nil, or if the message has zero length, returns nil,
+// indicating no compression was done.
 //
 // TODO(dfawley): eliminate cp parameter by wrapping Compressor in an encoding.Compressor.
 func compress(in []byte, cp Compressor, compressor encoding.Compressor) ([]byte, error) {
 	if compressor == nil && cp == nil {
+		return nil, nil
+	}
+	if len(in) == 0 {
 		return nil, nil
 	}
 	wrapErr := func(err error) error {
@@ -692,7 +711,7 @@ func msgHeader(data, compData []byte) (hdr []byte, payload []byte) {
 	return hdr, data
 }
 
-func outPayload(client bool, msg interface{}, data, payload []byte, t time.Time) *stats.OutPayload {
+func outPayload(client bool, msg any, data, payload []byte, t time.Time) *stats.OutPayload {
 	return &stats.OutPayload{
 		Client:           client,
 		Payload:          msg,
@@ -725,15 +744,6 @@ type payloadInfo struct {
 	uncompressedBytes []byte
 }
 
-<<<<<<< HEAD
-func recvAndDecompress(p *parser, s *transport.Stream, dc Decompressor, maxReceiveMessageSize int, payInfo *payloadInfo, compressor encoding.Compressor) ([]byte, error) {
-	pf, d, err := p.recvMsg(maxReceiveMessageSize)
-	if err != nil {
-		return nil, err
-	}
-	if payInfo != nil {
-		payInfo.compressedLength = len(d)
-=======
 // recvAndDecompress reads a message from the stream, decompressing it if necessary.
 //
 // Cancelling the returned cancel function releases the buffer back to the pool. So the caller should cancel as soon as
@@ -743,7 +753,6 @@ func recvAndDecompress(p *parser, s *transport.Stream, dc Decompressor, maxRecei
 	pf, compressedBuf, err := p.recvMsg(maxReceiveMessageSize)
 	if err != nil {
 		return nil, nil, err
->>>>>>> 6e921c6 (refactor(utils): move is mount read only function to common lib)
 	}
 
 	if st := checkRecvPayload(pf, s.RecvCompress(), compressor != nil || dc != nil); st != nil {
@@ -755,17 +764,10 @@ func recvAndDecompress(p *parser, s *transport.Stream, dc Decompressor, maxRecei
 		// To match legacy behavior, if the decompressor is set by WithDecompressor or RPCDecompressor,
 		// use this decompressor as the default.
 		if dc != nil {
-<<<<<<< HEAD
-			d, err = dc.Do(bytes.NewReader(d))
-			size = len(d)
-		} else {
-			d, size, err = decompress(compressor, d, maxReceiveMessageSize)
-=======
 			uncompressedBuf, err = dc.Do(bytes.NewReader(compressedBuf))
 			size = len(uncompressedBuf)
 		} else {
 			uncompressedBuf, size, err = decompress(compressor, compressedBuf, maxReceiveMessageSize)
->>>>>>> 6e921c6 (refactor(utils): move is mount read only function to common lib)
 		}
 		if err != nil {
 			return nil, nil, status.Errorf(codes.Internal, "grpc: failed to decompress the received message: %v", err)
@@ -789,12 +791,8 @@ func recvAndDecompress(p *parser, s *transport.Stream, dc Decompressor, maxRecei
 			p.recvBufferPool.Put(&compressedBuf)
 		}
 	}
-<<<<<<< HEAD
-	return d, nil
-=======
 
 	return uncompressedBuf, cancel, nil
->>>>>>> 6e921c6 (refactor(utils): move is mount read only function to common lib)
 }
 
 // Using compressor, decompress d, returning data and size.
@@ -831,19 +829,6 @@ func decompress(compressor encoding.Compressor, d []byte, maxReceiveMessageSize 
 // For the two compressor parameters, both should not be set, but if they are,
 // dc takes precedence over compressor.
 // TODO(dfawley): wrap the old compressor/decompressor using the new API?
-<<<<<<< HEAD
-func recv(p *parser, c baseCodec, s *transport.Stream, dc Decompressor, m interface{}, maxReceiveMessageSize int, payInfo *payloadInfo, compressor encoding.Compressor) error {
-	d, err := recvAndDecompress(p, s, dc, maxReceiveMessageSize, payInfo, compressor)
-	if err != nil {
-		return err
-	}
-	if err := c.Unmarshal(d, m); err != nil {
-		return status.Errorf(codes.Internal, "grpc: failed to unmarshal the received message: %v", err)
-	}
-	if payInfo != nil {
-		payInfo.uncompressedBytes = d
-	}
-=======
 func recv(p *parser, c baseCodec, s *transport.Stream, dc Decompressor, m any, maxReceiveMessageSize int, payInfo *payloadInfo, compressor encoding.Compressor) error {
 	buf, cancel, err := recvAndDecompress(p, s, dc, maxReceiveMessageSize, payInfo, compressor)
 	if err != nil {
@@ -854,7 +839,6 @@ func recv(p *parser, c baseCodec, s *transport.Stream, dc Decompressor, m any, m
 	if err := c.Unmarshal(buf, m); err != nil {
 		return status.Errorf(codes.Internal, "grpc: failed to unmarshal the received message: %v", err)
 	}
->>>>>>> 6e921c6 (refactor(utils): move is mount read only function to common lib)
 	return nil
 }
 
@@ -913,9 +897,12 @@ func ErrorDesc(err error) string {
 // Errorf returns nil if c is OK.
 //
 // Deprecated: use status.Errorf instead.
-func Errorf(c codes.Code, format string, a ...interface{}) error {
+func Errorf(c codes.Code, format string, a ...any) error {
 	return status.Errorf(c, format, a...)
 }
+
+var errContextCanceled = status.Error(codes.Canceled, context.Canceled.Error())
+var errContextDeadline = status.Error(codes.DeadlineExceeded, context.DeadlineExceeded.Error())
 
 // toRPCErr converts an error into an error from the status package.
 func toRPCErr(err error) error {
@@ -923,9 +910,9 @@ func toRPCErr(err error) error {
 	case nil, io.EOF:
 		return err
 	case context.DeadlineExceeded:
-		return status.Error(codes.DeadlineExceeded, err.Error())
+		return errContextDeadline
 	case context.Canceled:
-		return status.Error(codes.Canceled, err.Error())
+		return errContextCanceled
 	case io.ErrUnexpectedEOF:
 		return status.Error(codes.Internal, err.Error())
 	}
@@ -1001,6 +988,7 @@ const (
 	SupportPackageIsVersion5 = true
 	SupportPackageIsVersion6 = true
 	SupportPackageIsVersion7 = true
+	SupportPackageIsVersion8 = true
 )
 
 const grpcUA = "grpc-go/" + Version

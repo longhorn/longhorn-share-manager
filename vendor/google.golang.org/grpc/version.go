@@ -19,8 +19,4 @@
 package grpc
 
 // Version is the current grpc version.
-<<<<<<< HEAD
-const Version = "1.54.0"
-=======
 const Version = "1.62.1"
->>>>>>> 6e921c6 (refactor(utils): move is mount read only function to common lib)
