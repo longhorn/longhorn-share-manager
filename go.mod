@@ -49,7 +49,7 @@ require (
 	google.golang.org/grpc v1.62.1
 	k8s.io/kubernetes v1.28.2
 	k8s.io/mount-utils v0.29.2
-	k8s.io/utils v0.0.0-20240102154912-e7106e64919e
+	k8s.io/utils v0.0.0-20240310230437-4693a0247e57
 )
 
 require (
