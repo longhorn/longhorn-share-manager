@@ -38,7 +38,7 @@ replace (
 require (
 	github.com/golang/protobuf v1.5.4
 	github.com/google/fscrypt v0.3.4
-	github.com/longhorn/go-common-libs v0.0.0-20240307063052-6e77996eda29
+	github.com/longhorn/go-common-libs v0.0.0-20240315062830-5aa0ac1dac62
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
@@ -47,7 +47,7 @@ require (
 	golang.org/x/sys v0.18.0
 	google.golang.org/grpc v1.62.1
 	k8s.io/kubernetes v1.28.2
-	k8s.io/mount-utils v0.29.2
+	k8s.io/mount-utils v0.29.3
 	k8s.io/utils v0.0.0-20240310230437-4693a0247e57
 )
 
