@@ -23,7 +23,7 @@ github.com/google/fscrypt/util
 # github.com/google/uuid v1.6.0
 ## explicit
 github.com/google/uuid
-# github.com/longhorn/go-common-libs v0.0.0-20240307063052-6e77996eda29
+# github.com/longhorn/go-common-libs v0.0.0-20240315062830-5aa0ac1dac62
 ## explicit; go 1.21
 github.com/longhorn/go-common-libs/exec
 github.com/longhorn/go-common-libs/io
@@ -197,7 +197,7 @@ k8s.io/klog/v2/internal/sloghandler
 # k8s.io/kubernetes v1.28.5
 ## explicit; go 1.20
 k8s.io/kubernetes/pkg/volume/util/hostutil
-# k8s.io/mount-utils v0.29.2 => k8s.io/mount-utils v0.28.5
+# k8s.io/mount-utils v0.29.3 => k8s.io/mount-utils v0.28.5
 ## explicit; go 1.20
 k8s.io/mount-utils
 # k8s.io/utils v0.0.0-20240310230437-4693a0247e57
