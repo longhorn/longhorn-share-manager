@@ -1,4 +1,4 @@
-FROM registry.suse.com/bci/bci-base:15.5 AS build
+FROM registry.suse.com/bci/bci-base:15.6 AS build
 
 ARG ARCH=amd64
 
@@ -39,7 +39,7 @@ RUN mkdir -p /ganesha-extra \
     && mkdir -p /ganesha-extra/etc/dbus-1/system.d \
     && cp src/scripts/ganeshactl/org.ganesha.nfsd.conf /ganesha-extra/etc/dbus-1/system.d/
 
-FROM registry.suse.com/bci/bci-base:15.5
+FROM registry.suse.com/bci/bci-base:15.6
 
 RUN zypper addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/SLE_15/ snappy && \
     zypper --gpg-auto-import-keys ref
