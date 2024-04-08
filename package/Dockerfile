@@ -14,9 +14,9 @@ RUN zypper -n install autoconf bison curl cmake doxygen make git gcc-c++ flex Me
     tar gzip dbus-1-devel lsb-release graphviz-devel libnsl-devel libcurl-devel libjson-c-devel libacl-devel && \
     rm -rf /var/cache/zypp/*
 
-RUN curl -L https://github.com/longhorn/nfs-ganesha/archive/refs/tags/v5_20240104.tar.gz | tar zx \
+RUN curl -L https://github.com/longhorn/nfs-ganesha/archive/refs/tags/v5_20240408.tar.gz | tar zx \
 	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/v5.0.tar.gz | tar zx \
-	  && mv nfs-ganesha-5_20240104 nfs-ganesha-5.7 \
+	  && mv nfs-ganesha-5_20240408 nfs-ganesha-5.7 \
 	  && rm -r nfs-ganesha-5.7/src/libntirpc \
 	  && mv ntirpc-5.0 nfs-ganesha-5.7/src/libntirpc
 WORKDIR /nfs-ganesha-5.7
