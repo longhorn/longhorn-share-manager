@@ -1,4 +1,4 @@
-package smrpc
+package rpc
 
 import (
 	"fmt"
@@ -8,19 +8,17 @@ import (
 	"time"
 
 	"github.com/google/fscrypt/filesystem"
+	lhexec "github.com/longhorn/go-common-libs/exec"
+	lhtypes "github.com/longhorn/go-common-libs/types"
+	"github.com/longhorn/types/pkg/generated/smrpc"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
-
-	"k8s.io/mount-utils"
-
 	grpccodes "google.golang.org/grpc/codes"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	grpcstatus "google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
-
-	lhexec "github.com/longhorn/go-common-libs/exec"
-	lhtypes "github.com/longhorn/go-common-libs/types"
+	"k8s.io/mount-utils"
 
 	"github.com/longhorn/longhorn-share-manager/pkg/server"
 	"github.com/longhorn/longhorn-share-manager/pkg/server/nfs"
@@ -37,6 +35,7 @@ const (
 )
 
 type ShareManagerServer struct {
+	smrpc.UnimplementedShareManagerServiceServer
 	sync.RWMutex
 
 	logger  logrus.FieldLogger
@@ -50,7 +49,7 @@ func NewShareManagerServer(manager *server.ShareManager) *ShareManagerServer {
 	}
 }
 
-func (s *ShareManagerServer) FilesystemTrim(ctx context.Context, req *FilesystemTrimRequest) (resp *emptypb.Empty, err error) {
+func (s *ShareManagerServer) FilesystemTrim(ctx context.Context, req *smrpc.FilesystemTrimRequest) (resp *emptypb.Empty, err error) {
 	s.Lock()
 	defer s.Unlock()
 

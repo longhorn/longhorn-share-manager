@@ -9,11 +9,12 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 
+	"github.com/longhorn/types/pkg/generated/smrpc"
 	"google.golang.org/grpc"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 
-	smrpc "github.com/longhorn/longhorn-share-manager/pkg/rpc"
+	"github.com/longhorn/longhorn-share-manager/pkg/rpc"
 	"github.com/longhorn/longhorn-share-manager/pkg/server"
 	"github.com/longhorn/longhorn-share-manager/pkg/util"
 	"github.com/longhorn/longhorn-share-manager/pkg/volume"
@@ -126,9 +127,9 @@ func start(vol volume.Volume) error {
 		}
 
 		s := grpc.NewServer()
-		srv := smrpc.NewShareManagerServer(manager)
+		srv := rpc.NewShareManagerServer(manager)
 		smrpc.RegisterShareManagerServiceServer(s, srv)
-		healthpb.RegisterHealthServer(s, smrpc.NewShareManagerHealthCheckServer(srv))
+		healthpb.RegisterHealthServer(s, rpc.NewShareManagerHealthCheckServer(srv))
 		reflection.Register(s)
 
 		logrus.Infof("Listening on share manager gRPC server %s", listenPort)
