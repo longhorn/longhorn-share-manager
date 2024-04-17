@@ -15,8 +15,6 @@ github.com/go-logr/logr/slogr
 ## explicit; go 1.12
 github.com/go-ole/go-ole
 github.com/go-ole/go-ole/oleutil
-# github.com/golang/protobuf v1.5.4
-## explicit; go 1.17
 # github.com/google/fscrypt v0.3.5
 ## explicit; go 1.18
 github.com/google/fscrypt/filesystem
@@ -35,6 +33,9 @@ github.com/longhorn/go-common-libs/sync
 github.com/longhorn/go-common-libs/sys
 github.com/longhorn/go-common-libs/types
 github.com/longhorn/go-common-libs/utils
+# github.com/longhorn/types v0.0.0-20240417064442-e7df610ea802
+## explicit; go 1.21
+github.com/longhorn/types/pkg/generated/smrpc
 # github.com/mitchellh/go-ps v1.0.0
 ## explicit; go 1.13
 github.com/mitchellh/go-ps
