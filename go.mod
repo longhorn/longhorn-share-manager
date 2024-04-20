@@ -1,8 +1,6 @@
 module github.com/longhorn/longhorn-share-manager
 
-go 1.22.0
-
-toolchain go1.22.2
+go 1.22.2
 
 replace (
 	k8s.io/api => k8s.io/api v0.29.4
