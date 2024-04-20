@@ -23,8 +23,8 @@ github.com/google/fscrypt/util
 # github.com/google/uuid v1.6.0
 ## explicit
 github.com/google/uuid
-# github.com/longhorn/go-common-libs v0.0.0-20240420070800-82cf6b3fac64
-## explicit; go 1.22.0
+# github.com/longhorn/go-common-libs v0.0.0-20240420123020-ed4ab0cfdbea
+## explicit; go 1.22.2
 github.com/longhorn/go-common-libs/exec
 github.com/longhorn/go-common-libs/io
 github.com/longhorn/go-common-libs/ns
