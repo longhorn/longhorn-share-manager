@@ -32,7 +32,7 @@ replace (
 
 require (
 	github.com/google/fscrypt v0.3.5
-	github.com/longhorn/go-common-libs v0.0.0-20240420070800-82cf6b3fac64
+	github.com/longhorn/go-common-libs v0.0.0-20240420123020-ed4ab0cfdbea
 	github.com/longhorn/types v0.0.0-20240417112740-a0d8514936b8
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
