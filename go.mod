@@ -1,6 +1,8 @@
 module github.com/longhorn/longhorn-share-manager
 
-go 1.21
+go 1.22.0
+
+toolchain go1.22.2
 
 // install the below required grpc/protobuf versions
 // https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
@@ -38,7 +40,7 @@ replace (
 require (
 	github.com/golang/protobuf v1.5.4
 	github.com/google/fscrypt v0.3.5
-	github.com/longhorn/go-common-libs v0.0.0-20240411093823-b8862efb8e03
+	github.com/longhorn/go-common-libs v0.0.0-20240420070800-82cf6b3fac64
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
@@ -47,14 +49,14 @@ require (
 	golang.org/x/sys v0.19.0
 	google.golang.org/grpc v1.63.2
 	k8s.io/kubernetes v1.28.5
-	k8s.io/mount-utils v0.29.4
+	k8s.io/mount-utils v0.30.0
 	k8s.io/utils v0.0.0-20240310230437-4693a0247e57
 )
 
 require (
 	github.com/c9s/goprocinfo v0.0.0-20210130143923-c95fcf8c64a8 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
-	github.com/go-logr/logr v1.3.0 // indirect
+	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/opencontainers/selinux v1.10.0 // indirect
@@ -65,5 +67,5 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
-	k8s.io/klog/v2 v2.110.1 // indirect
+	k8s.io/klog/v2 v2.120.1 // indirect
 )
