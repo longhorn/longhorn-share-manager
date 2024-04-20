@@ -68,7 +68,7 @@ github.com/urfave/cli
 # github.com/yusufpapurcu/wmi v1.2.4
 ## explicit; go 1.16
 github.com/yusufpapurcu/wmi
-# golang.org/x/net v0.23.0
+# golang.org/x/net v0.24.0
 ## explicit; go 1.18
 golang.org/x/net/context
 golang.org/x/net/http/httpguts
@@ -186,8 +186,8 @@ google.golang.org/protobuf/types/known/anypb
 google.golang.org/protobuf/types/known/durationpb
 google.golang.org/protobuf/types/known/emptypb
 google.golang.org/protobuf/types/known/timestamppb
-# k8s.io/apimachinery v0.0.0 => k8s.io/apimachinery v0.29.4
-## explicit; go 1.21
+# k8s.io/apimachinery v0.0.0 => k8s.io/apimachinery v0.30.0
+## explicit; go 1.22.0
 k8s.io/apimachinery/pkg/util/runtime
 k8s.io/apimachinery/pkg/util/wait
 # k8s.io/klog/v2 v2.120.1
@@ -199,12 +199,12 @@ k8s.io/klog/v2/internal/dbg
 k8s.io/klog/v2/internal/serialize
 k8s.io/klog/v2/internal/severity
 k8s.io/klog/v2/internal/sloghandler
-# k8s.io/kubernetes v1.29.4
-## explicit; go 1.21
+# k8s.io/kubernetes v1.30.0
+## explicit; go 1.22.0
 k8s.io/kubernetes/pkg/util/filesystem
 k8s.io/kubernetes/pkg/volume/util/hostutil
-# k8s.io/mount-utils v0.30.0 => k8s.io/mount-utils v0.29.4
-## explicit; go 1.21
+# k8s.io/mount-utils v0.30.0 => k8s.io/mount-utils v0.30.0
+## explicit; go 1.22.0
 k8s.io/mount-utils
 # k8s.io/utils v0.0.0-20240310230437-4693a0247e57
 ## explicit; go 1.18
@@ -213,28 +213,28 @@ k8s.io/utils/exec
 k8s.io/utils/io
 k8s.io/utils/keymutex
 k8s.io/utils/path
-# k8s.io/api => k8s.io/api v0.29.4
-# k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.29.4
-# k8s.io/apimachinery => k8s.io/apimachinery v0.29.4
-# k8s.io/apiserver => k8s.io/apiserver v0.29.4
-# k8s.io/cli-runtime => k8s.io/cli-runtime v0.29.4
-# k8s.io/client-go => k8s.io/client-go v0.29.4
-# k8s.io/cloud-provider => k8s.io/cloud-provider v0.29.4
-# k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.29.4
-# k8s.io/code-generator => k8s.io/code-generator v0.29.4
-# k8s.io/component-base => k8s.io/component-base v0.29.4
-# k8s.io/component-helpers => k8s.io/component-helpers v0.29.4
-# k8s.io/controller-manager => k8s.io/controller-manager v0.29.4
-# k8s.io/cri-api => k8s.io/cri-api v0.29.4
-# k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.29.4
-# k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.29.4
-# k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.29.4
-# k8s.io/kube-proxy => k8s.io/kube-proxy v0.29.4
-# k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.29.4
-# k8s.io/kubectl => k8s.io/kubectl v0.29.4
-# k8s.io/kubelet => k8s.io/kubelet v0.29.4
-# k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.29.4
-# k8s.io/metrics => k8s.io/metrics v0.29.4
-# k8s.io/mount-utils => k8s.io/mount-utils v0.29.4
-# k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.29.4
-# k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.29.4
+# k8s.io/api => k8s.io/api v0.30.0
+# k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.30.0
+# k8s.io/apimachinery => k8s.io/apimachinery v0.30.0
+# k8s.io/apiserver => k8s.io/apiserver v0.30.0
+# k8s.io/cli-runtime => k8s.io/cli-runtime v0.30.0
+# k8s.io/client-go => k8s.io/client-go v0.30.0
+# k8s.io/cloud-provider => k8s.io/cloud-provider v0.30.0
+# k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.30.0
+# k8s.io/code-generator => k8s.io/code-generator v0.30.0
+# k8s.io/component-base => k8s.io/component-base v0.30.0
+# k8s.io/component-helpers => k8s.io/component-helpers v0.30.0
+# k8s.io/controller-manager => k8s.io/controller-manager v0.30.0
+# k8s.io/cri-api => k8s.io/cri-api v0.30.0
+# k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.30.0
+# k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.30.0
+# k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.30.0
+# k8s.io/kube-proxy => k8s.io/kube-proxy v0.30.0
+# k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.30.0
+# k8s.io/kubectl => k8s.io/kubectl v0.30.0
+# k8s.io/kubelet => k8s.io/kubelet v0.30.0
+# k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.0
+# k8s.io/metrics => k8s.io/metrics v0.30.0
+# k8s.io/mount-utils => k8s.io/mount-utils v0.30.0
+# k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.30.0
+# k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.30.0
