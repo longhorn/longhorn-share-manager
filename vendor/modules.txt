@@ -22,8 +22,8 @@ github.com/google/fscrypt/util
 # github.com/google/uuid v1.6.0
 ## explicit
 github.com/google/uuid
-# github.com/longhorn/go-common-libs v0.0.0-20240420123020-ed4ab0cfdbea
-## explicit; go 1.22.2
+# github.com/longhorn/go-common-libs v0.0.0-20240426033718-77710d2242df
+## explicit; go 1.22
 github.com/longhorn/go-common-libs/exec
 github.com/longhorn/go-common-libs/io
 github.com/longhorn/go-common-libs/ns
@@ -32,7 +32,7 @@ github.com/longhorn/go-common-libs/sync
 github.com/longhorn/go-common-libs/sys
 github.com/longhorn/go-common-libs/types
 github.com/longhorn/go-common-libs/utils
-# github.com/longhorn/types v0.0.0-20240417112740-a0d8514936b8
+# github.com/longhorn/types v0.0.0-20240424162824-4995e1e42438
 ## explicit; go 1.21
 github.com/longhorn/types/pkg/generated/smrpc
 # github.com/mitchellh/go-ps v1.0.0
@@ -206,7 +206,7 @@ k8s.io/kubernetes/pkg/volume/util/hostutil
 # k8s.io/mount-utils v0.30.0 => k8s.io/mount-utils v0.30.0
 ## explicit; go 1.22.0
 k8s.io/mount-utils
-# k8s.io/utils v0.0.0-20240310230437-4693a0247e57
+# k8s.io/utils v0.0.0-20240423183400-0849a56e8f22
 ## explicit; go 1.18
 k8s.io/utils/clock
 k8s.io/utils/exec
