@@ -38,12 +38,16 @@ github.com/longhorn/go-common-libs v0.0.0-20240420123020-ed4ab0cfdbea h1:v0bayAU
 github.com/longhorn/go-common-libs v0.0.0-20240420123020-ed4ab0cfdbea/go.mod h1:3V1ZXTenmy7nCaQ555gtvp785fur1jK+seQ5gTUCEcI=
 github.com/longhorn/go-common-libs v0.0.0-20240426033718-77710d2242df h1:q2a/IL7zoPkYxIMsz46E6uWDamu9z4k+h/4u4pHsdqE=
 github.com/longhorn/go-common-libs v0.0.0-20240426033718-77710d2242df/go.mod h1:qppGSy9WsxH1C9T6yhSMvG53ynpasyKOH/n9e1jr8mw=
+github.com/longhorn/go-common-libs v0.0.0-20240427164621-70d1933bfa90 h1:uBVee6AulPsgSvsvaxdj4xIdgkIvjIqA0j7ZD+Hg/Mc=
+github.com/longhorn/go-common-libs v0.0.0-20240427164621-70d1933bfa90/go.mod h1:qppGSy9WsxH1C9T6yhSMvG53ynpasyKOH/n9e1jr8mw=
 github.com/longhorn/types v0.0.0-20240417064442-e7df610ea802 h1:evjIqn8Ta4toYsdcfvUBXOyV64ZEo72CYe+Vfd+3STQ=
 github.com/longhorn/types v0.0.0-20240417064442-e7df610ea802/go.mod h1:pqT+7B8T+nkyUZYe8tL3CwPDCHjkbe3mHUDY5ntJFyQ=
 github.com/longhorn/types v0.0.0-20240417112740-a0d8514936b8 h1:M9TQLN379VNN3JsuLuKHDRIy/11jYeIuxYLFuekjcPw=
 github.com/longhorn/types v0.0.0-20240417112740-a0d8514936b8/go.mod h1:pqT+7B8T+nkyUZYe8tL3CwPDCHjkbe3mHUDY5ntJFyQ=
 github.com/longhorn/types v0.0.0-20240424162824-4995e1e42438 h1:nSuJa62e6F9YsP06Js4jnKr0AsvEMGwBRLm9fXTlmns=
 github.com/longhorn/types v0.0.0-20240424162824-4995e1e42438/go.mod h1:pqT+7B8T+nkyUZYe8tL3CwPDCHjkbe3mHUDY5ntJFyQ=
+github.com/longhorn/types v0.0.0-20240427164854-38dbed8528d3 h1:7YDGJTwro/kCcMmnCWM1UIL4JgervR6MT++71PvcbGY=
+github.com/longhorn/types v0.0.0-20240427164854-38dbed8528d3/go.mod h1:pqT+7B8T+nkyUZYe8tL3CwPDCHjkbe3mHUDY5ntJFyQ=
 github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0/go.mod h1:zJYVVT2jmtg6P3p1VtQj7WsuWi/y4VnjVBn7F8KPB3I=
 github.com/mitchellh/go-ps v1.0.0 h1:i6ampVEEF4wQFF+bkYfwYgY+F/uYJDktmvLPf7qIgjc=
 github.com/mitchellh/go-ps v1.0.0/go.mod h1:J4lOc8z8yJs6vUwklHw2XEIiT4z4C40KtWVN3nvg8Pg=
