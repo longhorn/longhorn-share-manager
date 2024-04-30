@@ -3,12 +3,15 @@ set -e
 
 source $(dirname $0)/version
 
+LINKFLAGS="-X main.Version=$VERSION
+           -X main.GitCommit=$GITCOMMIT
+           -X main.BuildDate=$BUILDDATE
+           -extldflags -static -s"
+
 cd $(dirname $0)/..
 
 mkdir -p bin
-go build -ldflags \
-	"-X main.Version=$VERSION \
-	-X main.GitCommit=$GITCOMMIT \
-	-X main.BuildDate=$BUILDDATE \
-	-linkmode external -extldflags -static" \
-	-o bin/longhorn-share-manager
+archs=("amd64" "arm64")
+for arch in "${archs[@]}"; do
+    CGO_ENABLED=0 GOARCH="$arch" go build -o "bin/longhorn-share-manager-$arch" -ldflags "$LINKFLAGS"
+done

@@ -1,6 +1,6 @@
-FROM registry.suse.com/bci/bci-base:15.5 AS build
+# syntax=docker/dockerfile:1.7.1
 
-ARG ARCH=amd64
+FROM registry.suse.com/bci/bci-base:15.5 AS build
 
 RUN zypper -n ref && \
     zypper update -y
@@ -44,6 +44,13 @@ RUN mkdir -p /ganesha-extra \
 
 FROM registry.suse.com/bci/bci-base:15.5
 
+ARG TARGETPLATFORM
+RUN if [ "$TARGETPLATFORM" != "linux/amd64" ] && [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
+    echo "Error: Unsupported TARGETPLATFORM: $TARGETPLATFORM" && \
+    exit 1; \
+    fi
+ENV ARCH ${TARGETPLATFORM#linux/}
+
 RUN zypper addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/SLE_15/ snappy && \
     zypper --gpg-auto-import-keys ref
 
@@ -64,7 +71,7 @@ RUN ln -sf /proc/self/mounts /etc/mtab
 
 COPY --from=build /usr/local /usr/local/
 COPY --from=build /ganesha-extra /
-COPY bin/longhorn-share-manager /longhorn-share-manager
+COPY package/bin/longhorn-share-manager-${ARCH} /longhorn-share-manager
 
 # run ldconfig after libs have been copied
 RUN ldconfig

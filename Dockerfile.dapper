@@ -1,6 +1,6 @@
 FROM registry.suse.com/bci/bci-base:15.5
 
-ARG DAPPER_HOST_ARCH=amd64
+ARG DAPPER_HOST_ARCH
 ARG http_proxy
 ARG https_proxy
 ENV HOST_ARCH=${DAPPER_HOST_ARCH} ARCH=${DAPPER_HOST_ARCH}
@@ -65,6 +65,11 @@ RUN cd /go/src/github.com/ && \
     cd protoc-gen-go && \
     go build && \
     cp protoc-gen-go /usr/local/bin
+
+# The docker version in dapper is too old to have buildx. Install it manually.
+RUN wget https://github.com/docker/buildx/releases/download/v0.13.1/buildx-v0.13.1.linux-${ARCH} && \
+    chmod +x buildx-v0.13.1.linux-${ARCH} && \
+    mv buildx-v0.13.1.linux-${ARCH} /usr/local/bin/buildx
 
 VOLUME /tmp
 ENV TMPDIR /tmp
