@@ -7,24 +7,11 @@ cd $(dirname $0)/..
 
 PROJECT=`basename "$PWD"`
 
-case $(uname -m) in
-  aarch64 | arm64)
-    ARCH=arm64
-    ;;
-  x86_64)
-    ARCH=amd64
-    ;;
-  s390x)
-    ARCH=s390x
-    ;;
-  *)
-    echo "$(uname -a): unsupported architecture"
-    exit 1
-esac
-
 if [ ! -x ./bin/longhorn ]; then
     ./scripts/build
 fi
+
+cp -r bin package/
 
 APIVERSION=`./bin/longhorn-share-manager version --client-only|jq ".clientVersion.apiVersion"`
 TAG=${TAG:-"v${APIVERSION}_`date -u +%Y%m%d`"}
@@ -35,7 +22,7 @@ IMAGE=${REPO}/${PROJECT}:${TAG}
 BASE_IMAGE=`grep FROM package/Dockerfile | grep -v AS | awk '{print $2}'`
 docker pull ${BASE_IMAGE}
 
-docker build --build-arg ARCH=${ARCH} -t ${IMAGE} -f package/Dockerfile .
+buildx build --load -t ${IMAGE} -f package/Dockerfile .
 
 echo Built ${IMAGE}
 
