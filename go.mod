@@ -46,7 +46,7 @@ replace (
 
 require (
 	github.com/google/fscrypt v0.3.5
-	github.com/longhorn/go-common-libs v0.0.0-20240427164621-70d1933bfa90
+	github.com/longhorn/go-common-libs v0.0.0-20240501153456-f7a5b1a1edb0
 	github.com/longhorn/types v0.0.0-20240427164854-38dbed8528d3
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
@@ -58,7 +58,7 @@ require (
 	google.golang.org/protobuf v1.34.0
 	k8s.io/kubernetes v1.30.0
 	k8s.io/mount-utils v0.30.0
-	k8s.io/utils v0.0.0-20240423183400-0849a56e8f22
+	k8s.io/utils v0.0.0-20240502163921-fe8a2dddb1d0
 )
 
 require (
