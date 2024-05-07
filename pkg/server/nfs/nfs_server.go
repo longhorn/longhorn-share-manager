@@ -45,8 +45,8 @@ LOG {
 
 NFSV4
 {
-    Lease_Lifetime = 60;
-    Grace_Period = 90;
+    Lease_Lifetime = {{.LeaseLifetime}};
+    Grace_Period = {{.GracePeriod}};
     Minor_Versions = 1, 2;
     RecoveryBackend = longhorn;
     Only_Numeric_Owners = true;
@@ -84,13 +84,13 @@ type Server struct {
 	exporter   *Exporter
 }
 
-func NewServer(logger logrus.FieldLogger, configPath, exportPath, volume string) (*Server, error) {
+func NewServer(logger logrus.FieldLogger, configPath, exportPath, volume string, leaseLifetime int, gracePeriod int) (*Server, error) {
 	if err := setRlimitNOFILE(logger); err != nil {
 		logger.WithError(err).Warn("Error setting RLIMIT_NOFILE, there may be 'Too many open files' errors later")
 	}
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		if err = os.WriteFile(configPath, getUpdatedGaneshConfig(defaultConfig), 0600); err != nil {
+		if err = os.WriteFile(configPath, getUpdatedGaneshConfig(defaultConfig, leaseLifetime, gracePeriod), 0600); err != nil {
 			return nil, errors.Wrapf(err, "error writing nfs config %s", configPath)
 		}
 	}
@@ -145,7 +145,7 @@ func setRlimitNOFILE(logger logrus.FieldLogger) error {
 	return nil
 }
 
-func getUpdatedGaneshConfig(config []byte) []byte {
+func getUpdatedGaneshConfig(config []byte, leaseLifetime int, gracePeriod int) []byte {
 	var (
 		tmplBuf bytes.Buffer
 		logPath string
@@ -158,9 +158,13 @@ func getUpdatedGaneshConfig(config []byte) []byte {
 	}
 
 	tmplVals := struct {
-		LogPath string
+		LogPath       string
+		LeaseLifetime int
+		GracePeriod   int
 	}{
-		LogPath: logPath,
+		LogPath:       logPath,
+		LeaseLifetime: leaseLifetime,
+		GracePeriod:   gracePeriod,
 	}
 
 	if err := template.Must(template.New("Ganesha_Config").Parse(string(config))).Execute(&tmplBuf, tmplVals); err != nil {
