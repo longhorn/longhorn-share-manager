@@ -12,7 +12,9 @@ import (
 
 	coordinationv1 "k8s.io/api/coordination/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
 	coordinationv1client "k8s.io/client-go/kubernetes/typed/coordination/v1"
+	"k8s.io/client-go/rest"
 	mount "k8s.io/mount-utils"
 
 	"github.com/longhorn/longhorn-share-manager/pkg/crypto"
@@ -28,6 +30,7 @@ const leaseRenewInterval = time.Second * 3
 const healthCheckInterval = time.Second * 10
 const configPath = "/tmp/vfs.conf"
 const namespace = "longhorn-system"
+const shareManagerPrefix = "share-manager-"
 
 const (
 	UnhealthyErr = "UNHEALTHY: volume with mount path %v is unhealthy"
@@ -43,6 +46,7 @@ type ShareManager struct {
 	context  context.Context
 	shutdown context.CancelFunc
 
+	leaseHolder string
 	leaseClient coordinationv1client.LeasesGetter
 	lease       *coordinationv1.Lease
 
@@ -55,6 +59,11 @@ func NewShareManager(logger logrus.FieldLogger, volume volume.Volume) (*ShareMan
 		logger: logger.WithField("volume", volume.Name).WithField("encrypted", volume.IsEncrypted()),
 	}
 	m.context, m.shutdown = context.WithCancel(context.Background())
+
+	err := m.makeLeaseClient()
+	if err != nil {
+		m.logger.WithError(err).Warn("Failed to make lease client - no lease renewal will be done")
+	}
 
 	nfsServer, err := nfs.NewServer(logger, configPath, types.ExportPath, volume.Name)
 	if err != nil {
@@ -231,7 +240,38 @@ func (m *ShareManager) resizeVolume(devicePath, mountPath string) error {
 	return nil
 }
 
+func (m *ShareManager) makeLeaseClient() error {
+	cfg, err := rest.InClusterConfig()
+	if err != nil {
+		m.logger.WithError(err).Warn("Failed to create InClusterConfig")
+		return err
+	}
+
+	clientset, err := kubernetes.NewForConfig(cfg)
+	if err != nil {
+		m.logger.WithError(err).Warn("Failed to create kubernetes client set")
+		return err
+	}
+
+	// Use the clientset to get the node name of the share-manager pod
+	// and store for use by takeLease().
+	podName := shareManagerPrefix + m.volume.Name
+	pod, err := clientset.CoreV1().Pods(namespace).Get(m.context, podName, metav1.GetOptions{})
+	if err == nil && pod != nil {
+		m.leaseHolder = pod.Spec.NodeName
+	} else {
+		m.leaseHolder = podName
+	}
+
+	m.leaseClient = clientset.CoordinationV1()
+	return nil
+}
+
 func (m *ShareManager) getLease() error {
+	if m.leaseClient == nil {
+		return fmt.Errorf("kubernetes API client is unset")
+	}
+
 	lease, err := m.leaseClient.Leases(namespace).Get(m.context, m.volume.Name, metav1.GetOptions{})
 	if err != nil {
 		return err
@@ -242,12 +282,8 @@ func (m *ShareManager) getLease() error {
 
 func (m *ShareManager) takeLease() error {
 	now := time.Now()
-	out, err := exec.Command("bash", "-c", "uname -n").Output()
-	if err != nil {
-		return err
-	}
 
-	*m.lease.Spec.HolderIdentity = string(out)
+	*m.lease.Spec.HolderIdentity = m.leaseHolder
 	*m.lease.Spec.LeaseTransitions = *m.lease.Spec.LeaseTransitions + 1
 	m.lease.Spec.AcquireTime = &metav1.MicroTime{Time: now}
 	m.lease.Spec.RenewTime = &metav1.MicroTime{Time: now}
