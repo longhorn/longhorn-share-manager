@@ -283,6 +283,11 @@ func (m *ShareManager) getLease() error {
 func (m *ShareManager) takeLease() error {
 	now := time.Now()
 
+	currentHolder := *m.lease.Spec.HolderIdentity
+	if currentHolder != "" {
+		m.logger.Warn("Lease holderIdentity was not cleared - replacing %v with %v", currentHolder, m.leaseHolder)
+	}
+
 	*m.lease.Spec.HolderIdentity = m.leaseHolder
 	*m.lease.Spec.LeaseTransitions = *m.lease.Spec.LeaseTransitions + 1
 	m.lease.Spec.AcquireTime = &metav1.MicroTime{Time: now}
