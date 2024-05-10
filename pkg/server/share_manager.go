@@ -298,6 +298,7 @@ func (m *ShareManager) takeLease() error {
 		return err
 	}
 	m.lease = lease
+	m.logger.Infof("Took lease for volume %v as holder %v", m.volume.Name, m.leaseHolder)
 	return nil
 }
 
@@ -322,7 +323,6 @@ func (m *ShareManager) runLeaseRenew() {
 			m.logger.Info("NFS lease renewal is ending")
 			return
 		case <-ticker.C:
-			m.logger.Info("NFS lease renewal")
 			if err := m.renewLease(); err != nil {
 				m.logger.Warn("Failed to renew share-manager lease - expect to be terminated.")
 			}
