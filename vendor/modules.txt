@@ -32,7 +32,7 @@ github.com/longhorn/go-common-libs/sync
 github.com/longhorn/go-common-libs/sys
 github.com/longhorn/go-common-libs/types
 github.com/longhorn/go-common-libs/utils
-# github.com/longhorn/types v0.0.0-20240427164854-38dbed8528d3
+# github.com/longhorn/types v0.0.0-20240510221052-ab949bbedea3
 ## explicit; go 1.21
 github.com/longhorn/types/pkg/generated/smrpc
 # github.com/mitchellh/go-ps v1.0.0
@@ -148,7 +148,7 @@ google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
-# google.golang.org/protobuf v1.34.0
+# google.golang.org/protobuf v1.34.1
 ## explicit; go 1.17
 google.golang.org/protobuf/encoding/protojson
 google.golang.org/protobuf/encoding/prototext
