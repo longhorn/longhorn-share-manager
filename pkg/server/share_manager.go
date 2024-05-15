@@ -285,7 +285,7 @@ func (m *ShareManager) takeLease() error {
 
 	currentHolder := *m.lease.Spec.HolderIdentity
 	if currentHolder != "" {
-		m.logger.Warn("Lease holderIdentity was not cleared - replacing %v with %v", currentHolder, m.leaseHolder)
+		m.logger.Warnf("Lease holderIdentity was not cleared - replacing %v with %v", currentHolder, m.leaseHolder)
 	}
 
 	*m.lease.Spec.HolderIdentity = m.leaseHolder
