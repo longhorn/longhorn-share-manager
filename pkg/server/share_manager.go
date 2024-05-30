@@ -9,6 +9,12 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+
+	coordinationv1 "k8s.io/api/coordination/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	coordinationv1client "k8s.io/client-go/kubernetes/typed/coordination/v1"
+	"k8s.io/client-go/rest"
 	mount "k8s.io/mount-utils"
 
 	"github.com/longhorn/longhorn-share-manager/pkg/crypto"
@@ -20,8 +26,11 @@ import (
 )
 
 const waitBetweenChecks = time.Second * 5
+const leaseRenewInterval = time.Second * 3
 const healthCheckInterval = time.Second * 10
 const configPath = "/tmp/vfs.conf"
+const namespace = "longhorn-system"
+const shareManagerPrefix = "share-manager-"
 
 const (
 	UnhealthyErr = "UNHEALTHY: volume with mount path %v is unhealthy"
@@ -37,6 +46,10 @@ type ShareManager struct {
 	context  context.Context
 	shutdown context.CancelFunc
 
+	leaseHolder string
+	leaseClient coordinationv1client.LeasesGetter
+	lease       *coordinationv1.Lease
+
 	nfsServer *nfs.Server
 }
 
@@ -46,6 +59,11 @@ func NewShareManager(logger logrus.FieldLogger, volume volume.Volume) (*ShareMan
 		logger: logger.WithField("volume", volume.Name).WithField("encrypted", volume.IsEncrypted()),
 	}
 	m.context, m.shutdown = context.WithCancel(context.Background())
+
+	err := m.makeLeaseClient()
+	if err != nil {
+		m.logger.WithError(err).Warn("Failed to make lease client - no lease renewal will be done")
+	}
 
 	nfsServer, err := nfs.NewServer(logger, configPath, types.ExportPath, volume.Name)
 	if err != nil {
@@ -105,6 +123,18 @@ func (m *ShareManager) Run() error {
 			}
 
 			m.logger.Info("Starting nfs server, volume is ready for export")
+
+			if err := m.getLease(); err != nil {
+				m.logger.WithError(err).Warn("Failed to get lease - no lease renewal will be done")
+			} else {
+				m.logger.Info("Found lease")
+				if err = m.takeLease(); err != nil {
+					m.logger.WithError(err).Warn("Failed to take lease - no lease renewal will be done.")
+				} else {
+					go m.runLeaseRenew()
+				}
+			}
+
 			go m.runHealthCheck()
 
 			if _, err := m.nfsServer.CreateExport(vol.Name); err != nil {
@@ -114,7 +144,7 @@ func (m *ShareManager) Run() error {
 
 			m.SetShareExported(true)
 
-			// This blocks until server exist
+			// This blocks until server exits
 			if err := m.nfsServer.Run(m.context); err != nil {
 				m.logger.WithError(err).Error("NFS server exited with error")
 			}
@@ -208,6 +238,96 @@ func (m *ShareManager) resizeVolume(devicePath, mountPath string) error {
 	}
 
 	return nil
+}
+
+func (m *ShareManager) makeLeaseClient() error {
+	cfg, err := rest.InClusterConfig()
+	if err != nil {
+		m.logger.WithError(err).Warn("Failed to create InClusterConfig")
+		return err
+	}
+
+	clientset, err := kubernetes.NewForConfig(cfg)
+	if err != nil {
+		m.logger.WithError(err).Warn("Failed to create kubernetes client set")
+		return err
+	}
+
+	// Use the clientset to get the node name of the share-manager pod
+	// and store for use by takeLease().
+	podName := shareManagerPrefix + m.volume.Name
+	pod, err := clientset.CoreV1().Pods(namespace).Get(m.context, podName, metav1.GetOptions{})
+	if err == nil && pod != nil {
+		m.leaseHolder = pod.Spec.NodeName
+	} else {
+		m.leaseHolder = podName
+	}
+
+	m.leaseClient = clientset.CoordinationV1()
+	return nil
+}
+
+func (m *ShareManager) getLease() error {
+	if m.leaseClient == nil {
+		return fmt.Errorf("kubernetes API client is unset")
+	}
+
+	lease, err := m.leaseClient.Leases(namespace).Get(m.context, m.volume.Name, metav1.GetOptions{})
+	if err != nil {
+		return err
+	}
+	m.lease = lease
+	return nil
+}
+
+func (m *ShareManager) takeLease() error {
+	now := time.Now()
+
+	currentHolder := *m.lease.Spec.HolderIdentity
+	if currentHolder != "" {
+		m.logger.Warnf("Lease holderIdentity was not cleared - replacing %v with %v", currentHolder, m.leaseHolder)
+	}
+
+	*m.lease.Spec.HolderIdentity = m.leaseHolder
+	*m.lease.Spec.LeaseTransitions = *m.lease.Spec.LeaseTransitions + 1
+	m.lease.Spec.AcquireTime = &metav1.MicroTime{Time: now}
+	m.lease.Spec.RenewTime = &metav1.MicroTime{Time: now}
+
+	lease, err := m.leaseClient.Leases(namespace).Update(m.context, m.lease, metav1.UpdateOptions{})
+	if err != nil {
+		return err
+	}
+	m.lease = lease
+	m.logger.Infof("Took lease for volume %v as holder %v", m.volume.Name, m.leaseHolder)
+	return nil
+}
+
+func (m *ShareManager) renewLease() error {
+	m.lease.Spec.RenewTime = &metav1.MicroTime{Time: time.Now()}
+	lease, err := m.leaseClient.Leases(namespace).Update(m.context, m.lease, metav1.UpdateOptions{})
+	if err != nil {
+		return err
+	}
+	m.lease = lease
+	return nil
+}
+
+func (m *ShareManager) runLeaseRenew() {
+	m.logger.Infof("Starting lease renewal for volume mounted at: %v", types.GetMountPath(m.volume.Name))
+	ticker := time.NewTicker(leaseRenewInterval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-m.context.Done():
+			m.logger.Info("NFS lease renewal is ending")
+			return
+		case <-ticker.C:
+			if err := m.renewLease(); err != nil {
+				m.logger.Warn("Failed to renew share-manager lease - expect to be terminated.")
+			}
+		}
+	}
 }
 
 func (m *ShareManager) runHealthCheck() {
