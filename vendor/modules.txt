@@ -22,7 +22,7 @@ github.com/google/fscrypt/util
 # github.com/google/uuid v1.6.0
 ## explicit
 github.com/google/uuid
-# github.com/longhorn/go-common-libs v0.0.0-20240514074907-351459694cbf
+# github.com/longhorn/go-common-libs v0.0.0-20240605094403-68743dacbcb1
 ## explicit; go 1.22.0
 github.com/longhorn/go-common-libs/exec
 github.com/longhorn/go-common-libs/io
@@ -32,7 +32,7 @@ github.com/longhorn/go-common-libs/sync
 github.com/longhorn/go-common-libs/sys
 github.com/longhorn/go-common-libs/types
 github.com/longhorn/go-common-libs/utils
-# github.com/longhorn/types v0.0.0-20240510221052-ab949bbedea3
+# github.com/longhorn/types v0.0.0-20240605091135-ef450e1c04cd
 ## explicit; go 1.21
 github.com/longhorn/types/pkg/generated/smrpc
 # github.com/mitchellh/go-ps v1.0.0
