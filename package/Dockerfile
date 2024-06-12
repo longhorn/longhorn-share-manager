@@ -1,6 +1,6 @@
-# syntax=docker/dockerfile:1.7.1
+# syntax=docker/dockerfile:1.8.0
 
-FROM registry.suse.com/bci/bci-base:15.5 AS build
+FROM registry.suse.com/bci/bci-base:15.6 AS build
 
 RUN zypper -n ref && \
     zypper update -y
@@ -42,7 +42,7 @@ RUN mkdir -p /ganesha-extra \
     && mkdir -p /ganesha-extra/etc/dbus-1/system.d \
     && cp src/scripts/ganeshactl/org.ganesha.nfsd.conf /ganesha-extra/etc/dbus-1/system.d/
 
-FROM registry.suse.com/bci/bci-base:15.5
+FROM registry.suse.com/bci/bci-base:15.6
 
 ARG TARGETPLATFORM
 RUN if [ "$TARGETPLATFORM" != "linux/amd64" ] && [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
