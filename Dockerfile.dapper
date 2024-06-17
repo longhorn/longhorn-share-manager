@@ -1,17 +1,8 @@
-<<<<<<< HEAD
-FROM registry.suse.com/bci/bci-base:15.5
-=======
 FROM registry.suse.com/bci/golang:1.22
->>>>>>> 3835404 (ci: use golang bci instead of manual download)
 
 ARG DAPPER_HOST_ARCH
 ARG http_proxy
 ARG https_proxy
-<<<<<<< HEAD
-ENV HOST_ARCH=${DAPPER_HOST_ARCH} ARCH=${DAPPER_HOST_ARCH}
-ENV PROTOBUF_VER=3.18.0
-=======
->>>>>>> 3835404 (ci: use golang bci instead of manual download)
 
 ENV HOST_ARCH=${DAPPER_HOST_ARCH} ARCH=${DAPPER_HOST_ARCH}
 ENV PATH /go/bin:$PATH
@@ -35,53 +26,7 @@ RUN zypper -n install cmake wget curl git less file libkmod2 libnl3-devel linux-
 # Install golangci-lint
 RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /go/bin v1.55.2
 
-<<<<<<< HEAD
-RUN if [ ${ARCH} == "s390x" ]; then \
-        ln -s /usr/bin/gcc /usr/bin/s390x-linux-gnu-gcc;\
-    fi
-    
-# Install Go & tools
-ENV GOLANG_ARCH_amd64=amd64 GOLANG_ARCH_arm64=arm64 GOLANG_ARCH_s390x=s390x GOLANG_ARCH=GOLANG_ARCH_${ARCH} \
-    GOPATH=/go PATH=/go/bin:/usr/local/go/bin:${PATH} SHELL=/bin/bash
-RUN wget -O - https://storage.googleapis.com/golang/go1.21.3.linux-${!GOLANG_ARCH}.tar.gz | tar -xzf - -C /usr/local && \
-    go install golang.org/x/lint/golint@latest
-
-# GRPC dependencies
-# GRPC health probe
-ENV GRPC_HEALTH_PROBE_amd64=https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.3.2/grpc_health_probe-linux-amd64 \
-    GRPC_HEALTH_PROBE_arm64=https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.3.2/grpc_health_probe-linux-arm64 \
-    GRPC_HEALTH_PROBE_s390x=https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.3.2/grpc_health_probe-linux-s390x \
-		GRPC_HEALTH_PROBE=GRPC_HEALTH_PROBE_${ARCH}
-
-RUN wget ${!GRPC_HEALTH_PROBE} -O /usr/local/bin/grpc_health_probe && \
-    chmod +x /usr/local/bin/grpc_health_probe
-
-# protoc
-ENV PROTOC_amd64=https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOBUF_VER}/protoc-${PROTOBUF_VER}-linux-x86_64.zip \
-	PROTOC_arm64=https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOBUF_VER}/protoc-${PROTOBUF_VER}-linux-aarch_64.zip \
-	PROTOC_s390x=https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOBUF_VER}/protoc-${PROTOBUF_VER}-linux-s390_64.zip \
-		PROTOC=PROTOC_${ARCH}
-
-RUN cd /usr/src && \
-	wget ${!PROTOC} -O protoc_${ARCH}.zip && \
-    unzip protoc_${ARCH}.zip -d /usr/local/
-
-# protoc-gen-go
-RUN cd /go/src/github.com/ && \
-    mkdir golang/ && \
-    cd golang && \
-    git clone https://github.com/golang/protobuf.git && \
-    cd protobuf && \
-    git checkout v1.3.2 && \
-    cd protoc-gen-go && \
-    go build && \
-    cp protoc-gen-go /usr/local/bin
-
-# The docker version in dapper is too old to have buildx. Install it manually.
-RUN wget https://github.com/docker/buildx/releases/download/v0.13.1/buildx-v0.13.1.linux-${ARCH} && \
-=======
 # Install docker buildx: The docker version in dapper is too old to have buildx. Install it manually.
 RUN curl -sSfLO https://github.com/docker/buildx/releases/download/v0.13.1/buildx-v0.13.1.linux-${ARCH} && \
->>>>>>> 3835404 (ci: use golang bci instead of manual download)
     chmod +x buildx-v0.13.1.linux-${ARCH} && \
     mv buildx-v0.13.1.linux-${ARCH} /usr/local/bin/buildx
