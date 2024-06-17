@@ -1,19 +1,29 @@
+<<<<<<< HEAD
 FROM registry.suse.com/bci/bci-base:15.5
+=======
+FROM registry.suse.com/bci/golang:1.22
+>>>>>>> 3835404 (ci: use golang bci instead of manual download)
 
 ARG DAPPER_HOST_ARCH
 ARG http_proxy
 ARG https_proxy
+<<<<<<< HEAD
 ENV HOST_ARCH=${DAPPER_HOST_ARCH} ARCH=${DAPPER_HOST_ARCH}
 ENV PROTOBUF_VER=3.18.0
+=======
+>>>>>>> 3835404 (ci: use golang bci instead of manual download)
 
-# Setup environment
+ENV HOST_ARCH=${DAPPER_HOST_ARCH} ARCH=${DAPPER_HOST_ARCH}
 ENV PATH /go/bin:$PATH
 ENV DAPPER_DOCKER_SOCKET true
 ENV DAPPER_ENV TAG REPO
 ENV DAPPER_OUTPUT bin coverage.out
 ENV DAPPER_RUN_ARGS --privileged -v /dev:/host/dev -v /proc:/host/proc
 ENV DAPPER_SOURCE /go/src/github.com/longhorn/longhorn-share-manager
+
 WORKDIR ${DAPPER_SOURCE}
+ENTRYPOINT ["./scripts/entry"]
+CMD ["ci"]
 
 RUN zypper -n addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/SLE_15/ snappy && \
     zypper --gpg-auto-import-keys ref
@@ -22,9 +32,10 @@ RUN zypper -n addrepo --refresh https://download.opensuse.org/repositories/syste
 RUN zypper -n install cmake wget curl git less file libkmod2 libnl3-devel linux-glibc-devel pkg-config psmisc python3-tox qemu-tools fuse python3 bash-completion librdmacm1 libibverbs libaio-devel glibc iptables libltdl7 libdevmapper1_03 iproute2 jq tar unzip gcc linux-glibc-devel glibc-devel-static glibc-devel awk docker && \
     rm -rf /var/cache/zypp/*
 
-# needed for ${!var} substitution
-RUN rm -f /bin/sh && ln -s /bin/bash /bin/sh
+# Install golangci-lint
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /go/bin v1.55.2
 
+<<<<<<< HEAD
 RUN if [ ${ARCH} == "s390x" ]; then \
         ln -s /usr/bin/gcc /usr/bin/s390x-linux-gnu-gcc;\
     fi
@@ -68,10 +79,9 @@ RUN cd /go/src/github.com/ && \
 
 # The docker version in dapper is too old to have buildx. Install it manually.
 RUN wget https://github.com/docker/buildx/releases/download/v0.13.1/buildx-v0.13.1.linux-${ARCH} && \
+=======
+# Install docker buildx: The docker version in dapper is too old to have buildx. Install it manually.
+RUN curl -sSfLO https://github.com/docker/buildx/releases/download/v0.13.1/buildx-v0.13.1.linux-${ARCH} && \
+>>>>>>> 3835404 (ci: use golang bci instead of manual download)
     chmod +x buildx-v0.13.1.linux-${ARCH} && \
     mv buildx-v0.13.1.linux-${ARCH} /usr/local/bin/buildx
-
-VOLUME /tmp
-ENV TMPDIR /tmp
-ENTRYPOINT ["./scripts/entry"]
-CMD ["ci"]
