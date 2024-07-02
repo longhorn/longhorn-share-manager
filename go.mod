@@ -52,12 +52,12 @@ replace (
 require (
 	github.com/golang/protobuf v1.5.4
 	github.com/google/fscrypt v0.3.5
-	github.com/longhorn/go-common-libs v0.0.0-20240616051056-103c7d62a0d5
+	github.com/longhorn/go-common-libs v0.0.0-20240702014532-ad3e7f0caf5c
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli v1.22.15
-	golang.org/x/net v0.22.0
+	golang.org/x/net v0.23.0
 	golang.org/x/sys v0.21.0
 	google.golang.org/grpc v1.64.0
 	k8s.io/kubernetes v1.28.5
