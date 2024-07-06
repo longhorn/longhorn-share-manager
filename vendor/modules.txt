@@ -67,7 +67,7 @@ github.com/josharian/intern
 # github.com/json-iterator/go v1.1.12
 ## explicit; go 1.12
 github.com/json-iterator/go
-# github.com/longhorn/go-common-libs v0.0.0-20240627075631-d78642cff5e1
+# github.com/longhorn/go-common-libs v0.0.0-20240702014532-ad3e7f0caf5c
 ## explicit; go 1.22.0
 github.com/longhorn/go-common-libs/exec
 github.com/longhorn/go-common-libs/io
@@ -78,7 +78,7 @@ github.com/longhorn/go-common-libs/sync
 github.com/longhorn/go-common-libs/sys
 github.com/longhorn/go-common-libs/types
 github.com/longhorn/go-common-libs/utils
-# github.com/longhorn/types v0.0.0-20240624083620-f11ba48bf396
+# github.com/longhorn/types v0.0.0-20240704070509-4b97f699508e
 ## explicit; go 1.21
 github.com/longhorn/types/pkg/generated/smrpc
 # github.com/mailru/easyjson v0.7.7
