@@ -46,7 +46,7 @@ replace (
 
 require (
 	github.com/google/fscrypt v0.3.5
-	github.com/longhorn/go-common-libs v0.0.0-20240718091042-aff867b55212
+	github.com/longhorn/go-common-libs v0.0.0-20240720044518-32fc527fe868
 	github.com/longhorn/types v0.0.0-20240706151541-33cb010c3544
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
@@ -99,7 +99,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/api v0.30.3 // indirect
 	k8s.io/apimachinery v0.30.3 // indirect
-	k8s.io/client-go v0.30.2 // indirect
+	k8s.io/client-go v0.30.3 // indirect
 	k8s.io/klog/v2 v2.120.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20240228011516-70dd3763d340 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
