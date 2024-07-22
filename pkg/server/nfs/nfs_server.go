@@ -84,7 +84,7 @@ type Server struct {
 	exporter   *Exporter
 }
 
-func NewServer(logger logrus.FieldLogger, configPath, exportPath, volume string, leaseLifetime int, gracePeriod int) (*Server, error) {
+func NewServer(logger logrus.FieldLogger, configPath, exportPath, volume string, leaseLifetime, gracePeriod int) (*Server, error) {
 	if err := setRlimitNOFILE(logger); err != nil {
 		logger.WithError(err).Warn("Error setting RLIMIT_NOFILE, there may be 'Too many open files' errors later")
 	}
@@ -145,7 +145,7 @@ func setRlimitNOFILE(logger logrus.FieldLogger) error {
 	return nil
 }
 
-func getUpdatedGaneshConfig(config []byte, leaseLifetime int, gracePeriod int) []byte {
+func getUpdatedGaneshConfig(config []byte, leaseLifetime, gracePeriod int) []byte {
 	var (
 		tmplBuf bytes.Buffer
 		logPath string
