@@ -69,15 +69,14 @@ func NewShareManager(logger logrus.FieldLogger, volume volume.Volume) (*ShareMan
 	}
 	m.context, m.shutdown = context.WithCancel(context.Background())
 
-	enableFastFailover := m.getEnvAsBool(EnvKeyFastFailover, false)
+	m.enableFastFailover = m.getEnvAsBool(EnvKeyFastFailover, false)
 	leaseLifetime := m.getEnvAsInt(EnvKeyLeaseLifetime, defaultLeaseLifetime)
 	gracePeriod := m.getEnvAsInt(EnvKeyGracePeriod, defaultGracePeriod)
 
-	m.enableFastFailover = enableFastFailover
 	if m.enableFastFailover {
 		kubeclientset, err := m.NewKubeClient()
 		if err != nil {
-			m.logger.WithError(err).Warn("Failed to make lease client for fast failover")
+			m.logger.WithError(err).Error("Failed to make lease client for fast failover")
 			return nil, err
 		}
 
@@ -155,7 +154,7 @@ func (m *ShareManager) Run() error {
 
 			if m.enableFastFailover {
 				if err = m.takeLease(); err != nil {
-					m.logger.WithError(err).Warn("Failed to take lease for fast failovr")
+					m.logger.WithError(err).Error("Failed to take lease for fast failovr")
 					return err
 				}
 				go m.runLeaseRenew()
@@ -321,9 +320,7 @@ func (m *ShareManager) takeLease() error {
 
 	now := time.Now()
 	currentHolder := *m.lease.Spec.HolderIdentity
-	if currentHolder != "" {
-		m.logger.Infof("Updating lease holderIdentity from %v to %v", currentHolder, m.leaseHolder)
-	}
+	m.logger.Infof("Updating lease holderIdentity from %v to %v", currentHolder, m.leaseHolder)
 
 	*m.lease.Spec.HolderIdentity = m.leaseHolder
 	*m.lease.Spec.LeaseTransitions = *m.lease.Spec.LeaseTransitions + 1
