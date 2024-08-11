@@ -67,7 +67,7 @@ github.com/josharian/intern
 # github.com/json-iterator/go v1.1.12
 ## explicit; go 1.12
 github.com/json-iterator/go
-# github.com/longhorn/go-common-libs v0.0.0-20240810080359-f043d8cb39c4
+# github.com/longhorn/go-common-libs v0.0.0-20240811024046-b6ddc3efb72e
 ## explicit; go 1.22.0
 github.com/longhorn/go-common-libs/exec
 github.com/longhorn/go-common-libs/io
@@ -141,7 +141,7 @@ golang.org/x/net/trace
 ## explicit; go 1.18
 golang.org/x/oauth2
 golang.org/x/oauth2/internal
-# golang.org/x/sys v0.22.0
+# golang.org/x/sys v0.24.0
 ## explicit; go 1.18
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
