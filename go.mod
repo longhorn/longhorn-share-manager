@@ -54,7 +54,7 @@ require (
 	github.com/urfave/cli v1.22.15
 	golang.org/x/net v0.28.0
 	golang.org/x/sys v0.24.0
-	google.golang.org/grpc v1.65.0
+	google.golang.org/grpc v1.66.0
 	google.golang.org/protobuf v1.34.2
 	k8s.io/api v0.31.0
 	k8s.io/apimachinery v0.31.0
