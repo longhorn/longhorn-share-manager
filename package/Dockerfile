@@ -50,6 +50,9 @@ RUN if [ "$TARGETPLATFORM" != "linux/amd64" ] && [ "$TARGETPLATFORM" != "linux/a
     fi
 ENV ARCH ${TARGETPLATFORM#linux/}
 
+RUN zypper -n ref && \
+    zypper update -y
+
 RUN zypper addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/SLE_15/ snappy && \
     zypper --gpg-auto-import-keys ref
 
