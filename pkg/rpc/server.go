@@ -258,7 +258,7 @@ func (s *ShareManagerServer) Mount(ctx context.Context, req *emptypb.Empty) (res
 	isMountPoint, err := mounter.IsMountPoint(mountPath)
 	if err != nil {
 		err = errors.Wrapf(err, "failed to check mount point %v", mountPath)
-		return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.Internal, err.Error())
+		return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.Internal, "%v", err)
 	}
 	if !isMountPoint {
 		log.Info("Mounting volume")
