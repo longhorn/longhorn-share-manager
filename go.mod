@@ -52,8 +52,8 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli v1.22.15
-	golang.org/x/net v0.28.0
-	golang.org/x/sys v0.24.0
+	golang.org/x/net v0.29.0
+	golang.org/x/sys v0.25.0
 	google.golang.org/grpc v1.66.0
 	google.golang.org/protobuf v1.34.2
 	k8s.io/api v0.31.0
@@ -100,8 +100,8 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	golang.org/x/oauth2 v0.21.0 // indirect
-	golang.org/x/term v0.23.0 // indirect
-	golang.org/x/text v0.17.0 // indirect
+	golang.org/x/term v0.24.0 // indirect
+	golang.org/x/text v0.18.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240701130421-f6361c86f094 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
