@@ -37,7 +37,7 @@ replace (
 	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.30.3
 	k8s.io/kubectl => k8s.io/kubectl v0.30.3
 	k8s.io/kubelet => k8s.io/kubelet v0.30.3
-	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.4
+	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.5
 	k8s.io/metrics => k8s.io/metrics v0.30.3
 	k8s.io/mount-utils => k8s.io/mount-utils v0.30.3
 	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.30.3
@@ -54,13 +54,13 @@ require (
 	github.com/urfave/cli v1.22.15
 	golang.org/x/net v0.27.0
 	golang.org/x/sys v0.25.0
-	google.golang.org/grpc v1.66.0
+	google.golang.org/grpc v1.66.2
 	google.golang.org/protobuf v1.34.2
-	k8s.io/api v0.31.0
-	k8s.io/apimachinery v0.31.0
-	k8s.io/client-go v0.31.0
+	k8s.io/api v0.31.1
+	k8s.io/apimachinery v0.31.1
+	k8s.io/client-go v0.31.1
 	k8s.io/kubernetes v1.30.3
-	k8s.io/mount-utils v0.31.0
+	k8s.io/mount-utils v0.31.1
 	k8s.io/utils v0.0.0-20240902221715-702e33fdd3c3
 )
 
