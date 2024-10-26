@@ -47,7 +47,7 @@ replace (
 
 require (
 	github.com/google/fscrypt v0.3.5
-	github.com/longhorn/go-common-libs v0.0.0-20241018042323-54da24c0807f
+	github.com/longhorn/go-common-libs v0.0.0-20241024003634-9e7505c868e3
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
@@ -57,7 +57,7 @@ require (
 	google.golang.org/grpc v1.67.1
 	google.golang.org/protobuf v1.35.1
 	k8s.io/kubernetes v1.28.5
-	k8s.io/mount-utils v0.31.1
+	k8s.io/mount-utils v0.31.2
 	k8s.io/utils v0.0.0-20240921022957-49e7df575cb6
 )
 
@@ -88,6 +88,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shirou/gopsutil/v3 v3.24.5 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
+	golang.org/x/exp v0.0.0-20230515195305-f3d0a9c9a5cc // indirect
 	golang.org/x/oauth2 v0.22.0 // indirect
 	golang.org/x/term v0.23.0 // indirect
 	golang.org/x/text v0.17.0 // indirect
