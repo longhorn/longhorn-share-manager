@@ -8,8 +8,6 @@ import (
 	"time"
 
 	"github.com/google/fscrypt/filesystem"
-	lhexec "github.com/longhorn/go-common-libs/exec"
-	lhtypes "github.com/longhorn/go-common-libs/types"
 	"github.com/longhorn/types/pkg/generated/smrpc"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -20,6 +18,10 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"k8s.io/mount-utils"
 
+	lhexec "github.com/longhorn/go-common-libs/exec"
+	lhtypes "github.com/longhorn/go-common-libs/types"
+
+	"github.com/longhorn/longhorn-share-manager/pkg/crypto"
 	"github.com/longhorn/longhorn-share-manager/pkg/server"
 	"github.com/longhorn/longhorn-share-manager/pkg/server/nfs"
 	"github.com/longhorn/longhorn-share-manager/pkg/types"
@@ -110,6 +112,68 @@ func (s *ShareManagerServer) FilesystemTrim(ctx context.Context, req *smrpc.File
 	}
 
 	log.Infof("Finished trimming mounted filesystem %v", mountPath)
+
+	return &emptypb.Empty{}, nil
+}
+
+func (s *ShareManagerServer) FilesystemResize(ctx context.Context, req *emptypb.Empty) (resp *emptypb.Empty, err error) {
+	s.Lock()
+	defer s.Unlock()
+
+	vol := s.manager.GetVolume()
+	if vol.Name == "" {
+		s.logger.Warn("Volume name is missing")
+		return &emptypb.Empty{}, nil
+	}
+
+	log := s.logger.WithField("volume", vol.Name)
+
+	defer func() {
+		if err != nil {
+			log.WithError(err).Errorf("Failed to resize mounted filesystem on volume")
+		}
+	}()
+
+	devicePath := types.GetVolumeDevicePath(vol.Name, vol.IsEncrypted())
+	if !volume.CheckDeviceValid(devicePath) {
+		return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.FailedPrecondition, "volume %v is not valid", vol.Name)
+	}
+
+	mountPath := types.GetMountPath(vol.Name)
+	log = log.WithField("filesystem", mountPath)
+
+	_, err = filesystem.GetMount(mountPath)
+	if err != nil {
+		return &emptypb.Empty{}, grpcstatus.Error(grpccodes.Internal, err.Error())
+	}
+
+	log.Infof("Resizing mounted volume")
+
+	// Note that cryptsetup resize is only necessary for volumes resized while online.  For offline, it will happen automatically during 'open'.
+	if vol.IsEncrypted() {
+		diskFormat, err := volume.GetDiskFormat(devicePath)
+		if err != nil {
+			return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.Internal, "failed to determine disk format of volume %v: %v", vol.Name, err)
+		}
+		log.Infof("Device %v contains filesystem of format %v", devicePath, diskFormat)
+
+		if diskFormat != "crypto_LUKS" {
+			return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.InvalidArgument, "unsupported disk encryption format %v", diskFormat)
+		}
+
+		if err = crypto.ResizeEncryptoDevice(vol.Name, vol.Passphrase); err != nil {
+			return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.Internal, "failed to resize crypto device %v for volume %v node expansion: %v", devicePath, vol.Name, err)
+		}
+	}
+
+	if resized, err := volume.ResizeVolume(devicePath, mountPath); err != nil {
+		log.WithError(err).Errorf("Failed to resize filesystem")
+		return &emptypb.Empty{}, grpcstatus.Error(grpccodes.Internal, err.Error())
+	} else if resized {
+		log.Infof("Resized filesystem")
+	} else {
+		log.Infof("No resize needed for filesystem")
+	}
 
 	return &emptypb.Empty{}, nil
 }

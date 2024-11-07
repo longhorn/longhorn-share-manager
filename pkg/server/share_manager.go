@@ -188,7 +188,7 @@ func (m *ShareManager) setupDevice(vol volume.Volume, devicePath string) (string
 	}
 	m.logger.Infof("Volume %v device %v contains filesystem of format %v", vol.Name, devicePath, diskFormat)
 
-	if vol.IsEncrypted() || diskFormat == "luks" {
+	if vol.IsEncrypted() || diskFormat == "crypto_LUKS" {
 		if vol.Passphrase == "" {
 			return "", fmt.Errorf("missing passphrase for encrypted volume %v", vol.Name)
 		}
@@ -255,6 +255,7 @@ func (m *ShareManager) MountVolume(vol volume.Volume, devicePath, mountPath stri
 }
 
 func (m *ShareManager) resizeVolume(devicePath, mountPath string) error {
+	// Note that we don't need 'cryptsetup resize' here.  The crypto 'open' will have done so if necessary.
 	if resized, err := volume.ResizeVolume(devicePath, mountPath); err != nil {
 		m.logger.WithError(err).Error("Failed to resize filesystem for volume")
 		return err
