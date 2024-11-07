@@ -63,6 +63,24 @@ func CloseVolume(volume string) error {
 	return err
 }
 
+func ResizeEncryptoDevice(volume, passphrase string) error {
+	devPath := types.GetVolumeDevicePath(volume, true)
+	if isOpen, err := IsDeviceOpen(devPath); err != nil {
+		return err
+	} else if !isOpen {
+		return fmt.Errorf("volume %v encrypto device is closed for resizing", volume)
+	}
+
+	namespaces := []lhtypes.Namespace{lhtypes.NamespaceMnt, lhtypes.NamespaceIpc}
+	nsexec, err := lhns.NewNamespaceExecutor(lhtypes.ProcessNone, lhtypes.HostProcDirectory, namespaces)
+	if err != nil {
+		return err
+	}
+
+	_, err = nsexec.LuksResize(volume, passphrase, lhtypes.LuksTimeout)
+	return err
+}
+
 // IsDeviceOpen determines if encrypted device is already open.
 func IsDeviceOpen(device string) (bool, error) {
 	_, mappedFile, err := DeviceEncryptionStatus(device)
