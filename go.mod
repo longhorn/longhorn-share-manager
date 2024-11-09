@@ -1,6 +1,8 @@
 module github.com/longhorn/longhorn-share-manager
 
-go 1.22.2
+go 1.22.7
+
+toolchain go1.23.3
 
 // install the below required grpc/protobuf versions
 // https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
@@ -52,23 +54,23 @@ replace (
 require (
 	github.com/golang/protobuf v1.5.4
 	github.com/google/fscrypt v0.3.5
-	github.com/longhorn/go-common-libs v0.0.0-20240616051056-103c7d62a0d5
+	github.com/longhorn/go-common-libs v0.0.0-20241109101504-614ae31d2212
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
-	github.com/urfave/cli v1.22.15
-	golang.org/x/net v0.22.0
-	golang.org/x/sys v0.21.0
-	google.golang.org/grpc v1.64.0
+	github.com/urfave/cli v1.22.16
+	golang.org/x/net v0.29.0
+	golang.org/x/sys v0.27.0
+	google.golang.org/grpc v1.68.0
 	k8s.io/kubernetes v1.28.5
-	k8s.io/mount-utils v0.30.2
-	k8s.io/utils v0.0.0-20240502163921-fe8a2dddb1d0
+	k8s.io/mount-utils v0.31.2
+	k8s.io/utils v0.0.0-20241104163129-6fe5fd82f078
 )
 
 require (
 	github.com/c9s/goprocinfo v0.0.0-20210130143923-c95fcf8c64a8 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
-	github.com/go-logr/logr v1.4.1 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
+	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/opencontainers/selinux v1.10.0 // indirect
@@ -76,8 +78,9 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shirou/gopsutil/v3 v3.24.5 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240318140521-94a12d6c2237 // indirect
-	google.golang.org/protobuf v1.34.2 // indirect
-	k8s.io/klog/v2 v2.120.1 // indirect
+	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f // indirect
+	golang.org/x/text v0.18.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240903143218-8af14fe29dc1 // indirect
+	google.golang.org/protobuf v1.35.1 // indirect
+	k8s.io/klog/v2 v2.130.1 // indirect
 )
