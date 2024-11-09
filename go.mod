@@ -48,7 +48,7 @@ replace (
 
 require (
 	github.com/google/fscrypt v0.3.5
-	github.com/longhorn/go-common-libs v0.0.0-20241102040927-43901cc2fa33
+	github.com/longhorn/go-common-libs v0.0.0-20241109101504-614ae31d2212
 	github.com/longhorn/types v0.0.0-20241101010532-9e901229a935
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
@@ -101,7 +101,7 @@ require (
 	github.com/shirou/gopsutil/v3 v3.24.5 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c // indirect
+	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f // indirect
 	golang.org/x/oauth2 v0.23.0 // indirect
 	golang.org/x/term v0.26.0 // indirect
 	golang.org/x/text v0.20.0 // indirect
