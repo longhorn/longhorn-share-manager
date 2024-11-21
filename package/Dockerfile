@@ -9,28 +9,29 @@ RUN zypper -n ref && \
 # Build ganesha from source, install it to /usr/local and a use multi stage build to have a smaller image
 # RUN dnf install -y tar gcc cmake-3.14.2-1.fc30 autoconf libtool bison flex make gcc-c++ krb5-devel dbus-devel jemalloc-devel libnfsidmap-devel libnsl2-devel userspace-rcu-devel patch libblkid-devel
 RUN zypper -n addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/SLE_15/ snappy && \
-    zypper -n addrepo --refresh https://download.opensuse.org/repositories/devel:/tools:/building/15.5/devel:tools:building.repo && \
+    zypper -n addrepo --refresh https://download.opensuse.org/repositories/devel:/tools:/building/15.6/devel:tools:building.repo && \
     zypper --gpg-auto-import-keys ref
 
-RUN zypper -n install autoconf bison curl cmake doxygen make git gcc-c++ flex Mesa-libGL-devel libdbus-1-3 \
+RUN zypper -n install autoconf bison curl cmake doxygen make git gcc14 gcc14-c++ flex Mesa-libGL-devel libdbus-1-3 \
     nfsidmap-devel liburcu-devel libblkid-devel e2fsprogs e2fsprogs-devel xfsprogs xfsprogs-devel \
     tar gzip dbus-1-devel lsb-release graphviz-devel libnsl-devel libcurl-devel libjson-c-devel libacl-devel && \
     rm -rf /var/cache/zypp/*
 
-RUN curl -L https://github.com/rancher/nfs-ganesha/archive/refs/tags/v5_20240716.tar.gz | tar zx \
-	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/refs/tags/v5.8.tar.gz | tar zx \
-	  && mv nfs-ganesha-5_20240716 nfs-ganesha-5.9 \
-	  && rm -r nfs-ganesha-5.9/src/libntirpc \
-	  && mv ntirpc-5.8 nfs-ganesha-5.9/src/libntirpc
-WORKDIR /nfs-ganesha-5.9
-
+RUN curl -L https://github.com/rancher/nfs-ganesha/archive/refs/tags/v6_20241120.tar.gz | tar zx \
+	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/refs/tags/v6.0.1.tar.gz | tar zx \
+	  && mv nfs-ganesha-6_20241120 nfs-ganesha \
+	  && rm -r nfs-ganesha/src/libntirpc \
+	  && mv ntirpc-6.0.1 nfs-ganesha/src/libntirpc
+WORKDIR /nfs-ganesha
 
 # build ganesha only supporting nfsv4 and vfs
 # Set NFS_V4_RECOV_ROOT to /tmp we don't support recovery in this release
 # we disable dbus (-DUSE_DBUS=OFF) for the single share manager since we don't use dynamic exports
+ENV CC=/usr/bin/gcc-14 \
+    CXX=/usr/bin/g++-14
 RUN mkdir -p /usr/local \
     && cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_CONFIG=vfs_only \
-    -DUSE_DBUS=OFF -DUSE_NFS3=OFF -DUSE_NLM=OFF -DUSE_RQUOTA=OFF -DUSE_9P=OFF -D_MSPAC_SUPPORT=OFF -DRPCBIND=OFF \
+    -DUSE_DBUS=OFF -DUSE_NLM=OFF -DUSE_RQUOTA=OFF -DUSE_9P=OFF -D_MSPAC_SUPPORT=OFF -DRPCBIND=OFF \
     -DUSE_RADOS_RECOV=OFF -DRADOS_URLS=OFF -DUSE_FSAL_VFS=ON -DUSE_FSAL_XFS=OFF \
     -DUSE_FSAL_PROXY_V4=OFF -DUSE_FSAL_PROXY_V3=OFF -DUSE_FSAL_LUSTRE=OFF -DUSE_FSAL_LIZARDFS=OFF \
     -DUSE_FSAL_KVSFS=OFF -DUSE_FSAL_CEPH=OFF -DUSE_FSAL_GPFS=OFF -DUSE_FSAL_PANFS=OFF -DUSE_FSAL_GLUSTER=OFF \
