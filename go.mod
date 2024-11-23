@@ -59,7 +59,7 @@ require (
 	google.golang.org/grpc v1.68.0
 	google.golang.org/protobuf v1.35.2
 	k8s.io/kubernetes v1.28.5
-	k8s.io/mount-utils v0.31.2
+	k8s.io/mount-utils v0.31.3
 	k8s.io/utils v0.0.0-20241104163129-6fe5fd82f078
 )
 
