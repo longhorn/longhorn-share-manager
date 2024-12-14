@@ -39,7 +39,7 @@ replace (
 	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.30.3
 	k8s.io/kubectl => k8s.io/kubectl v0.30.3
 	k8s.io/kubelet => k8s.io/kubelet v0.30.3
-	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.7
+	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.8
 	k8s.io/metrics => k8s.io/metrics v0.30.3
 	k8s.io/mount-utils => k8s.io/mount-utils v0.30.3
 	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.30.3
@@ -49,7 +49,7 @@ replace (
 require (
 	github.com/google/fscrypt v0.3.5
 	github.com/longhorn/go-common-libs v0.0.0-20241208100509-e1932c65c078
-	github.com/longhorn/types v0.0.0-20241208031854-891e672bc453
+	github.com/longhorn/types v0.0.0-20241212070310-f6797e59f9c9
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
@@ -63,7 +63,7 @@ require (
 	k8s.io/client-go v0.31.3
 	k8s.io/kubernetes v1.30.3
 	k8s.io/mount-utils v0.31.3
-	k8s.io/utils v0.0.0-20241104163129-6fe5fd82f078
+	k8s.io/utils v0.0.0-20241210054802-24370beab758
 )
 
 require (
