@@ -17,9 +17,9 @@ RUN zypper -n install autoconf bison curl cmake doxygen make git gcc14 gcc14-c++
     tar gzip dbus-1-devel lsb-release graphviz-devel libnsl-devel libcurl-devel libjson-c-devel libacl-devel && \
     rm -rf /var/cache/zypp/*
 
-RUN curl -L https://github.com/rancher/nfs-ganesha/archive/refs/tags/v6_20241120.tar.gz | tar zx \
+RUN curl -L https://github.com/rancher/nfs-ganesha/archive/refs/tags/v6_20241216.tar.gz | tar zx \
 	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/refs/tags/v6.0.1.tar.gz | tar zx \
-	  && mv nfs-ganesha-6_20241120 nfs-ganesha \
+	  && mv nfs-ganesha-6_20241216 nfs-ganesha \
 	  && rm -r nfs-ganesha/src/libntirpc \
 	  && mv ntirpc-6.0.1 nfs-ganesha/src/libntirpc
 WORKDIR /nfs-ganesha
