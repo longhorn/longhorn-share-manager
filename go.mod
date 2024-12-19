@@ -54,11 +54,11 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli v1.22.16
-	golang.org/x/net v0.30.0
+	golang.org/x/net v0.33.0
 	golang.org/x/sys v0.28.0
 	google.golang.org/grpc v1.68.1
 	google.golang.org/protobuf v1.35.2
-	k8s.io/kubernetes v1.28.5
+	k8s.io/kubernetes v1.28.15
 	k8s.io/mount-utils v0.31.3
 	k8s.io/utils v0.0.0-20241210054802-24370beab758
 )
@@ -93,8 +93,8 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	golang.org/x/exp v0.0.0-20241215155358-4a5509556b9e // indirect
 	golang.org/x/oauth2 v0.23.0 // indirect
-	golang.org/x/term v0.25.0 // indirect
-	golang.org/x/text v0.19.0 // indirect
+	golang.org/x/term v0.27.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.7.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241015192408-796eee8c2d53 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
