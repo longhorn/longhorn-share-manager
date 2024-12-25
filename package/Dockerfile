@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7.1
 
-FROM registry.suse.com/bci/bci-base:15.5 AS build
+FROM registry.suse.com/bci/bci-base:15.6 AS build
 
 RUN zypper -n ref && \
     zypper update -y
@@ -9,7 +9,7 @@ RUN zypper -n ref && \
 # Build ganesha from source, install it to /usr/local and a use multi stage build to have a smaller image
 # RUN dnf install -y tar gcc cmake-3.14.2-1.fc30 autoconf libtool bison flex make gcc-c++ krb5-devel dbus-devel jemalloc-devel libnfsidmap-devel libnsl2-devel userspace-rcu-devel patch libblkid-devel
 RUN zypper -n addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/SLE_15/ snappy && \
-    zypper -n addrepo --refresh https://download.opensuse.org/repositories/devel:/tools:/building/15.5/devel:tools:building.repo && \
+    zypper -n addrepo --refresh https://download.opensuse.org/repositories/devel:/tools:/building/15.6/devel:tools:building.repo && \
     zypper --gpg-auto-import-keys ref
 
 RUN zypper -n install autoconf bison curl cmake doxygen make git gcc-c++ flex Mesa-libGL-devel libdbus-1-3 \
@@ -42,7 +42,7 @@ RUN mkdir -p /ganesha-extra \
     && mkdir -p /ganesha-extra/etc/dbus-1/system.d \
     && cp src/scripts/ganeshactl/org.ganesha.nfsd.conf /ganesha-extra/etc/dbus-1/system.d/
 
-FROM registry.suse.com/bci/bci-base:15.5
+FROM registry.suse.com/bci/bci-base:15.6
 
 ARG TARGETPLATFORM
 RUN if [ "$TARGETPLATFORM" != "linux/amd64" ] && [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
