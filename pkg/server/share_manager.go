@@ -103,7 +103,7 @@ func NewShareManager(logger logrus.FieldLogger, volume volume.Volume) (*ShareMan
 func (m *ShareManager) Run() error {
 	vol := m.volume
 	mountPath := types.GetMountPath(vol.Name)
-	devicePath := types.GetVolumeDevicePath(vol.Name, false)
+	devicePath := types.GetVolumeDevicePath(vol.Name, vol.DataEngine, false)
 
 	defer func() {
 		// if the server is exiting, try to unmount & teardown device before we terminate the container
@@ -201,9 +201,9 @@ func (m *ShareManager) setupDevice(vol volume.Volume, devicePath string) (string
 			}
 		}
 
-		cryptoDevice := types.GetVolumeDevicePath(vol.Name, true)
+		cryptoDevice := types.GetVolumeDevicePath(vol.Name, vol.DataEngine, true)
 		m.logger.Infof("Volume %s requires crypto device %s", vol.Name, cryptoDevice)
-		if err := crypto.OpenVolume(vol.Name, devicePath, vol.Passphrase); err != nil {
+		if err := crypto.OpenVolume(vol.Name, vol.DataEngine, devicePath, vol.Passphrase); err != nil {
 			m.logger.WithError(err).Error("Failed to open encrypted volume")
 			return "", err
 		}
@@ -217,12 +217,12 @@ func (m *ShareManager) setupDevice(vol volume.Volume, devicePath string) (string
 
 func (m *ShareManager) tearDownDevice(vol volume.Volume) error {
 	// close any matching crypto device for this volume
-	cryptoDevice := types.GetVolumeDevicePath(vol.Name, true)
+	cryptoDevice := types.GetVolumeDevicePath(vol.Name, vol.DataEngine, true)
 	if isOpen, err := crypto.IsDeviceOpen(cryptoDevice); err != nil {
 		return err
 	} else if isOpen {
 		m.logger.Infof("Volume %s has active crypto device %s", vol.Name, cryptoDevice)
-		if err := crypto.CloseVolume(vol.Name); err != nil {
+		if err := crypto.CloseVolume(vol.Name, vol.DataEngine); err != nil {
 			return err
 		}
 		m.logger.Infof("Volume %s closed active crypto device %s", vol.Name, cryptoDevice)
