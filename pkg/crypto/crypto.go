@@ -29,8 +29,9 @@ func EncryptVolume(devicePath, passphrase, keyCipher, keyHash, keySize, pbkdf st
 }
 
 // OpenVolume opens volume so that it can be used by the client.
-func OpenVolume(volume, devicePath, passphrase string) error {
-	devPath := types.GetVolumeDevicePath(volume, true)
+// devicePath is the path of the volume on the host that will be opened for instance '/dev/longhorn/volume1'
+func OpenVolume(volume, dataEngine, devicePath, passphrase string) error {
+	devPath := types.GetVolumeDevicePath(volume, dataEngine, true)
 	if isOpen, _ := IsDeviceOpen(devPath); isOpen {
 		logrus.Debugf("Device %s is already opened at %s", devicePath, devPath)
 		return nil
@@ -42,33 +43,36 @@ func OpenVolume(volume, devicePath, passphrase string) error {
 		return err
 	}
 
-	logrus.Debugf("Opening device %s with LUKS on %s", devicePath, volume)
-	_, err = nsexec.LuksOpen(volume, devicePath, passphrase, lhtypes.LuksTimeout)
+	encryptedDevName := types.GetEncryptVolumeName(volume, dataEngine)
+	logrus.Debugf("Opening device %s with LUKS on %s", devicePath, encryptedDevName)
+	_, err = nsexec.LuksOpen(encryptedDevName, devicePath, passphrase, lhtypes.LuksTimeout)
 	if err != nil {
-		logrus.WithError(err).Warnf("Failed to open LUKS device %s", devicePath)
+		logrus.WithError(err).Warnf("Failed to open LUKS device %s to %s", devicePath, encryptedDevName)
 	}
 	return err
 }
 
 // CloseVolume closes encrypted volume so it can be detached.
-func CloseVolume(volume string) error {
+func CloseVolume(volume, dataEngine string) error {
 	namespaces := []lhtypes.Namespace{lhtypes.NamespaceMnt, lhtypes.NamespaceIpc}
 	nsexec, err := lhns.NewNamespaceExecutor(lhtypes.ProcessNone, lhtypes.HostProcDirectory, namespaces)
 	if err != nil {
 		return err
 	}
 
-	logrus.Debugf("Closing LUKS device %s", volume)
-	_, err = nsexec.LuksClose(volume, lhtypes.LuksTimeout)
+	deviceName := types.GetEncryptVolumeName(volume, dataEngine)
+	logrus.Debugf("Closing LUKS device %s", deviceName)
+	_, err = nsexec.LuksClose(deviceName, lhtypes.LuksTimeout)
 	return err
 }
 
-func ResizeEncryptoDevice(volume, passphrase string) error {
-	devPath := types.GetVolumeDevicePath(volume, true)
+func ResizeEncryptoDevice(volume, dataEngine, passphrase string) error {
+	// devPath is the full path of the encrypted device on the host that will be resized
+	devPath := types.GetVolumeDevicePath(volume, dataEngine, true)
 	if isOpen, err := IsDeviceOpen(devPath); err != nil {
 		return err
 	} else if !isOpen {
-		return fmt.Errorf("volume %v encrypto device is closed for resizing", volume)
+		return fmt.Errorf("volume %v encrypto device %s is closed for resizing", volume, devPath)
 	}
 
 	namespaces := []lhtypes.Namespace{lhtypes.NamespaceMnt, lhtypes.NamespaceIpc}
@@ -77,7 +81,7 @@ func ResizeEncryptoDevice(volume, passphrase string) error {
 		return err
 	}
 
-	_, err = nsexec.LuksResize(volume, passphrase, lhtypes.LuksTimeout)
+	_, err = nsexec.LuksResize(types.GetEncryptVolumeName(volume, dataEngine), passphrase, lhtypes.LuksTimeout)
 	return err
 }
 

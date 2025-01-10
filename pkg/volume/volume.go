@@ -11,6 +11,7 @@ import (
 
 type Volume struct {
 	Name            string
+	DataEngine      string
 	Passphrase      string
 	CryptoKeyCipher string
 	CryptoKeyHash   string
