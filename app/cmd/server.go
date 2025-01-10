@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net"
 	"os"
 	"os/signal"
@@ -16,6 +17,7 @@ import (
 
 	"github.com/longhorn/longhorn-share-manager/pkg/rpc"
 	"github.com/longhorn/longhorn-share-manager/pkg/server"
+	"github.com/longhorn/longhorn-share-manager/pkg/types"
 	"github.com/longhorn/longhorn-share-manager/pkg/util"
 	"github.com/longhorn/longhorn-share-manager/pkg/volume"
 )
@@ -31,6 +33,11 @@ func ServerCmd() cli.Command {
 			cli.StringFlag{
 				Name:     "volume",
 				Usage:    "The volume to export via the nfs server",
+				Required: true,
+			},
+			cli.StringFlag{
+				Name:     "dataEngine",
+				Usage:    "The volume data engine",
 				Required: true,
 			},
 			cli.BoolFlag{
@@ -84,6 +91,7 @@ func ServerCmd() cli.Command {
 		Action: func(c *cli.Context) {
 			vol := volume.Volume{
 				Name:            c.String("volume"),
+				DataEngine:      c.String("dataEngine"),
 				Passphrase:      c.String("passphrase"),
 				CryptoKeyCipher: c.String("crytpokeycipher"),
 				CryptoKeyHash:   c.String("crytpokeyhash"),
@@ -106,6 +114,11 @@ func ServerCmd() cli.Command {
 
 func start(vol volume.Volume) error {
 	logger := util.NewLogger()
+	if vol.DataEngine != types.DataEngineTypeV1 && vol.DataEngine != types.DataEngineTypeV2 {
+		logger.Errorf("Invalid data engine value: %s", vol.DataEngine)
+		return fmt.Errorf("invalid data engine value: %s", vol.DataEngine)
+	}
+
 	manager, err := server.NewShareManager(logger, vol)
 	if err != nil {
 		return err

@@ -69,7 +69,7 @@ func (s *ShareManagerServer) FilesystemTrim(ctx context.Context, req *smrpc.File
 		}
 	}()
 
-	devicePath := types.GetVolumeDevicePath(vol.Name, req.EncryptedDevice)
+	devicePath := types.GetVolumeDevicePath(vol.Name, vol.DataEngine, req.EncryptedDevice)
 	if !volume.CheckDeviceValid(devicePath) {
 		return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.FailedPrecondition, "volume %v is not valid", vol.Name)
 	}
@@ -134,7 +134,7 @@ func (s *ShareManagerServer) FilesystemResize(ctx context.Context, req *emptypb.
 		}
 	}()
 
-	devicePath := types.GetVolumeDevicePath(vol.Name, vol.IsEncrypted())
+	devicePath := types.GetVolumeDevicePath(vol.Name, vol.DataEngine, vol.IsEncrypted())
 	if !volume.CheckDeviceValid(devicePath) {
 		return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.FailedPrecondition, "volume %v is not valid", vol.Name)
 	}
@@ -161,7 +161,7 @@ func (s *ShareManagerServer) FilesystemResize(ctx context.Context, req *emptypb.
 			return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.InvalidArgument, "unsupported disk encryption format %v", diskFormat)
 		}
 
-		if err = crypto.ResizeEncryptoDevice(vol.Name, vol.Passphrase); err != nil {
+		if err = crypto.ResizeEncryptoDevice(vol.Name, vol.DataEngine, vol.Passphrase); err != nil {
 			return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.Internal, "failed to resize crypto device %v for volume %v node expansion: %v", devicePath, vol.Name, err)
 		}
 	}
@@ -309,7 +309,7 @@ func (s *ShareManagerServer) Mount(ctx context.Context, req *emptypb.Empty) (res
 
 	log.Info("Mounting and exporting volume")
 
-	devicePath := types.GetVolumeDevicePath(vol.Name, false)
+	devicePath := types.GetVolumeDevicePath(vol.Name, vol.DataEngine, false)
 	mountPath := types.GetMountPath(vol.Name)
 
 	defer func() {
