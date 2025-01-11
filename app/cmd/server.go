@@ -36,7 +36,7 @@ func ServerCmd() cli.Command {
 				Required: true,
 			},
 			cli.StringFlag{
-				Name:     "dataEngine",
+				Name:     "data-engine",
 				Usage:    "The volume data engine",
 				Required: true,
 			},
@@ -91,7 +91,7 @@ func ServerCmd() cli.Command {
 		Action: func(c *cli.Context) {
 			vol := volume.Volume{
 				Name:            c.String("volume"),
-				DataEngine:      c.String("dataEngine"),
+				DataEngine:      c.String("data-engine"),
 				Passphrase:      c.String("passphrase"),
 				CryptoKeyCipher: c.String("crytpokeycipher"),
 				CryptoKeyHash:   c.String("crytpokeyhash"),
