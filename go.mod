@@ -2,7 +2,7 @@ module github.com/longhorn/longhorn-share-manager
 
 go 1.22.7
 
-toolchain go1.23.4
+toolchain go1.23.5
 
 // Replace directives are required for dependencies in this section because:
 // - This module imports k8s.io/kubernetes.
@@ -39,7 +39,7 @@ replace (
 	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.30.3
 	k8s.io/kubectl => k8s.io/kubectl v0.30.3
 	k8s.io/kubelet => k8s.io/kubelet v0.30.3
-	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.8
+	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.9
 	k8s.io/metrics => k8s.io/metrics v0.30.3
 	k8s.io/mount-utils => k8s.io/mount-utils v0.30.3
 	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.30.3
@@ -56,7 +56,7 @@ require (
 	github.com/urfave/cli v1.22.16
 	golang.org/x/net v0.30.0
 	golang.org/x/sys v0.28.0
-	google.golang.org/grpc v1.69.2
+	google.golang.org/grpc v1.69.4
 	google.golang.org/protobuf v1.35.2
 	k8s.io/api v0.31.3
 	k8s.io/apimachinery v0.31.3
