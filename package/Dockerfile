@@ -2,6 +2,8 @@
 
 FROM registry.suse.com/bci/bci-base:15.6 AS build
 
+ARG BRANCH=main
+
 RUN zypper -n ref && \
     zypper update -y
 
@@ -14,34 +16,16 @@ RUN zypper -n addrepo --refresh https://download.opensuse.org/repositories/syste
 
 RUN zypper -n install autoconf bison curl cmake doxygen make git gcc14 gcc14-c++ flex Mesa-libGL-devel libdbus-1-3 \
     nfsidmap-devel liburcu-devel libblkid-devel e2fsprogs e2fsprogs-devel xfsprogs xfsprogs-devel \
-    tar gzip dbus-1-devel lsb-release graphviz-devel libnsl-devel libcurl-devel libjson-c-devel libacl-devel && \
+    tar gzip dbus-1-devel lsb-release graphviz-devel libnsl-devel libcurl-devel libjson-c-devel libacl-devel jq && \
     rm -rf /var/cache/zypp/*
 
-RUN curl -L https://github.com/rancher/nfs-ganesha/archive/refs/tags/v6_20250113.tar.gz | tar zx \
-	  && curl -L https://github.com/nfs-ganesha/ntirpc/archive/refs/tags/v6.3.tar.gz | tar zx \
-	  && mv nfs-ganesha-6_20250113 nfs-ganesha \
-	  && rm -r nfs-ganesha/src/libntirpc \
-	  && mv ntirpc-6.3 nfs-ganesha/src/libntirpc
-WORKDIR /nfs-ganesha
+RUN git clone https://github.com/longhorn/dep-versions.git -b ${BRANCH} /usr/src/dep-versions
 
-# build ganesha only supporting nfsv4 and vfs
-# Set NFS_V4_RECOV_ROOT to /tmp we don't support recovery in this release
-# we disable dbus (-DUSE_DBUS=OFF) for the single share manager since we don't use dynamic exports
-ENV CC=/usr/bin/gcc-14 \
-    CXX=/usr/bin/g++-14
-RUN mkdir -p /usr/local \
-    && cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_CONFIG=vfs_only \
-    -DUSE_DBUS=OFF -DUSE_NLM=OFF -DUSE_RQUOTA=OFF -DUSE_9P=OFF -D_MSPAC_SUPPORT=OFF -DRPCBIND=OFF \
-    -DUSE_RADOS_RECOV=OFF -DRADOS_URLS=OFF -DUSE_FSAL_VFS=ON -DUSE_FSAL_XFS=OFF \
-    -DUSE_FSAL_PROXY_V4=OFF -DUSE_FSAL_PROXY_V3=OFF -DUSE_FSAL_LUSTRE=OFF -DUSE_FSAL_LIZARDFS=OFF \
-    -DUSE_FSAL_KVSFS=OFF -DUSE_FSAL_CEPH=OFF -DUSE_FSAL_GPFS=OFF -DUSE_FSAL_PANFS=OFF -DUSE_FSAL_GLUSTER=OFF \
-    -DUSE_GSS=NO -DHAVE_ACL_GET_FD_NP=ON -DHAVE_ACL_SET_FD_NP=ON \
-    -DCMAKE_INSTALL_PREFIX=/usr/local src/ \
-	  && make \
-	  && make install
-RUN mkdir -p /ganesha-extra \
-    && mkdir -p /ganesha-extra/etc/dbus-1/system.d \
-    && cp src/scripts/ganeshactl/org.ganesha.nfsd.conf /ganesha-extra/etc/dbus-1/system.d/
+# Build nfs-ganesha
+RUN export REPO_OVERRIDE="" && \
+    export COMMIT_ID_OVERRIDE="" && \
+    bash /usr/src/dep-versions/scripts/build-nfs-ganesha.sh "${REPO_OVERRIDE}" "${COMMIT_ID_OVERRIDE}"
+
 
 FROM registry.suse.com/bci/bci-base:15.6
 
@@ -59,7 +43,8 @@ RUN zypper addrepo --refresh https://download.opensuse.org/repositories/system:/
     zypper --gpg-auto-import-keys ref
 
 # RUN microdnf install -y nano tar lsof e2fsprogs fuse-libs libss libblkid userspace-rcu dbus-x11 rpcbind hostname nfs-utils xfsprogs jemalloc libnfsidmap && microdnf clean all
-RUN zypper -n install rpcbind hostname libblkid1 liburcu6 libjson-c* dbus-1-x11 dbus-1 nfsidmap-devel nfs-kernel-server nfs-client nfs4-acl-tools xfsprogs e2fsprogs awk && \
+RUN zypper -n install rpcbind hostname libblkid1 liburcu6 libjson-c* dbus-1-x11 dbus-1 nfsidmap-devel \
+    nfs-kernel-server nfs-client nfs4-acl-tools xfsprogs e2fsprogs awk && \
     rm -rf /var/cache/zypp/*
 
 RUN mkdir -p /var/run/dbus && mkdir -p /export
