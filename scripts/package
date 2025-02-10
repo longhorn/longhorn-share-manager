@@ -53,7 +53,8 @@ function get_branch() {
   fi
 }
 
-BRANCH=$(get_branch)
+SRC_BRANCH=$(get_branch)
+SRC_TAG=$(git tag --points-at HEAD | head -n 1)
 
 # update base image to get latest changes
 BASE_IMAGE=`grep FROM package/Dockerfile | grep -v AS | awk '{print $2}'`
@@ -63,7 +64,8 @@ echo "Building image ${IMAGE} based on ${BASE_IMAGE}"
 buildx build \
   --load \
   --build-arg ARCH="${ARCH}" \
-  --build-arg BRANCH="${BRANCH}" \
+  --build-arg SRC_BRANCH="${SRC_BRANCH}" \
+  --build-arg SRC_TAG="${SRC_TAG}" \
   -t "${IMAGE}" \
   -f package/Dockerfile .
 
