@@ -2,7 +2,8 @@
 
 FROM registry.suse.com/bci/bci-base:15.6 AS build
 
-ARG BRANCH=main
+ARG SRC_BRANCH=main
+ARG SRC_TAG
 
 RUN zypper -n ref && \
     zypper update -y
@@ -19,7 +20,12 @@ RUN zypper -n install autoconf bison curl cmake doxygen make git gcc14 gcc14-c++
     tar gzip dbus-1-devel lsb-release graphviz-devel libnsl-devel libcurl-devel libjson-c-devel libacl-devel jq && \
     rm -rf /var/cache/zypp/*
 
-RUN git clone https://github.com/longhorn/dep-versions.git -b ${BRANCH} /usr/src/dep-versions
+RUN git clone https://github.com/longhorn/dep-versions.git -b ${SRC_BRANCH} /usr/src/dep-versions && \
+    cd /usr/src/dep-versions && \
+    if [ -n "${SRC_TAG}" ] && git show-ref --tags ${SRC_TAG} > /dev/null 2>&1; then \
+        echo "Checking out tag ${SRC_TAG}"; \
+        cd /usr/src/dep-versions && git checkout tags/${SRC_TAG}; \
+    fi
 
 # Build nfs-ganesha
 RUN export REPO_OVERRIDE="" && \
