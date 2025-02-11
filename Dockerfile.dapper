@@ -1,6 +1,8 @@
 FROM registry.suse.com/bci/golang:1.23
 
 ARG DAPPER_HOST_ARCH
+ARG SRC_BRANCH=main
+ARG SRC_TAG
 ARG http_proxy
 ARG https_proxy
 
@@ -11,6 +13,8 @@ ENV DAPPER_ENV TAG REPO DRONE_REPO DRONE_PULL_REQUEST DRONE_COMMIT_REF
 ENV DAPPER_OUTPUT bin coverage.out
 ENV DAPPER_RUN_ARGS --privileged -v /dev:/host/dev -v /proc:/host/proc
 ENV DAPPER_SOURCE /go/src/github.com/longhorn/longhorn-share-manager
+ENV SRC_BRANCH ${SRC_BRANCH}
+ENV SRC_TAG ${SRC_TAG}
 
 ENV GOLANGCI_LINT_VERSION="v1.60.3"
 
