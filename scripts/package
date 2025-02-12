@@ -5,39 +5,91 @@ source $(dirname $0)/version
 
 cd $(dirname $0)/..
 
-PROJECT=`basename "$PWD"`
+PROJECT=$(basename "${PWD}")
 
-if [ ! -x ./bin/longhorn ]; then
-    ./scripts/build
-fi
+command -v buildx >/dev/null && BUILD_CMD=(buildx) || BUILD_CMD=(docker buildx)
 
-cp -r bin package/
-
-arch=$(uname -m)
-if [ "$arch" == "aarch64" ]; then
-    ARCH="arm64"
-else
-    ARCH="amd64"
-fi
-APIVERSION=`./bin/longhorn-share-manager-"$ARCH" version --client-only|jq ".clientVersion.apiVersion"`
-
-TAG=${TAG:-"v${APIVERSION}_`date -u +%Y%m%d`"}
+# read configurable parameters
 REPO=${REPO:-longhornio}
-IMAGE=${REPO}/${PROJECT}:${TAG}
+IMAGE_NAME=${IMAGE_NAME:-${PROJECT}}
+TAG=${TAG:-''}
+PUSH=${PUSH:-'false'}
+IS_SECURE=${IS_SECURE:-'false'}
+MACHINE=${MACHINE:-''}
+TARGET_PLATFORMS=${TARGET_PLATFORMS:-''}
+IID_FILE=${IID_FILE:-''}
+IID_FILE_FLAG=${IID_FILE_FLAG:-''}
+SRC_BRANCH=${SRC_BRANCH:-''}
+SRC_TAG=${SRC_TAG:-''}
 
-# update base image to get latest changes
-BASE_IMAGE=`grep FROM package/Dockerfile | grep -v AS | awk '{print $2}'`
-docker pull ${BASE_IMAGE}
+BUILDER_ARGS=()
+[[ $MACHINE ]] && BUILDER_ARGS+=('--builder' "$MACHINE")
+
+BUILDX_ARGS=()
+
+if [[ ${TARGET_PLATFORMS} ]] ; then
+    IFS='/' read -r OS ARCH <<<"${TARGET_PLATFORMS}"
+    BUILDX_ARGS+=('--platform' "${TARGET_PLATFORMS}")
+else
+    case $(uname -m) in
+    aarch64 | arm64)
+        ARCH=arm64
+        ;;
+    x86_64)
+        ARCH=amd64
+        ;;
+    *)
+        echo "$(uname -a): unsupported architecture"
+        exit 1
+    esac
+    BUILDX_ARGS+=('--platform' "linux/${ARCH}")
+fi
+
+if [[ -z $TAG ]]; then
+    if API_VERSION=$(./bin/longhorn-share-manager-"${ARCH}" version --client-only | jq ".clientVersion.apiVersion"); then
+      TAG="v${API_VERSION}_$(date -u +%Y%m%d)"
+    else
+      TAG="${VERSION}"
+    fi
+fi
+
+IMAGE="${REPO}/${IMAGE_NAME}:${TAG}"
+
+IFS=' ' read -r -a IID_FILE_ARGS <<<"${IID_FILE_FLAG}"
+[[ -n "${IID_FILE}" && ${#IID_FILE_ARGS} == 0 ]] && IID_FILE_ARGS=('--iidfile' "${IID_FILE}")
+
+if [[ "${PUSH}" == 'true' ]]; then
+    BUILDX_ARGS+=('--push')
+else
+    BUILDX_ARGS+=('--load')
+fi
+
+[[ $IS_SECURE == 'true' ]] && BUILDX_ARGS+=('--sbom=true' '--attest' 'type=provenance,mode=max')
+
+IMAGE_ARGS=(--build-arg ARCH="${ARCH}")
+[[ -n "${SRC_BRANCH}" ]] && IMAGE_ARGS+=(--build-arg SRC_BRANCH="${SRC_BRANCH}")
+[[ -n "${SRC_TAG}" ]] && IMAGE_ARGS+=(--build-arg SRC_TAG="${SRC_TAG}")
+
+# update base IMAGE to get latest changes
+grep 'FROM.*/' package/Dockerfile | awk '{print $2}' | while read -r STAGE_BASE_IMAGE
+do
+    docker pull "${STAGE_BASE_IMAGE}"
+done
+BASE_IMAGE=$(grep 'FROM.*AS release' package/Dockerfile | awk '{print $2}')
 
 echo "Building image ${IMAGE} based on ${BASE_IMAGE} with ARCH=${ARCH} SRC_BRANCH=${SRC_BRANCH} SRC_TAG=${SRC_TAG}"
-buildx build \
-  --load \
-  --build-arg ARCH="${ARCH}" \
-  --build-arg SRC_BRANCH="${SRC_BRANCH}" \
-  --build-arg SRC_TAG="${SRC_TAG}" \
-  -t "${IMAGE}" \
-  -f package/Dockerfile .
+IMAGE_BUILD_CMD_ARGS=(
+    build --no-cache \
+    "${BUILDER_ARGS[@]}" \
+    "${IID_FILE_ARGS[@]}" \
+    "${BUILDX_ARGS[@]}" \
+    "${IMAGE_ARGS[@]}" \
+    -t "${IMAGE}" -f package/Dockerfile .
+)
+echo "${BUILD_CMD[@]}" "${IMAGE_BUILD_CMD_ARGS[@]}"
+"${BUILD_CMD[@]}" "${IMAGE_BUILD_CMD_ARGS[@]}"
 
-echo Built ${IMAGE}
+echo "Built ${IMAGE}"
 
-echo ${IMAGE} > ./bin/latest_image
+mkdir ./bin || true
+echo "${IMAGE}" > ./bin/latest_image
