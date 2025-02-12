@@ -1,6 +1,18 @@
 # syntax=docker/dockerfile:1.13.0
+FROM registry.suse.com/bci/golang:1.23 AS app_builder
 
-FROM registry.suse.com/bci/bci-base:15.6 AS build
+WORKDIR /app
+
+# Copy the build script and source code
+COPY . /app
+
+# Make the build script executable
+RUN chmod +x /app/scripts/build
+
+# Run the build script
+RUN /app/scripts/build
+
+FROM registry.suse.com/bci/bci-base:15.6 AS lib_builder
 
 ARG SRC_BRANCH=main
 ARG SRC_TAG
@@ -33,14 +45,14 @@ RUN export REPO_OVERRIDE="" && \
     bash /usr/src/dep-versions/scripts/build-nfs-ganesha.sh "${REPO_OVERRIDE}" "${COMMIT_ID_OVERRIDE}"
 
 
-FROM registry.suse.com/bci/bci-base:15.6
+FROM registry.suse.com/bci/bci-base:15.6 AS release
 
 ARG TARGETPLATFORM
 RUN if [ "$TARGETPLATFORM" != "linux/amd64" ] && [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
     echo "Error: Unsupported TARGETPLATFORM: $TARGETPLATFORM" && \
     exit 1; \
     fi
-ENV ARCH ${TARGETPLATFORM#linux/}
+ENV ARCH=${TARGETPLATFORM#linux/}
 
 RUN zypper -n ref && \
     zypper update -y
@@ -64,9 +76,9 @@ RUN sed -i s/systemd// /etc/nsswitch.conf
 # ganesha reads /etc/mtab for mounted volumes
 RUN ln -sf /proc/self/mounts /etc/mtab
 
-COPY --from=build /usr/local /usr/local/
-COPY --from=build /ganesha-extra /
-COPY package/bin/longhorn-share-manager-${ARCH} /longhorn-share-manager
+COPY --from=lib_builder /usr/local /usr/local/
+COPY --from=lib_builder /ganesha-extra /
+COPY --from=app_builder /app/bin/longhorn-share-manager-${ARCH} /longhorn-share-manager
 
 # run ldconfig after libs have been copied
 RUN ldconfig
