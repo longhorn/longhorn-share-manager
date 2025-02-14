@@ -27,26 +27,27 @@ BUILDER_ARGS=()
 
 BUILDX_ARGS=()
 
+case $(uname -m) in
+aarch64 | arm64)
+    BUILDERARCH=arm64
+    ;;
+x86_64)
+    BUILDERARCH=amd64
+    ;;
+*)
+    echo "$(uname -a): unsupported architecture"
+    exit 1
+esac
+
 if [[ ${TARGET_PLATFORMS} ]] ; then
     IFS='/' read -r OS ARCH <<<"${TARGET_PLATFORMS}"
     BUILDX_ARGS+=('--platform' "${TARGET_PLATFORMS}")
 else
-    case $(uname -m) in
-    aarch64 | arm64)
-        ARCH=arm64
-        ;;
-    x86_64)
-        ARCH=amd64
-        ;;
-    *)
-        echo "$(uname -a): unsupported architecture"
-        exit 1
-    esac
-    BUILDX_ARGS+=('--platform' "linux/${ARCH}")
+    BUILDX_ARGS+=('--platform' "linux/${BUILDERARCH}")
 fi
 
 if [[ -z $TAG ]]; then
-    if API_VERSION=$(./bin/longhorn-share-manager-"${ARCH}" version --client-only | jq ".clientVersion.apiVersion"); then
+    if API_VERSION=$(./bin/longhorn-share-manager-"${BUILDERARCH}" version --client-only | jq ".clientVersion.apiVersion"); then
       TAG="v${API_VERSION}_$(date -u +%Y%m%d)"
     else
       TAG="${VERSION}"
@@ -66,7 +67,7 @@ fi
 
 [[ $IS_SECURE == 'true' ]] && BUILDX_ARGS+=('--sbom=true' '--attest' 'type=provenance,mode=max')
 
-IMAGE_ARGS=(--build-arg ARCH="${ARCH}")
+IMAGE_ARGS=()
 [[ -n "${SRC_BRANCH}" ]] && IMAGE_ARGS+=(--build-arg SRC_BRANCH="${SRC_BRANCH}")
 [[ -n "${SRC_TAG}" ]] && IMAGE_ARGS+=(--build-arg SRC_TAG="${SRC_TAG}")
 
@@ -91,5 +92,5 @@ echo "${BUILD_CMD[@]}" "${IMAGE_BUILD_CMD_ARGS[@]}"
 
 echo "Built ${IMAGE}"
 
-mkdir ./bin || true
+mkdir -p ./bin
 echo "${IMAGE}" > ./bin/latest_image
