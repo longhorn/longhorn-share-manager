@@ -19,7 +19,23 @@ fi
 cd $(dirname $0)/..
 
 mkdir -p bin
-archs=("amd64" "arm64")
-for arch in "${archs[@]}"; do
-    CGO_ENABLED=0 GOARCH="$arch" go build -o "bin/longhorn-share-manager-$arch" -ldflags "$LINKFLAGS" $COVER $COVERPKG
+
+ARCHS=${ARCHS:-''}
+if [[ -z "${ARCHS}" ]]; then
+    case $(uname -m) in
+    aarch64 | arm64)
+        ARCHS=(arm64)
+        ;;
+    x86_64)
+        ARCHS=(amd64)
+        ;;
+    *)
+        echo "$(uname -a): unsupported architecture"
+        exit 1
+    esac
+else
+    IFS=' ' read -r -a ARCHS <<<"${ARCHS}"
+fi
+for arch in "${ARCHS[@]}"; do
+    CGO_ENABLED=0 GOARCH="${arch}" go build -o "bin/longhorn-share-manager-${arch}" -ldflags "${LINKFLAGS}" ${COVER} ${COVERPKG}
 done
