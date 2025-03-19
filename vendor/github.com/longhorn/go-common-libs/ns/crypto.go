@@ -12,7 +12,7 @@ import (
 // LuksOpen runs cryptsetup luksOpen with the given passphrase and
 // returns the stdout and error.
 func (nsexec *Executor) LuksOpen(volume, devicePath, passphrase string, timeout time.Duration) (stdout string, err error) {
-	args := []string{"luksOpen", devicePath, volume, "-d", "-"}
+	args := []string{"luksOpen", devicePath, volume, "-d", "/dev/stdin"}
 	return nsexec.CryptsetupWithPassphrase(passphrase, args, timeout)
 }
 
@@ -32,7 +32,7 @@ func (nsexec *Executor) LuksFormat(devicePath, passphrase, keyCipher, keyHash, k
 		"--hash", keyHash,
 		"--key-size", keySize,
 		"--pbkdf", pbkdf,
-		devicePath, "-d", "-",
+		devicePath, "-d", "/dev/stdin",
 	}
 	return nsexec.CryptsetupWithPassphrase(passphrase, args, timeout)
 }
