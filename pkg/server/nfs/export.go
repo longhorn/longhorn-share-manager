@@ -11,6 +11,7 @@ import (
 	"syscall"
 
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 
 	"github.com/longhorn/longhorn-share-manager/pkg/util"
 )
@@ -67,12 +68,12 @@ func (e *Exporter) GetExportMap() ExportMap {
 	defer e.mapMutex.RUnlock()
 
 	volToID := map[string]uint16{}
-	for vol, id := range e.ExportMap.volumeToid {
+	for vol, id := range e.volumeToid {
 		volToID[vol] = id
 	}
 
 	idToVol := map[uint16]string{}
-	for id, vol := range e.ExportMap.idToVolume {
+	for id, vol := range e.idToVolume {
 		idToVol[id] = vol
 	}
 
@@ -223,7 +224,11 @@ func (e *Exporter) addToConfig(block string) error {
 	if err != nil {
 		return err
 	}
-	defer config.Close()
+	defer func() {
+		if errClose := config.Close(); errClose != nil {
+			logrus.WithError(errClose).Error("Failed to close config file")
+		}
+	}()
 
 	if _, err = config.WriteString(block); err != nil {
 		return err
@@ -243,7 +248,7 @@ func (e *Exporter) removeFromConfig(block string) error {
 		return err
 	}
 
-	newConfig := strings.Replace(string(config), block, "", -1)
+	newConfig := strings.ReplaceAll(string(config), block, "")
 	err = os.WriteFile(e.configPath, []byte(newConfig), 0)
 	if err != nil {
 		return err
