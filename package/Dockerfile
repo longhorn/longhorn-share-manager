@@ -14,7 +14,7 @@ RUN /app/scripts/build
 
 FROM registry.suse.com/bci/bci-base:15.6 AS lib_builder
 
-ARG SRC_BRANCH=main
+ARG SRC_BRANCH=master
 ARG SRC_TAG
 
 RUN zypper -n ref && \
