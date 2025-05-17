@@ -19,35 +19,35 @@ toolchain go1.24.3
 // the portions of k8s.io/kubernetes code this module actually uses, not all of the replace directives may strictly be
 // necessary. However, it is better to include all of them for consistency.
 replace (
-	k8s.io/api => k8s.io/api v0.33.0
-	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.33.0
-	k8s.io/apimachinery => k8s.io/apimachinery v0.33.0
-	k8s.io/apiserver => k8s.io/apiserver v0.33.0
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.33.0
-	k8s.io/client-go => k8s.io/client-go v0.33.0
-	k8s.io/cloud-provider => k8s.io/cloud-provider v0.33.0
-	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.33.0
-	k8s.io/code-generator => k8s.io/code-generator v0.33.0
-	k8s.io/component-base => k8s.io/component-base v0.33.0
-	k8s.io/component-helpers => k8s.io/component-helpers v0.33.0
-	k8s.io/controller-manager => k8s.io/controller-manager v0.33.0
-	k8s.io/cri-api => k8s.io/cri-api v0.33.0
-	k8s.io/cri-client => k8s.io/cri-client v0.33.0
-	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.33.0
-	k8s.io/dynamic-resource-allocation => k8s.io/dynamic-resource-allocation v0.33.0
-	k8s.io/endpointslice => k8s.io/endpointslice v0.33.0
-	k8s.io/kms => k8s.io/kms v0.33.0
-	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.33.0
-	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.33.0
-	k8s.io/kube-proxy => k8s.io/kube-proxy v0.33.0
-	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.33.0
-	k8s.io/kubectl => k8s.io/kubectl v0.33.0
-	k8s.io/kubelet => k8s.io/kubelet v0.33.0
-	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.12
-	k8s.io/metrics => k8s.io/metrics v0.33.0
-	k8s.io/mount-utils => k8s.io/mount-utils v0.33.0
-	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.33.0
-	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.33.0
+	k8s.io/api => k8s.io/api v0.33.1
+	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.33.1
+	k8s.io/apimachinery => k8s.io/apimachinery v0.33.1
+	k8s.io/apiserver => k8s.io/apiserver v0.33.1
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.33.1
+	k8s.io/client-go => k8s.io/client-go v0.33.1
+	k8s.io/cloud-provider => k8s.io/cloud-provider v0.33.1
+	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.33.1
+	k8s.io/code-generator => k8s.io/code-generator v0.33.1
+	k8s.io/component-base => k8s.io/component-base v0.33.1
+	k8s.io/component-helpers => k8s.io/component-helpers v0.33.1
+	k8s.io/controller-manager => k8s.io/controller-manager v0.33.1
+	k8s.io/cri-api => k8s.io/cri-api v0.33.1
+	k8s.io/cri-client => k8s.io/cri-client v0.33.1
+	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.33.1
+	k8s.io/dynamic-resource-allocation => k8s.io/dynamic-resource-allocation v0.33.1
+	k8s.io/endpointslice => k8s.io/endpointslice v0.33.1
+	k8s.io/kms => k8s.io/kms v0.33.1
+	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.33.1
+	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.33.1
+	k8s.io/kube-proxy => k8s.io/kube-proxy v0.33.1
+	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.33.1
+	k8s.io/kubectl => k8s.io/kubectl v0.33.1
+	k8s.io/kubelet => k8s.io/kubelet v0.33.1
+	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.13
+	k8s.io/metrics => k8s.io/metrics v0.33.1
+	k8s.io/mount-utils => k8s.io/mount-utils v0.33.1
+	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.33.1
+	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.33.1
 )
 
 require (
@@ -60,13 +60,13 @@ require (
 	github.com/urfave/cli v1.22.16
 	golang.org/x/net v0.40.0
 	golang.org/x/sys v0.33.0
-	google.golang.org/grpc v1.72.0
+	google.golang.org/grpc v1.72.1
 	google.golang.org/protobuf v1.36.6
-	k8s.io/api v0.33.0
-	k8s.io/apimachinery v0.33.0
-	k8s.io/client-go v0.33.0
-	k8s.io/kubernetes v1.33.0
-	k8s.io/mount-utils v0.33.0
+	k8s.io/api v0.33.1
+	k8s.io/apimachinery v0.33.1
+	k8s.io/client-go v0.33.1
+	k8s.io/kubernetes v1.33.1
+	k8s.io/mount-utils v0.33.1
 	k8s.io/utils v0.0.0-20250502105355-0f33e8f1c979
 )
 
