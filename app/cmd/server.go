@@ -87,6 +87,11 @@ func ServerCmd() cli.Command {
 				Usage:    "allows for specifying additional mount options",
 				Required: false,
 			},
+			cli.StringSliceFlag{
+				Name:     "format",
+				Usage:    "allows for specifying additional filesystem formatting options",
+				Required: false,
+			},
 		},
 		Action: func(c *cli.Context) {
 			vol := volume.Volume{
@@ -99,6 +104,7 @@ func ServerCmd() cli.Command {
 				CryptoPBKDF:     c.String("crytpopbkdf"),
 				FsType:          c.String("fs"),
 				MountOptions:    c.StringSlice("mount"),
+				FormatOptions:   c.StringSlice("format"),
 			}
 
 			if c.Bool("encrypted") && len(vol.Passphrase) == 0 {
