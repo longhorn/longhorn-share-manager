@@ -40,7 +40,7 @@ func CheckMountValid(mountPath string) bool {
 	return err == nil && isMountPoint
 }
 
-func MountVolume(devicePath, mountPath, fsType string, mountOptions []string) error {
+func MountVolume(devicePath, mountPath, fsType string, mountOptions []string, formatOptions []string) error {
 	if !CheckDeviceValid(devicePath) {
 		return fmt.Errorf("cannot mount device %v to %v invalid device", devicePath, mountPath)
 	}
@@ -61,7 +61,8 @@ func MountVolume(devicePath, mountPath, fsType string, mountOptions []string) er
 		}
 	}
 
-	return mounter.FormatAndMount(devicePath, mountPath, fsType, mountOptions)
+	return mounter.FormatAndMountSensitiveWithFormatOptions(devicePath, mountPath, fsType,
+		mountOptions, nil, formatOptions)
 }
 
 func ResizeVolume(devicePath, mountPath string) (bool, error) {
