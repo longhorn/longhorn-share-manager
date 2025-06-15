@@ -234,6 +234,7 @@ func (m *ShareManager) tearDownDevice(vol volume.Volume) error {
 func (m *ShareManager) MountVolume(vol volume.Volume, devicePath, mountPath string) error {
 	fsType := vol.FsType
 	mountOptions := vol.MountOptions
+	formatOptions := vol.FormatOptions
 
 	// https://github.com/longhorn/longhorn/issues/2991
 	// pre v1.2 we ignored the fsType and always formatted as ext4
@@ -251,7 +252,7 @@ func (m *ShareManager) MountVolume(vol volume.Volume, devicePath, mountPath stri
 		fsType = diskFormat
 	}
 
-	return volume.MountVolume(devicePath, mountPath, fsType, mountOptions)
+	return volume.MountVolume(devicePath, mountPath, fsType, mountOptions, formatOptions)
 }
 
 func (m *ShareManager) resizeVolume(devicePath, mountPath string) error {
