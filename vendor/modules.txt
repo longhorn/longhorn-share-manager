@@ -549,7 +549,7 @@ k8s.io/kube-openapi/pkg/schemaconv
 k8s.io/kube-openapi/pkg/spec3
 k8s.io/kube-openapi/pkg/util/proto
 k8s.io/kube-openapi/pkg/validation/spec
-# k8s.io/kubernetes v1.33.1
+# k8s.io/kubernetes v1.33.2
 ## explicit; go 1.24.0
 k8s.io/kubernetes/pkg/volume/util/hostutil
 # k8s.io/mount-utils v0.33.2 => k8s.io/mount-utils v0.33.2
