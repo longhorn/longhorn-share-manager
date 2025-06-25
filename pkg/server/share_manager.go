@@ -262,7 +262,7 @@ func (m *ShareManager) getFormatOptions() []string {
 		return nil
 	}
 
-	return strings.Split(env, ",")
+	return strings.Split(env, ":")
 }
 
 func (m *ShareManager) resizeVolume(devicePath, mountPath string) error {
