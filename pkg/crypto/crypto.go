@@ -105,6 +105,17 @@ func DeviceEncryptionStatus(devicePath string) (mappedDevice, mapper string, err
 		return devicePath, "", err
 	}
 
+	// Check the mapper device using `cryptsetup status`. Sample output:
+	//   /dev/mapper/pvc-e2a1c50a-9409-4afd-9e7d-3c1f5a9afa7f is active and is in use.
+	//     type:    LUKS2
+	//     cipher:  aes-xts-plain64
+	//     keysize: 256 bits
+	//     key location: keyring
+	//     device:  /dev/sda
+	//     sector size:  512
+	//     offset:  32768 sectors
+	//     size:    110592 sectors
+	//     mode:    read/write
 	volume := strings.TrimPrefix(devicePath, types.MapperDevPath+"/")
 	stdout, err := nsexec.LuksStatus(volume, lhtypes.LuksTimeout)
 	if err != nil {
@@ -115,7 +126,11 @@ func DeviceEncryptionStatus(devicePath string) (mappedDevice, mapper string, err
 	if len(lines) < 1 {
 		return "", "", fmt.Errorf("device encryption status returned no stdout for %s", devicePath)
 	}
-	if !strings.HasSuffix(lines[0], " is active.") {
+
+	// There are two possible cases to an encrypted mapper device:
+	// - "/path/to/device is active.": the mapper device is activated by `cryptsetup luksOpen`
+	// - "/path/to/device is active and is in use.": the activated device is mounted or exposed (e.g., NFS)
+	if !strings.Contains(lines[0], " is active") {
 		// Implies this is not a LUKS device
 		return devicePath, "", nil
 	}
