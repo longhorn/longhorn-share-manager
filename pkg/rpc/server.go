@@ -151,11 +151,12 @@ func (s *ShareManagerServer) FilesystemResize(ctx context.Context, req *emptypb.
 
 	// Note that cryptsetup resize is only necessary for volumes resized while online.  For offline, it will happen automatically during 'open'.
 	if vol.IsEncrypted() {
-		diskFormat, err := volume.GetDiskFormat(devicePath)
+		rawDevicePath := types.GetRawVolumeDevicePath(vol.Name)
+		diskFormat, err := volume.GetDiskFormat(rawDevicePath)
 		if err != nil {
 			return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.Internal, "failed to determine disk format of volume %v: %v", vol.Name, err)
 		}
-		log.Infof("Device %v contains filesystem of format %v", devicePath, diskFormat)
+		log.WithField("mappedDevice", devicePath).Infof("Encrypted volume device %v contains filesystem of format %v", rawDevicePath, diskFormat)
 
 		if diskFormat != "crypto_LUKS" {
 			return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.InvalidArgument, "unsupported disk encryption format %v", diskFormat)
