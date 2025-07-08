@@ -562,7 +562,7 @@ k8s.io/kube-openapi/pkg/schemaconv
 k8s.io/kube-openapi/pkg/spec3
 k8s.io/kube-openapi/pkg/util/proto
 k8s.io/kube-openapi/pkg/validation/spec
-# k8s.io/kubernetes v1.32.3
+# k8s.io/kubernetes v1.32.6
 ## explicit; go 1.23.0
 k8s.io/kubernetes/pkg/util/filesystem
 k8s.io/kubernetes/pkg/volume/util/hostutil
