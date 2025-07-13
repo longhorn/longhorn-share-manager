@@ -389,6 +389,16 @@ func (s *ShareManagerHealthCheckServer) Watch(req *healthpb.HealthCheckRequest, 
 	}
 }
 
+func (s *ShareManagerHealthCheckServer) List(context.Context, *healthpb.HealthListRequest) (*healthpb.HealthListResponse, error) {
+	return &healthpb.HealthListResponse{
+		Statuses: map[string]*healthpb.HealthCheckResponse{
+			"grpc": {
+				Status: healthpb.HealthCheckResponse_SERVING,
+			},
+		},
+	}, nil
+}
+
 func nfsServerIsRunning() bool {
 	_, err := util.FindProcessByName("ganesha.nfsd")
 	return err == nil
