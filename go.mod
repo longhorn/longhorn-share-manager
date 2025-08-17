@@ -19,41 +19,41 @@ toolchain go1.25.0
 // the portions of k8s.io/kubernetes code this module actually uses, not all of the replace directives may strictly be
 // necessary. However, it is better to include all of them for consistency.
 replace (
-	k8s.io/api => k8s.io/api v0.33.3
-	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.33.3
-	k8s.io/apimachinery => k8s.io/apimachinery v0.33.3
-	k8s.io/apiserver => k8s.io/apiserver v0.33.3
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.33.3
-	k8s.io/client-go => k8s.io/client-go v0.33.3
-	k8s.io/cloud-provider => k8s.io/cloud-provider v0.33.3
-	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.33.3
-	k8s.io/code-generator => k8s.io/code-generator v0.33.3
-	k8s.io/component-base => k8s.io/component-base v0.33.3
-	k8s.io/component-helpers => k8s.io/component-helpers v0.33.3
-	k8s.io/controller-manager => k8s.io/controller-manager v0.33.3
-	k8s.io/cri-api => k8s.io/cri-api v0.33.3
-	k8s.io/cri-client => k8s.io/cri-client v0.33.3
-	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.33.3
-	k8s.io/dynamic-resource-allocation => k8s.io/dynamic-resource-allocation v0.33.3
-	k8s.io/endpointslice => k8s.io/endpointslice v0.33.3
-	k8s.io/kms => k8s.io/kms v0.33.3
-	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.33.3
-	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.33.3
-	k8s.io/kube-proxy => k8s.io/kube-proxy v0.33.3
-	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.33.3
-	k8s.io/kubectl => k8s.io/kubectl v0.33.3
-	k8s.io/kubelet => k8s.io/kubelet v0.33.3
+	k8s.io/api => k8s.io/api v0.33.4
+	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.33.4
+	k8s.io/apimachinery => k8s.io/apimachinery v0.33.4
+	k8s.io/apiserver => k8s.io/apiserver v0.33.4
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.33.4
+	k8s.io/client-go => k8s.io/client-go v0.33.4
+	k8s.io/cloud-provider => k8s.io/cloud-provider v0.33.4
+	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.33.4
+	k8s.io/code-generator => k8s.io/code-generator v0.33.4
+	k8s.io/component-base => k8s.io/component-base v0.33.4
+	k8s.io/component-helpers => k8s.io/component-helpers v0.33.4
+	k8s.io/controller-manager => k8s.io/controller-manager v0.33.4
+	k8s.io/cri-api => k8s.io/cri-api v0.33.4
+	k8s.io/cri-client => k8s.io/cri-client v0.33.4
+	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.33.4
+	k8s.io/dynamic-resource-allocation => k8s.io/dynamic-resource-allocation v0.33.4
+	k8s.io/endpointslice => k8s.io/endpointslice v0.33.4
+	k8s.io/kms => k8s.io/kms v0.33.4
+	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.33.4
+	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.33.4
+	k8s.io/kube-proxy => k8s.io/kube-proxy v0.33.4
+	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.33.4
+	k8s.io/kubectl => k8s.io/kubectl v0.33.4
+	k8s.io/kubelet => k8s.io/kubelet v0.33.4
 	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.14
-	k8s.io/metrics => k8s.io/metrics v0.33.3
-	k8s.io/mount-utils => k8s.io/mount-utils v0.33.3
-	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.33.3
-	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.33.3
+	k8s.io/metrics => k8s.io/metrics v0.33.4
+	k8s.io/mount-utils => k8s.io/mount-utils v0.33.4
+	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.33.4
+	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.33.4
 )
 
 require (
 	github.com/google/fscrypt v0.3.5
-	github.com/longhorn/go-common-libs v0.0.0-20250809060702-aec53ac032f0
-	github.com/longhorn/types v0.0.0-20250710112743-e3a1e9e2a9c1
+	github.com/longhorn/go-common-libs v0.0.0-20250812101836-470cb7301942
+	github.com/longhorn/types v0.0.0-20250812040111-bee68b0a4c07
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
@@ -62,11 +62,11 @@ require (
 	golang.org/x/sys v0.35.0
 	google.golang.org/grpc v1.74.2
 	google.golang.org/protobuf v1.36.7
-	k8s.io/api v0.33.3
-	k8s.io/apimachinery v0.33.3
-	k8s.io/client-go v0.33.3
-	k8s.io/kubernetes v1.33.3
-	k8s.io/mount-utils v0.33.3
+	k8s.io/api v0.33.4
+	k8s.io/apimachinery v0.33.4
+	k8s.io/client-go v0.33.4
+	k8s.io/kubernetes v1.33.4
+	k8s.io/mount-utils v0.33.4
 	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397
 )
 
