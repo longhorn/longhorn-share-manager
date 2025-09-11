@@ -52,16 +52,16 @@ replace (
 
 require (
 	github.com/google/fscrypt v0.3.5
-	github.com/longhorn/go-common-libs v0.0.0-20250905093241-e9576a7c89fa
-	github.com/longhorn/types v0.0.0-20250831081209-ea63b0b5f6e1
+	github.com/longhorn/go-common-libs v0.0.0-20250908085655-4593e23015c0
+	github.com/longhorn/types v0.0.0-20250907125557-ef38b61560af
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli v1.22.17
 	golang.org/x/net v0.41.0
 	golang.org/x/sys v0.33.0
-	google.golang.org/grpc v1.75.0
-	google.golang.org/protobuf v1.36.8
+	google.golang.org/grpc v1.75.1
+	google.golang.org/protobuf v1.36.9
 	k8s.io/api v0.32.3
 	k8s.io/apimachinery v0.32.3
 	k8s.io/client-go v0.32.3
