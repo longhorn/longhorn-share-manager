@@ -65,7 +65,7 @@ require (
 	k8s.io/api v0.32.3
 	k8s.io/apimachinery v0.32.3
 	k8s.io/client-go v0.32.3
-	k8s.io/kubernetes v1.32.6
+	k8s.io/kubernetes v1.32.9
 	k8s.io/mount-utils v0.32.3
 	k8s.io/utils v0.0.0-20250820121507-0af2bda4dd1d
 )
