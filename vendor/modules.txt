@@ -249,7 +249,7 @@ google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
-# google.golang.org/protobuf v1.36.9
+# google.golang.org/protobuf v1.36.10
 ## explicit; go 1.23
 google.golang.org/protobuf/encoding/protojson
 google.golang.org/protobuf/encoding/prototext
@@ -569,7 +569,7 @@ k8s.io/kubernetes/pkg/volume/util/hostutil
 # k8s.io/mount-utils v0.32.3 => k8s.io/mount-utils v0.32.3
 ## explicit; go 1.23.0
 k8s.io/mount-utils
-# k8s.io/utils v0.0.0-20250820121507-0af2bda4dd1d
+# k8s.io/utils v0.0.0-20251002143259-bc988d571ff4
 ## explicit; go 1.18
 k8s.io/utils/clock
 k8s.io/utils/clock/testing

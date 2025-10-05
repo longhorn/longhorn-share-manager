@@ -61,13 +61,13 @@ require (
 	golang.org/x/net v0.41.0
 	golang.org/x/sys v0.33.0
 	google.golang.org/grpc v1.75.1
-	google.golang.org/protobuf v1.36.9
+	google.golang.org/protobuf v1.36.10
 	k8s.io/api v0.32.3
 	k8s.io/apimachinery v0.32.3
 	k8s.io/client-go v0.32.3
 	k8s.io/kubernetes v1.32.9
 	k8s.io/mount-utils v0.32.3
-	k8s.io/utils v0.0.0-20250820121507-0af2bda4dd1d
+	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4
 )
 
 require (
