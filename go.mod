@@ -52,8 +52,8 @@ replace (
 
 require (
 	github.com/google/fscrypt v0.3.5
-	github.com/longhorn/go-common-libs v0.0.0-20251009070934-14b7c6b59be3
-	github.com/longhorn/types v0.0.0-20250915085125-0638a2eac534
+	github.com/longhorn/go-common-libs v0.0.0-20251012091539-422bbbd4c8b9
+	github.com/longhorn/types v0.0.0-20251012091916-f701e0df060f
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
@@ -106,7 +106,7 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/exp v0.0.0-20250911091902-df9299821621 // indirect
+	golang.org/x/exp v0.0.0-20251009144603-d2f985daa21b // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/term v0.34.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
