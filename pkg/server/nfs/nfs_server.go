@@ -47,7 +47,7 @@ NFSV4
 {
     Lease_Lifetime = {{.LeaseLifetime}};
     Grace_Period = {{.GracePeriod}};
-    Minor_Versions = 1, 2;
+    Minor_Versions = 0, 1, 2;
     RecoveryBackend = longhorn;
     Only_Numeric_Owners = true;
 }
