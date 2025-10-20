@@ -10,7 +10,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/pkg/errors"
+	"github.com/cockroachdb/errors"
 	"github.com/sirupsen/logrus"
 
 	"github.com/longhorn/longhorn-share-manager/pkg/util"

@@ -7,15 +7,17 @@ import (
 	"sync"
 	"time"
 
+	"github.com/cockroachdb/errors"
 	"github.com/google/fscrypt/filesystem"
 	"github.com/longhorn/types/pkg/generated/smrpc"
-	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
+	"google.golang.org/protobuf/types/known/emptypb"
+
 	grpccodes "google.golang.org/grpc/codes"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	grpcstatus "google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/emptypb"
+
 	"k8s.io/mount-utils"
 
 	lhexec "github.com/longhorn/go-common-libs/exec"
