@@ -9,14 +9,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pkg/errors"
+	"github.com/cockroachdb/errors"
 	"github.com/sirupsen/logrus"
+
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 
 	coordinationv1 "k8s.io/api/coordination/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
 	coordinationv1client "k8s.io/client-go/kubernetes/typed/coordination/v1"
-	"k8s.io/client-go/rest"
 	mount "k8s.io/mount-utils"
 
 	"github.com/longhorn/longhorn-share-manager/pkg/crypto"
