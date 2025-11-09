@@ -81,8 +81,8 @@ github.com/gogo/protobuf/proto
 github.com/gogo/protobuf/protoc-gen-gogo/descriptor
 github.com/gogo/protobuf/sortkeys
 github.com/gogo/protobuf/types
-# github.com/google/fscrypt v0.3.5
-## explicit; go 1.18
+# github.com/google/fscrypt v0.3.6
+## explicit; go 1.23.0
 github.com/google/fscrypt/filesystem
 github.com/google/fscrypt/metadata
 github.com/google/fscrypt/util
