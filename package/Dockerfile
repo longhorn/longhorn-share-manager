@@ -64,10 +64,7 @@ RUN zypper -n ref && \
 
 RUN for i in {1..10}; do \
         zypper -n addrepo --refresh https://download.opensuse.org/repositories/KDE:KDE3/16.0/KDE:KDE3.repo && \
-        zypper -n addrepo --refresh https://download.opensuse.org/repositories/graphics/16.0/graphics.repo && \
-        zypper -n addrepo --refresh https://download.opensuse.org/repositories/devel:tools/16.0/devel:tools.repo && \
-        zypper -n addrepo --refresh https://download.opensuse.org/repositories/devel:tools:building/16.0/devel:tools:building.repo && \
-        zypper -n addrepo --refresh https://download.opensuse.org/repositories/network:ldap/16.0/network:ldap.repo && \
+    zypper -n addrepo --refresh https://download.opensuse.org/repositories/network:ldap/16.0/network:ldap.repo && \
         zypper --gpg-auto-import-keys ref && break || sleep 1; \
     done
 
