@@ -53,7 +53,7 @@ replace (
 require (
 	github.com/google/fscrypt v0.3.6
 	github.com/longhorn/go-common-libs v0.0.0-20251025140453-faa811992208
-	github.com/longhorn/types v0.0.0-20251019113838-3455d9c2f5ca
+	github.com/longhorn/types v0.0.0-20251114033314-2b0f01ee4a71
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
