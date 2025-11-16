@@ -140,7 +140,7 @@ github.com/longhorn/go-common-libs/sync
 github.com/longhorn/go-common-libs/sys
 github.com/longhorn/go-common-libs/types
 github.com/longhorn/go-common-libs/utils
-# github.com/longhorn/types v0.0.0-20251019113838-3455d9c2f5ca
+# github.com/longhorn/types v0.0.0-20251114033314-2b0f01ee4a71
 ## explicit; go 1.24.0
 github.com/longhorn/types/pkg/generated/smrpc
 # github.com/mailru/easyjson v0.7.7
