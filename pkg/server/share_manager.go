@@ -16,7 +16,6 @@ import (
 	"k8s.io/client-go/rest"
 
 	coordinationv1 "k8s.io/api/coordination/v1"
-	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	coordinationv1client "k8s.io/client-go/kubernetes/typed/coordination/v1"
 	mount "k8s.io/mount-utils"
@@ -33,7 +32,7 @@ const waitBetweenChecks = time.Second * 5
 const leaseRenewInterval = time.Second * 3
 const healthCheckInterval = time.Second * 10
 const configPath = "/tmp/vfs.conf"
-const BCNamespace = "longhorn-system" // backward compatibility namespace
+const defaultNamespace = "longhorn-system" // backward compatibility namespace
 const shareManagerPrefix = "share-manager-"
 
 const EnvKeyFastFailover = "FAST_FAILOVER"
@@ -83,7 +82,7 @@ func NewShareManager(logger logrus.FieldLogger, volume volume.Volume) (*ShareMan
 	namespace := os.Getenv(types.EnvPodNamespace)
 	if namespace == "" {
 		m.logger.Warnf("Cannot detect pod namespace, environment variable %v is missing, using default namespace", types.EnvPodNamespace)
-		namespace = corev1.NamespaceDefault
+		namespace = defaultNamespace
 	}
 
 	m.namespace = namespace
@@ -108,13 +107,8 @@ func NewShareManager(logger logrus.FieldLogger, volume volume.Volume) (*ShareMan
 		// and store for use as lease holder.
 		pod, err := kubeclientset.CoreV1().Pods(m.namespace).Get(m.context, m.podName, metav1.GetOptions{})
 		if err != nil {
-			// backward compatibility namespace longhorn-system
-			pod, err = kubeclientset.CoreV1().Pods(BCNamespace).Get(m.context, m.podName, metav1.GetOptions{})
-			if err != nil {
-				m.logger.WithError(err).Warn("Failed to get share-manager pod specification from API for fast failover")
-				return nil, err
-			}
-			m.podName = BCNamespace
+			m.logger.WithError(err).Warn("Failed to get share-manager pod specification from API for fast failover")
+			return nil, err
 		}
 		m.leaseHolder = pod.Spec.NodeName
 		m.leaseClient = kubeclientset.CoordinationV1()
