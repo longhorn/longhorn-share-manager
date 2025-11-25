@@ -13,6 +13,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	coordinationv1 "k8s.io/api/coordination/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	coordinationv1client "k8s.io/client-go/kubernetes/typed/coordination/v1"
@@ -31,7 +32,7 @@ const waitBetweenChecks = time.Second * 5
 const leaseRenewInterval = time.Second * 3
 const healthCheckInterval = time.Second * 10
 const configPath = "/tmp/vfs.conf"
-const namespace = "longhorn-system"
+const BCNamespace = "longhorn-system" // backward compatibility namespace
 const shareManagerPrefix = "share-manager-"
 
 const EnvKeyFastFailover = "FAST_FAILOVER"
@@ -61,6 +62,9 @@ type ShareManager struct {
 	lease              *coordinationv1.Lease
 
 	nfsServer *nfs.Server
+
+	namespace string
+	podName   string
 }
 
 func NewShareManager(logger logrus.FieldLogger, volume volume.Volume) (*ShareManager, error) {
@@ -74,6 +78,24 @@ func NewShareManager(logger logrus.FieldLogger, volume volume.Volume) (*ShareMan
 	leaseLifetime := m.getEnvAsInt(EnvKeyLeaseLifetime, defaultLeaseLifetime)
 	gracePeriod := m.getEnvAsInt(EnvKeyGracePeriod, defaultGracePeriod)
 
+	// get pod namespace from env
+	namespace := os.Getenv(types.EnvPodNamespace)
+	if namespace == "" {
+		m.logger.Warnf("Cannot detect pod namespace, environment variable %v is missing, using default namespace", types.EnvPodNamespace)
+		namespace = corev1.NamespaceDefault
+	}
+
+	m.namespace = namespace
+
+	// get pod name from env
+	podName := os.Getenv(types.EnvPodName)
+	if podName == "" {
+		m.logger.Warnf("Cannot detect pod name, environment variable %v is missing, using generated name", types.EnvPodName)
+		podName = shareManagerPrefix + m.volume.Name
+	}
+
+	m.podName = podName
+
 	if m.enableFastFailover {
 		kubeclientset, err := m.NewKubeClient()
 		if err != nil {
@@ -83,11 +105,15 @@ func NewShareManager(logger logrus.FieldLogger, volume volume.Volume) (*ShareMan
 
 		// Use the clientset to get the node name of the share-manager pod
 		// and store for use as lease holder.
-		podName := shareManagerPrefix + m.volume.Name
-		pod, err := kubeclientset.CoreV1().Pods(namespace).Get(m.context, podName, metav1.GetOptions{})
+		pod, err := kubeclientset.CoreV1().Pods(m.namespace).Get(m.context, m.podName, metav1.GetOptions{})
 		if err != nil {
-			m.logger.WithError(err).Warn("Failed to get share-manager pod for fast failover")
-			return nil, err
+			// backward compatibility namespace longhorn-system
+			pod, err = kubeclientset.CoreV1().Pods(BCNamespace).Get(m.context, m.podName, metav1.GetOptions{})
+			if err != nil {
+				m.logger.WithError(err).Warn("Failed to get share-manager pod specification from API for fast failover")
+				return nil, err
+			}
+			m.podName = BCNamespace
 		}
 		m.leaseHolder = pod.Spec.NodeName
 		m.leaseClient = kubeclientset.CoordinationV1()
@@ -324,7 +350,7 @@ func (m *ShareManager) takeLease() error {
 		return fmt.Errorf("kubernetes API client is unset")
 	}
 
-	lease, err := m.leaseClient.Leases(namespace).Get(m.context, m.volume.Name, metav1.GetOptions{})
+	lease, err := m.leaseClient.Leases(m.namespace).Get(m.context, m.volume.Name, metav1.GetOptions{})
 	if err != nil {
 		return err
 	}
@@ -339,7 +365,7 @@ func (m *ShareManager) takeLease() error {
 	m.lease.Spec.AcquireTime = &metav1.MicroTime{Time: now}
 	m.lease.Spec.RenewTime = &metav1.MicroTime{Time: now}
 
-	lease, err = m.leaseClient.Leases(namespace).Update(m.context, m.lease, metav1.UpdateOptions{})
+	lease, err = m.leaseClient.Leases(m.namespace).Update(m.context, m.lease, metav1.UpdateOptions{})
 	if err != nil {
 		return err
 	}
@@ -350,7 +376,7 @@ func (m *ShareManager) takeLease() error {
 
 func (m *ShareManager) renewLease() error {
 	m.lease.Spec.RenewTime = &metav1.MicroTime{Time: time.Now()}
-	lease, err := m.leaseClient.Leases(namespace).Update(m.context, m.lease, metav1.UpdateOptions{})
+	lease, err := m.leaseClient.Leases(m.namespace).Update(m.context, m.lease, metav1.UpdateOptions{})
 	if err != nil {
 		return err
 	}
