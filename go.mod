@@ -53,8 +53,8 @@ replace (
 require (
 	github.com/cockroachdb/errors v1.12.0
 	github.com/google/fscrypt v0.3.6
-	github.com/longhorn/go-common-libs v0.0.0-20251116145113-3788c6f8aba8
-	github.com/longhorn/types v0.0.0-20251114033314-2b0f01ee4a71
+	github.com/longhorn/go-common-libs v0.0.0-20251130061014-a2c18552fb30
+	github.com/longhorn/types v0.0.0-20251130061042-fc15b4776c60
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli v1.22.17
@@ -105,7 +105,7 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/exp v0.0.0-20251113190631-e25ba8c21ef6 // indirect
+	golang.org/x/exp v0.0.0-20251125195548-87e1e737ad39 // indirect
 	golang.org/x/net v0.47.0 // indirect
 	golang.org/x/oauth2 v0.32.0 // indirect
 	golang.org/x/term v0.37.0 // indirect
