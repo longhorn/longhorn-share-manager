@@ -54,7 +54,7 @@ require (
 	github.com/cockroachdb/errors v1.12.0
 	github.com/google/fscrypt v0.3.6
 	github.com/longhorn/go-common-libs v0.0.0-20251130104056-3332521977c9
-	github.com/longhorn/types v0.0.0-20251130061042-fc15b4776c60
+	github.com/longhorn/types v0.0.0-20251207085945-9c40bd62daff
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli v1.22.17
