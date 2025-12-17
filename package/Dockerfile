@@ -12,7 +12,7 @@ RUN chmod +x /app/scripts/build
 # Run the build script
 RUN /app/scripts/build
 
-FROM registry.suse.com/bci/bci-base:16.0 AS lib_builder
+FROM registry.suse.com/bci/bci-base:15.7 AS lib_builder
 
 ARG TARGETPLATFORM
 ARG SRC_BRANCH=master
@@ -25,15 +25,16 @@ RUN zypper -n ref && \
 # Build ganesha from source, install it to /usr/local and a use multi stage build to have a smaller image
 RUN zypper -n install autoconf bison curl git tar gzip jq libcurl-devel libjson-c-devel libacl-devel lsb-release \
                       libdbus-1-3 liburcu-devel libblkid-devel e2fsprogs e2fsprogs-devel xfsprogs xfsprogs-devel \
-                      dbus-1-devel flex Mesa-libGL-devel nfsidmap-devel
+                      dbus-1-devel flex Mesa-libGL-devel nfsidmap-devel \
+                      graphviz-devel doxygen libnsl-devel
 
 RUN for i in {1..10}; do \
         # Avoid using mirrors in Russia and Belarus
         zypper -n addrepo --refresh "https://download.opensuse.org/repositories/devel:libraries:c_c++/openSUSE_Factory/?AVOID_COUNTRY=ru,by" devel:libraries:c_c++.repo; \
         if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
-            zypper -n addrepo --refresh "https://download.opensuse.org/repositories/devel:tools:building/openSUSE_Factory/?AVOID_COUNTRY=ru,by" devel:tools:building.repo; \
+            zypper -n addrepo --refresh "https://download.opensuse.org/repositories/devel:/tools:/building//openSUSE_Factory/?AVOID_COUNTRY=ru,by" devel:tools:building.repo; \
         elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
-            zypper -n addrepo --refresh "https://download.opensuse.org/repositories/devel:tools:building/openSUSE_Factory_ARM/?AVOID_COUNTRY=ru,by" devel:tools:building.repo; \
+            zypper -n addrepo --refresh "https://download.opensuse.org/repositories/devel:/tools:/building//openSUSE_Factory_ARM/?AVOID_COUNTRY=ru,by" devel:tools:building.repo; \
         else \
             exit 1; \
         fi && \
@@ -42,19 +43,6 @@ RUN for i in {1..10}; do \
 
 RUN zypper -n install cmake
 RUN zypper -n install make
-
-RUN for i in {1..10}; do \
-        if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
-            zypper -n addrepo --refresh "https://download.opensuse.org/repositories/graphics/openSUSE_Factory/?AVOID_COUNTRY=ru,by" graphics.repo; \
-        elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
-            zypper -n addrepo --refresh "https://download.opensuse.org/repositories/graphics/openSUSE_Factory_ARM/?AVOID_COUNTRY=ru,by" graphics.repo; \
-        else \
-            exit 1; \
-        fi && \
-        zypper --gpg-auto-import-keys ref && break || sleep 1; \
-    done
-
-RUN zypper -n install graphviz-devel
 
 RUN for i in {1..10}; do \
         if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
@@ -69,18 +57,6 @@ RUN for i in {1..10}; do \
 
 RUN zypper -n install gcc14
 RUN zypper -n install gcc14-c++
-
-RUN for i in {1..10}; do \
-        zypper -n addrepo --refresh "https://download.opensuse.org/repositories/devel:tools/16.0/?AVOID_COUNTRY=ru,by" devel:tools.repo && \
-        zypper --gpg-auto-import-keys ref && break || sleep 1; \
-    done
-RUN zypper -n install doxygen
-
-RUN for i in {1..10}; do \
-        zypper -n addrepo --refresh "https://download.opensuse.org/repositories/network:NIS/16.0/?AVOID_COUNTRY=ru,by" network:NIS.repo && \
-        zypper --gpg-auto-import-keys ref && break || sleep 1; \
-    done
-RUN zypper -n install libnsl-devel
 
 RUN zypper clean -a
 
@@ -97,7 +73,7 @@ RUN export REPO_OVERRIDE="" && \
     bash /usr/src/dep-versions/scripts/build-nfs-ganesha.sh "${REPO_OVERRIDE}" "${COMMIT_ID_OVERRIDE}"
 
 
-FROM registry.suse.com/bci/bci-base:16.0 AS release
+FROM registry.suse.com/bci/bci-base:15.7 AS release
 
 ARG TARGETPLATFORM
 RUN if [ "$TARGETPLATFORM" != "linux/amd64" ] && [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
@@ -112,11 +88,9 @@ RUN zypper -n ref && \
 
 
 RUN for i in {1..10}; do \
-        zypper -n addrepo --refresh "https://download.opensuse.org/repositories/network:NIS/16.0/?AVOID_COUNTRY=ru,by" network:NIS.repo && \
         zypper -n addrepo --refresh "https://download.opensuse.org/repositories/graphics/openSUSE_Factory/?AVOID_COUNTRY=ru,by" graphics.repo && \
-        zypper -n addrepo --refresh "https://download.opensuse.org/repositories/devel:tools/16.0/?AVOID_COUNTRY=ru,by" devel:tools.repo && \
-        zypper -n addrepo --refresh "https://download.opensuse.org/repositories/devel:tools:building/16.0/?AVOID_COUNTRY=ru,by" devel:tools:building.repo && \
-        zypper -n addrepo --refresh "https://download.opensuse.org/repositories/network:ldap/16.0/?AVOID_COUNTRY=ru,by" network:ldap.repo && \
+        zypper -n addrepo --refresh "https://download.opensuse.org/repositories/devel:tools/15.7/?AVOID_COUNTRY=ru,by" devel:tools.repo && \
+        zypper -n addrepo --refresh "https://download.opensuse.org/repositories/devel:/tools:/building/15.7/?AVOID_COUNTRY=ru,by" devel:tools:building.repo && \
         zypper --gpg-auto-import-keys ref && break || sleep 1; \
     done
 
