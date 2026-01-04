@@ -127,7 +127,7 @@ github.com/kr/pretty
 # github.com/kr/text v0.2.0
 ## explicit
 github.com/kr/text
-# github.com/longhorn/go-common-libs v0.0.0-20251220083855-f666c812e595
+# github.com/longhorn/go-common-libs v0.0.0-20260103034008-119bdcf1b2d6
 ## explicit; go 1.24.0
 github.com/longhorn/go-common-libs/exec
 github.com/longhorn/go-common-libs/io
@@ -138,7 +138,7 @@ github.com/longhorn/go-common-libs/sync
 github.com/longhorn/go-common-libs/sys
 github.com/longhorn/go-common-libs/types
 github.com/longhorn/go-common-libs/utils
-# github.com/longhorn/types v0.0.0-20251224083914-4e86c5c8ca75
+# github.com/longhorn/types v0.0.0-20251228142423-336840fb2fd6
 ## explicit; go 1.24.0
 github.com/longhorn/types/pkg/generated/smrpc
 # github.com/mailru/easyjson v0.7.7

@@ -53,8 +53,8 @@ replace (
 require (
 	github.com/cockroachdb/errors v1.12.0
 	github.com/google/fscrypt v0.3.6
-	github.com/longhorn/go-common-libs v0.0.0-20251220083855-f666c812e595
-	github.com/longhorn/types v0.0.0-20251224083914-4e86c5c8ca75
+	github.com/longhorn/go-common-libs v0.0.0-20260103034008-119bdcf1b2d6
+	github.com/longhorn/types v0.0.0-20251228142423-336840fb2fd6
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli v1.22.17
