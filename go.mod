@@ -2,7 +2,7 @@ module github.com/longhorn/longhorn-share-manager
 
 go 1.24.0
 
-toolchain go1.25.5
+toolchain go1.25.6
 
 // Replace directives are required for dependencies in this section because:
 // - This module imports k8s.io/kubernetes.
@@ -56,7 +56,7 @@ require (
 	github.com/longhorn/types v0.0.0-20251228142423-336840fb2fd6
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.9.3
+	github.com/sirupsen/logrus v1.9.4
 	github.com/urfave/cli v1.22.17
 	golang.org/x/sys v0.38.0
 	google.golang.org/grpc v1.78.0
