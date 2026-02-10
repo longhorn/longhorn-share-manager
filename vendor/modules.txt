@@ -629,13 +629,13 @@ k8s.io/kube-openapi/pkg/spec3
 k8s.io/kube-openapi/pkg/util
 k8s.io/kube-openapi/pkg/util/proto
 k8s.io/kube-openapi/pkg/validation/spec
-# k8s.io/kubernetes v1.35.0
+# k8s.io/kubernetes v1.35.1
 ## explicit; go 1.25.0
 k8s.io/kubernetes/pkg/volume/util/hostutil
 # k8s.io/mount-utils v0.35.0 => k8s.io/mount-utils v0.35.0
 ## explicit; go 1.25.0
 k8s.io/mount-utils
-# k8s.io/utils v0.0.0-20260108192941-914a6e750570
+# k8s.io/utils v0.0.0-20260210185600-b8788abfbbc2
 ## explicit; go 1.23
 k8s.io/utils/clock
 k8s.io/utils/exec
