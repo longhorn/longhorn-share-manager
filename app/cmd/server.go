@@ -53,27 +53,39 @@ func ServerCmd() cli.Command {
 				Required: false,
 			},
 			cli.StringFlag{
-				Name:     "crytpokeycipher",
+				Name:     "cryptokeycipher",
 				Usage:    "contains the encryption algorithm in dm-crypt notation",
 				EnvVar:   "CRYPTOKEYCIPHER",
 				Required: false,
 			},
 			cli.StringFlag{
-				Name:     "crytpokeyhash",
+				Name:     "cryptokeyhash",
 				Usage:    "contains the hash algorithm for the checksum resilience mode",
 				EnvVar:   "CRYPTOKEYHASH",
 				Required: false,
 			},
 			cli.StringFlag{
-				Name:     "crytpokeysize",
+				Name:     "cryptokeysize",
 				Usage:    "contains the encryption key size",
 				EnvVar:   "CRYPTOKEYSIZE",
 				Required: false,
 			},
 			cli.StringFlag{
-				Name:     "crytpopbkdf",
+				Name:     "cryptopbkdf",
 				Usage:    "contains the Password-Based Key Derivation Function (PBKDF) algorithm for LUKS keyslot",
 				EnvVar:   "CRYPTOPBKDF",
+				Required: false,
+			},
+			cli.StringFlag{
+				Name:     "cryptopbkdfiterations",
+				Usage:    "contains the forced iteration count for the PBKDF algorithm (higher values increase security but reduce performance)",
+				EnvVar:   "CRYPTOPBKDFFORCEITERATIONS",
+				Required: false,
+			},
+			cli.StringFlag{
+				Name:     "cryptopbkdfmemory",
+				Usage:    "contains the memory cost parameter for the PBKDF algorithm in KiB (as used by cryptsetup)",
+				EnvVar:   "CRYPTOPBKDFMEMORY",
 				Required: false,
 			},
 			cli.StringFlag{
@@ -90,15 +102,17 @@ func ServerCmd() cli.Command {
 		},
 		Action: func(c *cli.Context) {
 			vol := volume.Volume{
-				Name:            c.String("volume"),
-				DataEngine:      c.String("data-engine"),
-				Passphrase:      c.String("passphrase"),
-				CryptoKeyCipher: c.String("crytpokeycipher"),
-				CryptoKeyHash:   c.String("crytpokeyhash"),
-				CryptoKeySize:   c.String("crytpokeysize"),
-				CryptoPBKDF:     c.String("crytpopbkdf"),
-				FsType:          c.String("fs"),
-				MountOptions:    c.StringSlice("mount"),
+				Name:                       c.String("volume"),
+				DataEngine:                 c.String("data-engine"),
+				Passphrase:                 c.String("passphrase"),
+				CryptoKeyCipher:            c.String("cryptokeycipher"),
+				CryptoKeyHash:              c.String("cryptokeyhash"),
+				CryptoKeySize:              c.String("cryptokeysize"),
+				CryptoPBKDF:                c.String("cryptopbkdf"),
+				CryptoPBKDFForceIterations: c.String("cryptopbkdfiterations"),
+				CryptoPBKDFMemory:          c.String("cryptopbkdfmemory"),
+				FsType:                     c.String("fs"),
+				MountOptions:               c.StringSlice("mount"),
 			}
 
 			if c.Bool("encrypted") && len(vol.Passphrase) == 0 {

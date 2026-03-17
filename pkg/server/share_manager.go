@@ -20,6 +20,8 @@ import (
 	coordinationv1client "k8s.io/client-go/kubernetes/typed/coordination/v1"
 	mount "k8s.io/mount-utils"
 
+	lhns "github.com/longhorn/go-common-libs/ns"
+
 	"github.com/longhorn/longhorn-share-manager/pkg/crypto"
 	"github.com/longhorn/longhorn-share-manager/pkg/server/nfs"
 	"github.com/longhorn/longhorn-share-manager/pkg/types"
@@ -217,8 +219,17 @@ func (m *ShareManager) setupDevice(vol volume.Volume, devicePath string) (string
 
 		// initial setup of longhorn device for crypto
 		if diskFormat == "" {
+			options := &lhns.LuksFormatOptions{
+				KeyCipher:            vol.CryptoKeyCipher,
+				KeyHash:              vol.CryptoKeyHash,
+				KeySize:              vol.CryptoKeySize,
+				PBKDF:                vol.CryptoPBKDF,
+				PBKDFForceIterations: vol.CryptoPBKDFForceIterations,
+				PBKDFMemory:          vol.CryptoPBKDFMemory,
+			}
+
 			m.logger.Info("Encrypting new volume before first use")
-			if err := crypto.EncryptVolume(devicePath, vol.Passphrase, vol.CryptoKeyCipher, vol.CryptoKeyHash, vol.CryptoKeySize, vol.CryptoPBKDF); err != nil {
+			if err := crypto.EncryptVolume(devicePath, vol.Passphrase, options); err != nil {
 				return "", errors.Wrapf(err, "failed to encrypt volume %v", vol.Name)
 			}
 		}
