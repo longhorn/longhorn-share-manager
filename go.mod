@@ -1,8 +1,6 @@
 module github.com/longhorn/longhorn-share-manager
 
-go 1.24.0
-
-toolchain go1.24.6
+go 1.25.0
 
 // Replace directives are required for dependencies in this section because:
 // - This module imports k8s.io/kubernetes.
@@ -52,8 +50,8 @@ replace (
 
 require (
 	github.com/google/fscrypt v0.3.6
-	github.com/longhorn/go-common-libs v0.0.0-20260120075236-9a9dafa0a7ea
-	github.com/longhorn/types v0.0.0-20260118234234-63598269a247
+	github.com/longhorn/go-common-libs v0.0.0-20260318015712-f76eda5ec3f6
+	github.com/longhorn/types v0.0.0-20260304051809-1002ef5005c7
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.4
@@ -66,7 +64,7 @@ require (
 	k8s.io/client-go v0.32.3
 	k8s.io/kubernetes v1.32.9
 	k8s.io/mount-utils v0.32.3
-	k8s.io/utils v0.0.0-20260210185600-b8788abfbbc2
+	k8s.io/utils v0.0.0-20260319190234-28399d86e0b5
 )
 
 require (
@@ -108,7 +106,7 @@ require (
 	github.com/shirou/gopsutil/v3 v3.24.5 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	golang.org/x/exp v0.0.0-20260112195511-716be5621a96 // indirect
+	golang.org/x/exp v0.0.0-20260312153236-7ab1446f8b90 // indirect
 	golang.org/x/net v0.47.0 // indirect
 	golang.org/x/oauth2 v0.32.0 // indirect
 	golang.org/x/term v0.37.0 // indirect

@@ -129,8 +129,8 @@ github.com/kr/pretty
 # github.com/kr/text v0.2.0
 ## explicit
 github.com/kr/text
-# github.com/longhorn/go-common-libs v0.0.0-20260120075236-9a9dafa0a7ea
-## explicit; go 1.24.0
+# github.com/longhorn/go-common-libs v0.0.0-20260318015712-f76eda5ec3f6
+## explicit; go 1.25.0
 github.com/longhorn/go-common-libs/exec
 github.com/longhorn/go-common-libs/io
 github.com/longhorn/go-common-libs/kubernetes
@@ -140,7 +140,7 @@ github.com/longhorn/go-common-libs/sync
 github.com/longhorn/go-common-libs/sys
 github.com/longhorn/go-common-libs/types
 github.com/longhorn/go-common-libs/utils
-# github.com/longhorn/types v0.0.0-20260118234234-63598269a247
+# github.com/longhorn/types v0.0.0-20260304051809-1002ef5005c7
 ## explicit; go 1.24.0
 github.com/longhorn/types/pkg/generated/smrpc
 # github.com/mailru/easyjson v0.7.7
@@ -199,8 +199,8 @@ github.com/x448/float16
 # github.com/yusufpapurcu/wmi v1.2.4
 ## explicit; go 1.16
 github.com/yusufpapurcu/wmi
-# golang.org/x/exp v0.0.0-20260112195511-716be5621a96
-## explicit; go 1.24.0
+# golang.org/x/exp v0.0.0-20260312153236-7ab1446f8b90
+## explicit; go 1.25.0
 golang.org/x/exp/constraints
 # golang.org/x/net v0.47.0
 ## explicit; go 1.24.0
@@ -630,7 +630,7 @@ k8s.io/kubernetes/pkg/volume/util/hostutil
 # k8s.io/mount-utils v0.32.3 => k8s.io/mount-utils v0.32.3
 ## explicit; go 1.23.0
 k8s.io/mount-utils
-# k8s.io/utils v0.0.0-20260210185600-b8788abfbbc2
+# k8s.io/utils v0.0.0-20260319190234-28399d86e0b5
 ## explicit; go 1.23
 k8s.io/utils/clock
 k8s.io/utils/clock/testing
