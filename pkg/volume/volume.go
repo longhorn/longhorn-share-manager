@@ -10,15 +10,17 @@ import (
 )
 
 type Volume struct {
-	Name            string
-	DataEngine      string
-	Passphrase      string
-	CryptoKeyCipher string
-	CryptoKeyHash   string
-	CryptoKeySize   string
-	CryptoPBKDF     string
-	FsType          string
-	MountOptions    []string
+	Name                       string
+	DataEngine                 string
+	Passphrase                 string
+	CryptoKeyCipher            string
+	CryptoKeyHash              string
+	CryptoKeySize              string
+	CryptoPBKDF                string
+	CryptoPBKDFForceIterations string
+	CryptoPBKDFMemory          string
+	FsType                     string
+	MountOptions               []string
 }
 
 func (v Volume) IsEncrypted() bool {
