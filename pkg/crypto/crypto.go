@@ -14,15 +14,15 @@ import (
 )
 
 // EncryptVolume encrypts provided device with LUKS.
-func EncryptVolume(devicePath, passphrase, keyCipher, keyHash, keySize, pbkdf string) error {
+func EncryptVolume(devicePath, passphrase string, options *lhns.LuksFormatOptions) error {
 	namespaces := []lhtypes.Namespace{lhtypes.NamespaceMnt, lhtypes.NamespaceIpc}
 	nsexec, err := lhns.NewNamespaceExecutor(lhtypes.ProcessNone, lhtypes.HostProcDirectory, namespaces)
 	if err != nil {
 		return err
 	}
 
-	logrus.Debugf("Encrypting device %s with LUKS", devicePath)
-	if _, err := nsexec.LuksFormat(devicePath, passphrase, keyCipher, keyHash, keySize, pbkdf, lhtypes.LuksTimeout); err != nil {
+	logrus.WithFields(logrus.Fields{"device": devicePath, "options": options}).Debug("Encrypting device with LUKS")
+	if _, err := nsexec.LuksFormat(devicePath, passphrase, options, lhtypes.LuksTimeout); err != nil {
 		return errors.Wrapf(err, "failed to encrypt device %s with LUKS", devicePath)
 	}
 	return nil
