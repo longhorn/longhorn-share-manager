@@ -26,6 +26,7 @@ import (
 	"github.com/longhorn/longhorn-share-manager/pkg/volume"
 
 	commonKubernetes "github.com/longhorn/go-common-libs/kubernetes"
+	lhns "github.com/longhorn/go-common-libs/ns"
 )
 
 const waitBetweenChecks = time.Second * 5
@@ -217,8 +218,17 @@ func (m *ShareManager) setupDevice(vol volume.Volume, devicePath string) (string
 
 		// initial setup of longhorn device for crypto
 		if diskFormat == "" {
+			options := &lhns.LuksFormatOptions{
+				KeyCipher:            vol.CryptoKeyCipher,
+				KeyHash:              vol.CryptoKeyHash,
+				KeySize:              vol.CryptoKeySize,
+				PBKDF:                vol.CryptoPBKDF,
+				PBKDFForceIterations: vol.CryptoPBKDFForceIterations,
+				PBKDFMemory:          vol.CryptoPBKDFMemory,
+			}
+
 			m.logger.Info("Encrypting new volume before first use")
-			if err := crypto.EncryptVolume(devicePath, vol.Passphrase, vol.CryptoKeyCipher, vol.CryptoKeyHash, vol.CryptoKeySize, vol.CryptoPBKDF); err != nil {
+			if err := crypto.EncryptVolume(devicePath, vol.Passphrase, options); err != nil {
 				return "", errors.Wrapf(err, "failed to encrypt volume %v", vol.Name)
 			}
 		}
