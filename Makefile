@@ -1,5 +1,4 @@
 PROJECT := longhorn-share-manager
-TARGETS := $(shell ls scripts)
 MACHINE := longhorn
 # Define the target platforms that can be used across the ecosystem.
 # Note that what would actually be used for a given project will be
@@ -11,15 +10,19 @@ export SRC_TAG := $(shell git tag --points-at HEAD | head -n 1)
 
 export CACHEBUST := $(shell date +%s)
 
-.dapper:
-	@echo Downloading dapper
-	@curl -sL https://releases.rancher.com/dapper/latest/dapper-`uname -s`-`uname -m` > .dapper.tmp
-	@@chmod +x .dapper.tmp
-	@./.dapper.tmp -v
-	@mv .dapper.tmp .dapper
+.PHONY: build validate test ci package
+build:
+	docker buildx build --target build-artifacts --output type=local,dest=. -f Dockerfile .
 
-$(TARGETS): .dapper
-	./.dapper $@
+validate:
+	docker buildx build --target validate -f Dockerfile .
+
+test:
+	docker buildx build --target test-artifacts --output type=local,dest=. -f Dockerfile .
+
+ci:
+	docker buildx build --target ci-artifacts --output type=local,dest=. -f Dockerfile .
+	bash scripts/package
 
 .PHONY: buildx-machine
 buildx-machine:
@@ -38,5 +41,3 @@ workflow-image-build-push-secure: buildx-machine
 	MACHINE=$(MACHINE) PUSH='true' IMAGE_NAME=$(PROJECT) IS_SECURE=true bash scripts/package
 
 .DEFAULT_GOAL := ci
-
-.PHONY: $(TARGETS)

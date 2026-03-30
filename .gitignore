@@ -14,9 +14,6 @@
 .idea
 *.iml
 
-# dapper build files
-.dapper
-
 # vim temp file
 .*.swp
 
