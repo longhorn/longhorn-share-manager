@@ -22,7 +22,13 @@ func EncryptVolume(devicePath, passphrase, keyCipher, keyHash, keySize, pbkdf st
 	}
 
 	logrus.Debugf("Encrypting device %s with LUKS", devicePath)
-	if _, err := nsexec.LuksFormat(devicePath, passphrase, keyCipher, keyHash, keySize, pbkdf, lhtypes.LuksTimeout); err != nil {
+	options := &lhns.LuksFormatOptions{
+		KeyCipher: keyCipher,
+		KeyHash:   keyHash,
+		KeySize:   keySize,
+		PBKDF:     pbkdf,
+	}
+	if _, err := nsexec.LuksFormat(devicePath, passphrase, options, lhtypes.LuksTimeout); err != nil {
 		return errors.Wrapf(err, "failed to encrypt device %s with LUKS", devicePath)
 	}
 	return nil
