@@ -52,8 +52,8 @@ replace (
 
 require (
 	github.com/google/fscrypt v0.3.6
-	github.com/longhorn/go-common-libs v0.0.0-20260323115845-a31a74cd171a
-	github.com/longhorn/types v0.0.0-20260304051809-1002ef5005c7
+	github.com/longhorn/go-common-libs v0.0.0-20260418032157-c135767e4855
+	github.com/longhorn/types v0.0.0-20260424095800-4b6385093e88
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.4
