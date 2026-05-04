@@ -11,6 +11,7 @@ import (
 
 	"github.com/cockroachdb/errors"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/sys/unix"
 
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -18,7 +19,6 @@ import (
 	coordinationv1 "k8s.io/api/coordination/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	coordinationv1client "k8s.io/client-go/kubernetes/typed/coordination/v1"
-	mount "k8s.io/mount-utils"
 
 	lhns "github.com/longhorn/go-common-libs/ns"
 
@@ -26,8 +26,6 @@ import (
 	"github.com/longhorn/longhorn-share-manager/pkg/server/nfs"
 	"github.com/longhorn/longhorn-share-manager/pkg/types"
 	"github.com/longhorn/longhorn-share-manager/pkg/volume"
-
-	commonKubernetes "github.com/longhorn/go-common-libs/kubernetes"
 )
 
 const waitBetweenChecks = time.Second * 5
@@ -439,17 +437,24 @@ func (m *ShareManager) runHealthCheck() {
 
 func (m *ShareManager) hasHealthyVolume() error {
 	mountPath := types.GetMountPath(m.volume.Name)
+
+	// Basic accessibility check to ensure the mount path is reachable
 	if err := exec.CommandContext(m.context, "ls", mountPath).Run(); err != nil {
 		return fmt.Errorf(UnhealthyErr, mountPath)
 	}
 
-	mounter := mount.New("")
-	mountPoints, _ := mounter.List()
-	for _, mp := range mountPoints {
-		if mp.Path == mountPath && commonKubernetes.IsMountPointReadOnly(mp) {
-			return fmt.Errorf(ReadOnlyErr, mountPath)
-		}
+	// Check if the filesystem has been marked read-only at the kernel level.
+	var stat unix.Statfs_t
+	if err := unix.Statfs(mountPath, &stat); err != nil {
+		logrus.WithError(err).Errorf("Failed to statfs mount path %v for health check", mountPath)
+		return fmt.Errorf(UnhealthyErr, mountPath)
 	}
+
+	if stat.Flags&unix.ST_RDONLY != 0 {
+		logrus.Errorf("Mount path %v is marked read-only at the kernel level", mountPath)
+		return fmt.Errorf(ReadOnlyErr, mountPath)
+	}
+
 	return nil
 }
 
