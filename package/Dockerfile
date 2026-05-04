@@ -41,8 +41,7 @@ RUN for i in {1..10}; do \
         zypper --gpg-auto-import-keys ref && break || sleep 1; \
     done
 
-RUN zypper -n install cmake
-RUN zypper -n install make
+RUN zypper -n --no-refresh install cmake make
 
 RUN for i in {1..10}; do \
         if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
@@ -55,8 +54,7 @@ RUN for i in {1..10}; do \
         zypper --gpg-auto-import-keys ref && break || sleep 1; \
     done
 
-RUN zypper -n install gcc14
-RUN zypper -n install gcc14-c++
+RUN zypper -n --no-refresh install gcc14 gcc14-c++
 
 RUN zypper clean -a
 

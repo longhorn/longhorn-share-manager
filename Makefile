@@ -22,6 +22,8 @@ test:
 
 ci:
 	docker buildx build --target ci-artifacts --output type=local,dest=. -f Dockerfile .
+
+package:
 	bash scripts/package
 
 .PHONY: buildx-machine
