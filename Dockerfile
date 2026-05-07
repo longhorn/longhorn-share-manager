@@ -10,7 +10,7 @@ ENV GOLANGCI_LINT_VERSION=v2.11.4
 ENV ARCH=${TARGETARCH}
 ENV GOFLAGS=-mod=vendor
 
-RUN zypper -n addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/SLE_15/ snappy && \
+RUN zypper -n addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/openSUSE_Factory/ snappy && \
     zypper --gpg-auto-import-keys ref
 
 # Install packages
