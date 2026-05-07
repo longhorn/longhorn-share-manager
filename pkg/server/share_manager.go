@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/cockroachdb/errors"
@@ -50,8 +51,9 @@ const (
 type ShareManager struct {
 	logger logrus.FieldLogger
 
-	volume        volume.Volume
-	shareExported bool
+	volume volume.Volume
+
+	shareExported atomic.Bool
 
 	context  context.Context
 	shutdown context.CancelFunc
@@ -474,11 +476,19 @@ func (m *ShareManager) GetVolume() volume.Volume {
 }
 
 func (m *ShareManager) SetShareExported(val bool) {
-	m.shareExported = val
+	m.shareExported.Store(val)
 }
 
 func (m *ShareManager) ShareIsExported() bool {
-	return m.shareExported
+	return m.shareExported.Load()
+}
+
+func (m *ShareManager) IsServing() bool {
+	if !m.ShareIsExported() {
+		return false
+	}
+
+	return m.hasHealthyVolume() == nil
 }
 
 func (m *ShareManager) Shutdown() {
