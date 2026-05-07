@@ -358,7 +358,7 @@ func NewShareManagerHealthCheckServer(srv *ShareManagerServer) *ShareManagerHeal
 }
 
 func (s *ShareManagerHealthCheckServer) Check(context.Context, *healthpb.HealthCheckRequest) (*healthpb.HealthCheckResponse, error) {
-	if s.srv != nil {
+	if s.isServing() {
 		return &healthpb.HealthCheckResponse{
 			Status: healthpb.HealthCheckResponse_SERVING,
 		}, nil
@@ -399,6 +399,17 @@ func (s *ShareManagerHealthCheckServer) List(context.Context, *healthpb.HealthLi
 			},
 		},
 	}, nil
+}
+
+func (s *ShareManagerHealthCheckServer) isServing() bool {
+	if s.srv == nil {
+		return false
+	}
+
+	s.srv.RLock()
+	defer s.srv.RUnlock()
+
+	return s.srv.manager != nil && s.srv.manager.IsServing()
 }
 
 func nfsServerIsRunning() bool {
