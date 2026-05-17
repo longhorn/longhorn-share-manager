@@ -31,7 +31,7 @@ replace (
 	k8s.io/component-base => k8s.io/component-base v0.36.0
 	k8s.io/component-helpers => k8s.io/component-helpers v0.36.0
 	k8s.io/controller-manager => k8s.io/controller-manager v0.36.0
-	k8s.io/cri-api => k8s.io/cri-api v0.36.0
+	k8s.io/cri-api => k8s.io/cri-api v0.36.1
 	k8s.io/cri-client => k8s.io/cri-client v0.36.0
 	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.36.0
 	k8s.io/dynamic-resource-allocation => k8s.io/dynamic-resource-allocation v0.36.0
@@ -45,7 +45,7 @@ replace (
 	k8s.io/kubelet => k8s.io/kubelet v0.36.0
 	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.14
 	k8s.io/metrics => k8s.io/metrics v0.36.0
-	k8s.io/mount-utils => k8s.io/mount-utils v0.36.0
+	k8s.io/mount-utils => k8s.io/mount-utils v0.36.1
 	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.36.0
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.36.0
 )
@@ -65,7 +65,7 @@ require (
 	k8s.io/apimachinery v0.36.0
 	k8s.io/client-go v0.36.0
 	k8s.io/kubernetes v1.36.0
-	k8s.io/mount-utils v0.36.0
+	k8s.io/mount-utils v0.36.1
 	k8s.io/utils v0.0.0-20260319190234-28399d86e0b5
 )
 
