@@ -1,4 +1,4 @@
-FROM registry.suse.com/bci/golang:1.25@sha256:5c3c7bbc18b72b8bdf5d034263cbf7442569ce4ee94b5eb90a7e5eeb18c01fe2
+FROM registry.suse.com/bci/golang:1.25@sha256:edf8c41013f935991343cb6ee60dc807ab57c35a9c1416a53fb6961f1f2e42a7
 
 ARG DAPPER_HOST_ARCH
 ARG SRC_BRANCH=master
