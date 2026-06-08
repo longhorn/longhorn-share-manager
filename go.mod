@@ -57,8 +57,7 @@ require (
 	github.com/longhorn/types v0.0.0-20260602074022-85db2ba11d69
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/sirupsen/logrus v1.9.4
-	github.com/urfave/cli/v3 v3.9.0
-	github.com/urfave/cli/v3 v3.9.0
+	github.com/urfave/cli v1.22.17
 	golang.org/x/sys v0.45.0
 	google.golang.org/grpc v1.81.1
 	google.golang.org/protobuf v1.36.12-0.20260120151049-f2248ac996af
