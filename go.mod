@@ -1,8 +1,6 @@
 module github.com/longhorn/longhorn-share-manager
 
-go 1.25.0
-
-toolchain go1.25.6
+go 1.25
 
 // Replace directives are required for dependencies in this section because:
 // - This module imports k8s.io/kubernetes.
