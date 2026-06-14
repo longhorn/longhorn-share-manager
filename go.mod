@@ -43,7 +43,7 @@ replace (
 	k8s.io/kubelet => k8s.io/kubelet v0.36.1
 	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.14
 	k8s.io/metrics => k8s.io/metrics v0.36.1
-	k8s.io/mount-utils => k8s.io/mount-utils v0.36.1
+	k8s.io/mount-utils => k8s.io/mount-utils v0.36.2
 	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.36.1
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.36.1
 )
@@ -56,7 +56,6 @@ require (
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/sirupsen/logrus v1.9.4
 	github.com/urfave/cli v1.22.17
-	github.com/urfave/cli/v3 v3.9.0
 	golang.org/x/sys v0.45.0
 	google.golang.org/grpc v1.81.1
 	google.golang.org/protobuf v1.36.12-0.20260120151049-f2248ac996af
@@ -64,7 +63,7 @@ require (
 	k8s.io/apimachinery v0.36.1
 	k8s.io/client-go v0.36.1
 	k8s.io/kubernetes v1.36.1
-	k8s.io/mount-utils v0.36.1
+	k8s.io/mount-utils v0.36.2
 	k8s.io/utils v0.0.0-20260507154919-ff6756f316d2
 )
 
