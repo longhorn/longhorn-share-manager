@@ -1,6 +1,6 @@
 module github.com/longhorn/longhorn-share-manager
 
-go 1.26
+go 1.26.0
 
 // Replace directives are required for dependencies in this section because:
 // - This module imports k8s.io/kubernetes.
@@ -43,7 +43,7 @@ replace (
 	k8s.io/kubelet => k8s.io/kubelet v0.36.1
 	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.30.14
 	k8s.io/metrics => k8s.io/metrics v0.36.1
-	k8s.io/mount-utils => k8s.io/mount-utils v0.36.1
+	k8s.io/mount-utils => k8s.io/mount-utils v0.36.2
 	k8s.io/pod-security-admission => k8s.io/pod-security-admission v0.36.1
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.36.1
 )
@@ -63,7 +63,7 @@ require (
 	k8s.io/apimachinery v0.36.1
 	k8s.io/client-go v0.36.1
 	k8s.io/kubernetes v1.36.1
-	k8s.io/mount-utils v0.36.1
+	k8s.io/mount-utils v0.36.2
 	k8s.io/utils v0.0.0-20260507154919-ff6756f316d2
 )
 
