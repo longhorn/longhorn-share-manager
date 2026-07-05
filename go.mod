@@ -49,14 +49,13 @@ replace (
 )
 
 require (
-	github.com/cockroachdb/errors v1.13.0
+	github.com/cockroachdb/errors v1.14.0
 	github.com/google/fscrypt v0.3.6
 	github.com/longhorn/go-common-libs v0.0.0-20260525102658-c0739cd3e2c2
 	github.com/longhorn/types v0.0.0-20260602074022-85db2ba11d69
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/sirupsen/logrus v1.9.4
 	github.com/urfave/cli v1.22.17
-	github.com/urfave/cli/v3 v3.10.0
 	golang.org/x/sys v0.46.0
 	google.golang.org/grpc v1.81.1
 	google.golang.org/protobuf v1.36.12-0.20260120151049-f2248ac996af
