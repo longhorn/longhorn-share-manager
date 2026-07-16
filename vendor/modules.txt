@@ -4,6 +4,9 @@ cyphar.com/go-pathrs
 cyphar.com/go-pathrs/internal/fdutils
 cyphar.com/go-pathrs/internal/libpathrs
 cyphar.com/go-pathrs/procfs
+# github.com/avast/retry-go/v4 v4.7.0
+## explicit; go 1.20
+github.com/avast/retry-go/v4
 # github.com/c9s/goprocinfo v0.0.0-20210130143923-c95fcf8c64a8
 ## explicit
 github.com/c9s/goprocinfo/linux
@@ -127,8 +130,8 @@ github.com/kr/pretty
 # github.com/kr/text v0.2.0
 ## explicit
 github.com/kr/text
-# github.com/longhorn/go-common-libs v0.0.0-20260525102658-c0739cd3e2c2
-## explicit; go 1.25.0
+# github.com/longhorn/go-common-libs v0.0.0-20260716070930-439af9b33f41
+## explicit; go 1.25.10
 github.com/longhorn/go-common-libs/exec
 github.com/longhorn/go-common-libs/io
 github.com/longhorn/go-common-libs/kubernetes
@@ -138,7 +141,7 @@ github.com/longhorn/go-common-libs/sync
 github.com/longhorn/go-common-libs/sys
 github.com/longhorn/go-common-libs/types
 github.com/longhorn/go-common-libs/utils
-# github.com/longhorn/types v0.0.0-20260602074022-85db2ba11d69
+# github.com/longhorn/types v0.0.0-20260709032252-3d0a3cd8f06f
 ## explicit; go 1.25.0
 github.com/longhorn/types/pkg/generated/smrpc
 # github.com/mailru/easyjson v0.7.7
@@ -200,9 +203,6 @@ go.yaml.in/yaml/v2
 # go.yaml.in/yaml/v3 v3.0.4
 ## explicit; go 1.16
 go.yaml.in/yaml/v3
-# golang.org/x/exp v0.0.0-20260508232706-74f9aab9d74a
-## explicit; go 1.25.0
-golang.org/x/exp/constraints
 # golang.org/x/net v0.56.0
 ## explicit; go 1.25.0
 golang.org/x/net/http/httpguts
@@ -639,8 +639,8 @@ k8s.io/kubernetes/pkg/volume/util/hostutil
 # k8s.io/mount-utils v0.35.4 => k8s.io/mount-utils v0.35.4
 ## explicit; go 1.25.0
 k8s.io/mount-utils
-# k8s.io/utils v0.0.0-20260507154919-ff6756f316d2
-## explicit; go 1.23
+# k8s.io/utils v0.0.0-20260707023825-cf1189d6abe3
+## explicit; go 1.25
 k8s.io/utils/clock
 k8s.io/utils/exec
 k8s.io/utils/internal/third_party/forked/golang/net

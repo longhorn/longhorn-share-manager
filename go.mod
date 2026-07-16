@@ -1,6 +1,6 @@
 module github.com/longhorn/longhorn-share-manager
 
-go 1.25.0
+go 1.25.10
 
 // Replace directives are required for dependencies in this section because:
 // - This module imports k8s.io/kubernetes.
@@ -51,8 +51,8 @@ replace (
 require (
 	github.com/cockroachdb/errors v1.12.0
 	github.com/google/fscrypt v0.3.6
-	github.com/longhorn/go-common-libs v0.0.0-20260525102658-c0739cd3e2c2
-	github.com/longhorn/types v0.0.0-20260602074022-85db2ba11d69
+	github.com/longhorn/go-common-libs v0.0.0-20260716070930-439af9b33f41
+	github.com/longhorn/types v0.0.0-20260709032252-3d0a3cd8f06f
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/sirupsen/logrus v1.9.4
 	github.com/urfave/cli v1.22.17
@@ -64,11 +64,12 @@ require (
 	k8s.io/client-go v0.35.4
 	k8s.io/kubernetes v1.35.4
 	k8s.io/mount-utils v0.35.4
-	k8s.io/utils v0.0.0-20260507154919-ff6756f316d2
+	k8s.io/utils v0.0.0-20260707023825-cf1189d6abe3
 )
 
 require (
 	cyphar.com/go-pathrs v0.2.1 // indirect
+	github.com/avast/retry-go/v4 v4.7.0 // indirect
 	github.com/c9s/goprocinfo v0.0.0-20210130143923-c95fcf8c64a8 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
@@ -105,7 +106,6 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/exp v0.0.0-20260508232706-74f9aab9d74a // indirect
 	golang.org/x/net v0.56.0 // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/term v0.44.0 // indirect
