@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.20.0@sha256:26147acbda4f14c5add9946e2fd2ed543fc402884fd75146bd342a7f6271dc1d
-FROM registry.suse.com/bci/golang:1.25@sha256:bd17be73bd89df69fa98dc085afdaee4edbe7cd97d15c6b52f48089ce234088e AS app_builder
+FROM registry.suse.com/bci/golang:1.25@sha256:fabaa38c2b4e263ad5284eafee5b3157d84f20896e08d7fe8f11dce0d776af5b AS app_builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ RUN chmod +x /app/scripts/build
 # Run the build script
 RUN /app/scripts/build
 
-FROM registry.suse.com/bci/bci-base:15.7@sha256:1e16d612972586476f9e349c8b635c4085e0ba467f7c5d305391ef3bfdae1851 AS lib_builder
+FROM registry.suse.com/bci/bci-base:15.7@sha256:d691028312b5d68e5b2d7cf494f8bbc2311f80fae556520e5f5e03b78ce7d5f9 AS lib_builder
 
 ARG TARGETPLATFORM
 ARG SRC_BRANCH=master
@@ -73,7 +73,7 @@ RUN export REPO_OVERRIDE="" && \
     bash /usr/src/dep-versions/scripts/build-nfs-ganesha.sh "${REPO_OVERRIDE}" "${COMMIT_ID_OVERRIDE}"
 
 
-FROM registry.suse.com/bci/bci-base:15.7@sha256:1e16d612972586476f9e349c8b635c4085e0ba467f7c5d305391ef3bfdae1851 AS release
+FROM registry.suse.com/bci/bci-base:15.7@sha256:d691028312b5d68e5b2d7cf494f8bbc2311f80fae556520e5f5e03b78ce7d5f9 AS release
 
 ARG TARGETPLATFORM
 RUN if [ "$TARGETPLATFORM" != "linux/amd64" ] && [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
