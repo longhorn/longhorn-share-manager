@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"os"
@@ -8,7 +9,7 @@ import (
 	"syscall"
 
 	"github.com/sirupsen/logrus"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v3"
 
 	"github.com/longhorn/types/pkg/generated/smrpc"
 	"google.golang.org/grpc"
@@ -26,81 +27,81 @@ const (
 	listenPort = ":9600"
 )
 
-func ServerCmd() cli.Command {
-	return cli.Command{
+func ServerCmd() *cli.Command {
+	return &cli.Command{
 		Name: "daemon",
 		Flags: []cli.Flag{
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:     "volume",
 				Usage:    "The volume to export via the nfs server",
 				Required: true,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:     "data-engine",
 				Usage:    "The volume data engine",
 				Required: true,
 			},
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name:     "encrypted",
 				Usage:    "signals that a volume is encrypted",
-				EnvVar:   "ENCRYPTED",
+				Sources:  cli.EnvVars("ENCRYPTED"),
 				Required: false,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:     "passphrase",
 				Usage:    "contains the encryption passphrase",
-				EnvVar:   "PASSPHRASE",
+				Sources:  cli.EnvVars("PASSPHRASE"),
 				Required: false,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:     "cryptokeycipher",
 				Usage:    "contains the encryption algorithm in dm-crypt notation",
-				EnvVar:   "CRYPTOKEYCIPHER",
+				Sources:  cli.EnvVars("CRYPTOKEYCIPHER"),
 				Required: false,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:     "cryptokeyhash",
 				Usage:    "contains the hash algorithm for the checksum resilience mode",
-				EnvVar:   "CRYPTOKEYHASH",
+				Sources:  cli.EnvVars("CRYPTOKEYHASH"),
 				Required: false,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:     "cryptokeysize",
 				Usage:    "contains the encryption key size",
-				EnvVar:   "CRYPTOKEYSIZE",
+				Sources:  cli.EnvVars("CRYPTOKEYSIZE"),
 				Required: false,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:     "cryptopbkdf",
 				Usage:    "contains the Password-Based Key Derivation Function (PBKDF) algorithm for LUKS keyslot",
-				EnvVar:   "CRYPTOPBKDF",
+				Sources:  cli.EnvVars("CRYPTOPBKDF"),
 				Required: false,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:     "cryptopbkdfiterations",
 				Usage:    "contains the forced iteration count for the PBKDF algorithm (higher values increase security but reduce performance)",
-				EnvVar:   "CRYPTOPBKDFFORCEITERATIONS",
+				Sources:  cli.EnvVars("CRYPTOPBKDFFORCEITERATIONS"),
 				Required: false,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:     "cryptopbkdfmemory",
 				Usage:    "contains the memory cost parameter for the PBKDF algorithm in KiB (as used by cryptsetup)",
-				EnvVar:   "CRYPTOPBKDFMEMORY",
+				Sources:  cli.EnvVars("CRYPTOPBKDFMEMORY"),
 				Required: false,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:     "fs",
 				Usage:    "the filesystem to use for the volume",
 				Value:    "ext4",
 				Required: false,
 			},
-			cli.StringSliceFlag{
+			&cli.StringSliceFlag{
 				Name:     "mount",
 				Usage:    "allows for specifying additional mount options",
 				Required: false,
 			},
 		},
-		Action: func(c *cli.Context) {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			vol := volume.Volume{
 				Name:                       c.String("volume"),
 				DataEngine:                 c.String("data-engine"),
@@ -122,6 +123,8 @@ func ServerCmd() cli.Command {
 			if err := start(vol); err != nil {
 				logrus.Fatalf("Error running start command: %v.", err)
 			}
+
+			return nil
 		},
 	}
 }
