@@ -187,7 +187,7 @@ github.com/shirou/gopsutil/v3/internal/common
 # github.com/sirupsen/logrus v1.10.0
 ## explicit; go 1.23
 github.com/sirupsen/logrus
-# github.com/urfave/cli/v3 v3.10.1
+# github.com/urfave/cli/v3 v3.11.0
 ## explicit; go 1.22
 github.com/urfave/cli/v3
 # github.com/x448/float16 v0.8.4
