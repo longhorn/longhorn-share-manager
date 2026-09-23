@@ -12,7 +12,7 @@ RUN chmod +x /app/scripts/build
 # Run the build script
 RUN /app/scripts/build
 
-FROM registry.suse.com/bci/bci-base:15.7@sha256:4a0d40a2c4b0b9c1e58fd270e4030d4defb385ffbfcf70f25493283193042d4d AS lib_builder
+FROM registry.suse.com/bci/bci-base:15.7@sha256:a487b809bb79c405a61bade69958738f14ef31118f5db914afa582498de5ba00 AS lib_builder
 
 ARG TARGETPLATFORM
 ARG SRC_BRANCH=master
