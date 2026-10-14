@@ -12,7 +12,7 @@ RUN chmod +x /app/scripts/build
 # Run the build script
 RUN /app/scripts/build
 
-FROM registry.suse.com/bci/bci-base:15.7@sha256:b39dcf02d6ef54bd2cba185060d41435c75d87fff0f94ce0a2b73f2a24e5e66d AS lib_builder
+FROM registry.suse.com/bci/bci-base:15.7@sha256:4e723af56f41107c2690afaed283ecd702d2b3ee5da673c94e775b1d038728fe AS lib_builder
 
 ARG TARGETPLATFORM
 ARG SRC_BRANCH=master
@@ -73,7 +73,7 @@ RUN export REPO_OVERRIDE="" && \
     bash /usr/src/dep-versions/scripts/build-nfs-ganesha.sh "${REPO_OVERRIDE}" "${COMMIT_ID_OVERRIDE}"
 
 
-FROM registry.suse.com/bci/bci-base:15.7@sha256:b39dcf02d6ef54bd2cba185060d41435c75d87fff0f94ce0a2b73f2a24e5e66d AS release
+FROM registry.suse.com/bci/bci-base:15.7@sha256:4e723af56f41107c2690afaed283ecd702d2b3ee5da673c94e775b1d038728fe AS release
 
 ARG TARGETPLATFORM
 RUN if [ "$TARGETPLATFORM" != "linux/amd64" ] && [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
