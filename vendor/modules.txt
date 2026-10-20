@@ -167,6 +167,8 @@ github.com/kr/pretty
 # github.com/kr/text v0.2.0
 ## explicit
 github.com/kr/text
+# github.com/longhorn/backupstore v0.0.0-20261020023827-5d60cc7eb9df
+## explicit
 # github.com/longhorn/go-common-libs v0.0.0-20261020015151-84396047af19
 ## explicit; go 1.26.0
 github.com/longhorn/go-common-libs/exec
