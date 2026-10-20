@@ -51,12 +51,12 @@ replace (
 require (
 	github.com/cockroachdb/errors v1.14.0
 	github.com/google/fscrypt v0.3.7
-	github.com/longhorn/go-common-libs v0.0.0-20261013144042-4de833c70b5f
+	github.com/longhorn/go-common-libs v0.0.0-20261020015151-84396047af19
 	github.com/longhorn/types v0.0.0-20260930155107-5849431731c3
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/sirupsen/logrus v1.10.2
 	github.com/urfave/cli/v3 v3.10.1
-	golang.org/x/sys v0.48.0
+	golang.org/x/sys v0.49.0
 	google.golang.org/grpc v1.84.0
 	google.golang.org/protobuf v1.36.12
 	k8s.io/api v0.36.4
