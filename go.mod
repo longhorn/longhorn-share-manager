@@ -52,7 +52,7 @@ require (
 	github.com/cockroachdb/errors v1.14.0
 	github.com/google/fscrypt v0.3.7
 	github.com/longhorn/go-common-libs v0.0.0-20261023023359-4e90b601fcb9
-	github.com/longhorn/types v0.0.0-20261023022839-6cd8146e18c6
+	github.com/longhorn/types v0.0.0-20261023101212-edea52fc05df
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/sirupsen/logrus v1.10.2
 	github.com/urfave/cli/v3 v3.10.1
@@ -64,7 +64,7 @@ require (
 	k8s.io/client-go v0.36.4
 	k8s.io/kubernetes v1.36.4
 	k8s.io/mount-utils v0.36.4
-	k8s.io/utils v0.0.0-20260707023825-cf1189d6abe3
+	k8s.io/utils v0.0.0-20261023123148-ca04ba58ecab
 )
 
 require (
