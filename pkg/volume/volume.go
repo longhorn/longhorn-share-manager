@@ -7,12 +7,23 @@ import (
 	"k8s.io/kubernetes/pkg/volume/util/hostutil"
 	"k8s.io/mount-utils"
 	utilexec "k8s.io/utils/exec"
+
+	lhtypes "github.com/longhorn/go-common-libs/types"
 )
 
 type Volume struct {
-	Name                       string
-	DataEngine                 string
-	Passphrase                 string
+	Name       string
+	DataEngine string
+	// Encrypted marks a volume whose key the pod fetches itself; the secret provider is recognised by Passphrase.
+	Encrypted bool
+	// Passphrase is the literal passphrase of the secret key provider.
+	Passphrase string
+	// KeyProvider is CRYPTO_KEY_PROVIDER; empty means the secret provider.
+	KeyProvider string
+	// EncryptionSecretName is the Secret in Longhorn's namespace that configures a key-store provider.
+	EncryptionSecretName string
+	// Initialized is status.encryption.initialized: this device was formatted before.
+	Initialized                bool
 	CryptoKeyCipher            string
 	CryptoKeyHash              string
 	CryptoKeySize              string
@@ -24,7 +35,14 @@ type Volume struct {
 }
 
 func (v Volume) IsEncrypted() bool {
-	return len(v.Passphrase) > 0
+	return v.Encrypted || len(v.Passphrase) > 0
+}
+
+func (v Volume) KeyProviderName() lhtypes.EncryptionKeyProvider {
+	if v.KeyProvider == "" {
+		return lhtypes.EncryptionKeyProviderSecret
+	}
+	return lhtypes.EncryptionKeyProvider(v.KeyProvider)
 }
 
 func GetDiskFormat(devicePath string) (string, error) {
