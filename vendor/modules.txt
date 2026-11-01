@@ -169,6 +169,8 @@ github.com/kr/pretty
 github.com/kr/text
 # github.com/longhorn/go-common-libs v0.0.0-20261023023359-4e90b601fcb9
 ## explicit; go 1.26.0
+github.com/longhorn/go-common-libs/crypto
+github.com/longhorn/go-common-libs/crypto/keystore
 github.com/longhorn/go-common-libs/exec
 github.com/longhorn/go-common-libs/io
 github.com/longhorn/go-common-libs/ns
