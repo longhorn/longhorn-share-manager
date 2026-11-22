@@ -21,9 +21,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	coordinationv1client "k8s.io/client-go/kubernetes/typed/coordination/v1"
 
-	lhns "github.com/longhorn/go-common-libs/ns"
+	lhcrypto "github.com/longhorn/go-common-libs/crypto"
+	"github.com/longhorn/go-common-libs/crypto/keystore"
 
-	"github.com/longhorn/longhorn-share-manager/pkg/crypto"
 	"github.com/longhorn/longhorn-share-manager/pkg/server/nfs"
 	"github.com/longhorn/longhorn-share-manager/pkg/types"
 	"github.com/longhorn/longhorn-share-manager/pkg/volume"
@@ -213,30 +213,19 @@ func (m *ShareManager) setupDevice(vol volume.Volume, devicePath string) (string
 	m.logger.Infof("Volume %v device %v contains filesystem of format %v", vol.Name, devicePath, diskFormat)
 
 	if vol.IsEncrypted() || diskFormat == "crypto_LUKS" {
-		if vol.Passphrase == "" {
-			return "", fmt.Errorf("missing passphrase for encrypted volume %v", vol.Name)
+		// Only a blank device may be formatted, so any other filesystem is refused.
+		if diskFormat != "" && diskFormat != "crypto_LUKS" {
+			return "", fmt.Errorf("unsupported disk encryption format %v of volume %v", diskFormat, vol.Name)
 		}
-
-		// initial setup of longhorn device for crypto
-		if diskFormat == "" {
-			options := &lhns.LuksFormatOptions{
-				KeyCipher:            vol.CryptoKeyCipher,
-				KeyHash:              vol.CryptoKeyHash,
-				KeySize:              vol.CryptoKeySize,
-				PBKDF:                vol.CryptoPBKDF,
-				PBKDFForceIterations: vol.CryptoPBKDFForceIterations,
-				PBKDFMemory:          vol.CryptoPBKDFMemory,
-			}
-
-			m.logger.Info("Encrypting new volume before first use")
-			if err := crypto.EncryptVolume(devicePath, vol.Passphrase, options); err != nil {
-				return "", errors.Wrapf(err, "failed to encrypt volume %v", vol.Name)
-			}
+		passphrase, err := m.prepareEncryptedDevice(vol, devicePath, diskFormat == "crypto_LUKS")
+		if err != nil {
+			return "", err
 		}
+		defer keystore.Zero(passphrase)
 
 		cryptoDevice := types.GetVolumeDevicePath(vol.Name, vol.DataEngine, true)
 		m.logger.Infof("Volume %s requires crypto device %s", vol.Name, cryptoDevice)
-		if err := crypto.OpenVolume(vol.Name, vol.DataEngine, devicePath, vol.Passphrase); err != nil {
+		if err := lhcrypto.OpenVolume(vol.Name, vol.DataEngine, devicePath, string(passphrase)); err != nil {
 			m.logger.WithError(err).Error("Failed to open encrypted volume")
 			return "", err
 		}
@@ -248,14 +237,53 @@ func (m *ShareManager) setupDevice(vol volume.Volume, devicePath string) (string
 	return devicePath, nil
 }
 
+// prepareEncryptedDevice returns the passphrase that opens the device, formatting
+// a blank one first. It only reads the key and applies the node plugin's
+// fail-closed matrix, so an RWX volume is never formatted over data.
+func (m *ShareManager) prepareEncryptedDevice(vol volume.Volume, devicePath string, isLUKS bool) ([]byte, error) {
+	provider, err := vol.NewKeyProvider(m.context)
+	if err != nil {
+		return nil, errors.Wrapf(err, "invalid encryption settings for volume %v", vol.Name)
+	}
+
+	passphrase, version, err := provider.Get(m.context, keystore.VolumeKey(vol.Name))
+	hasKey := err == nil
+	if err != nil && !errors.Is(err, keystore.ErrKeyNotFound) {
+		return nil, errors.Wrapf(err, "failed to read the key of volume %v from the %v key provider", vol.Name, provider.Name())
+	}
+
+	action, err := keystore.Decide(keystore.DeviceState{
+		IsLUKS:      isLUKS,
+		HasKey:      hasKey,
+		Initialized: vol.Initialized,
+	})
+	if err != nil {
+		keystore.Zero(passphrase)
+		return nil, errors.Wrapf(err, "refusing to export encrypted volume %v", vol.Name)
+	}
+	m.logger.Infof("Encrypted volume device %v: LUKS=%v key=%v initialized=%v, action %v",
+		devicePath, isLUKS, hasKey, vol.Initialized, action)
+
+	if action == keystore.ActionFormat {
+		m.logger.Infof("Encrypting new volume before first use with key version %v", version)
+		params := lhcrypto.NewEncryptParams(vol.KeyProvider, vol.CryptoKeyCipher, vol.CryptoKeyHash, vol.CryptoKeySize,
+			vol.CryptoPBKDF, vol.CryptoPBKDFForceIterations, vol.CryptoPBKDFMemory)
+		if err := lhcrypto.EncryptVolume(devicePath, string(passphrase), params); err != nil {
+			keystore.Zero(passphrase)
+			return nil, errors.Wrapf(err, "failed to encrypt volume %v", vol.Name)
+		}
+	}
+	return passphrase, nil
+}
+
 func (m *ShareManager) tearDownDevice(vol volume.Volume) error {
 	// close any matching crypto device for this volume
 	cryptoDevice := types.GetVolumeDevicePath(vol.Name, vol.DataEngine, true)
-	if isOpen, err := crypto.IsDeviceOpen(cryptoDevice); err != nil {
+	if isOpen, err := lhcrypto.IsDeviceOpen(cryptoDevice); err != nil {
 		return err
 	} else if isOpen {
 		m.logger.Infof("Volume %s has active crypto device %s", vol.Name, cryptoDevice)
-		if err := crypto.CloseVolume(vol.Name, vol.DataEngine); err != nil {
+		if err := lhcrypto.CloseVolume(vol.Name, vol.DataEngine); err != nil {
 			return err
 		}
 		m.logger.Infof("Volume %s closed active crypto device %s", vol.Name, cryptoDevice)

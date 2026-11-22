@@ -20,10 +20,11 @@ import (
 
 	"k8s.io/mount-utils"
 
+	lhcrypto "github.com/longhorn/go-common-libs/crypto"
+	"github.com/longhorn/go-common-libs/crypto/keystore"
 	lhexec "github.com/longhorn/go-common-libs/exec"
 	lhtypes "github.com/longhorn/go-common-libs/types"
 
-	"github.com/longhorn/longhorn-share-manager/pkg/crypto"
 	"github.com/longhorn/longhorn-share-manager/pkg/server"
 	"github.com/longhorn/longhorn-share-manager/pkg/server/nfs"
 	"github.com/longhorn/longhorn-share-manager/pkg/types"
@@ -164,7 +165,18 @@ func (s *ShareManagerServer) FilesystemResize(ctx context.Context, req *emptypb.
 			return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.InvalidArgument, "unsupported disk encryption format %v", diskFormat)
 		}
 
-		if err = crypto.ResizeEncryptoDevice(vol.Name, vol.DataEngine, vol.Passphrase); err != nil {
+		// Resolved again rather than remembered: a key-store passphrase lives only in the store.
+		provider, err := vol.NewKeyProvider(ctx)
+		if err != nil {
+			return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.InvalidArgument, "invalid encryption settings for volume %v: %v", vol.Name, err)
+		}
+		passphrase, _, err := provider.Get(ctx, keystore.VolumeKey(vol.Name))
+		if err != nil {
+			return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.Unavailable, "failed to read the key of volume %v from the %v key provider: %v", vol.Name, provider.Name(), err)
+		}
+		defer keystore.Zero(passphrase)
+
+		if err = lhcrypto.ResizeEncryptoDevice(vol.Name, vol.DataEngine, string(passphrase)); err != nil {
 			return &emptypb.Empty{}, grpcstatus.Errorf(grpccodes.Internal, "failed to resize crypto device %v for volume %v node expansion: %v", devicePath, vol.Name, err)
 		}
 	}

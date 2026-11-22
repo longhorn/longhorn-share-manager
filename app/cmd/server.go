@@ -12,6 +12,8 @@ import (
 	"github.com/urfave/cli/v3"
 
 	"github.com/longhorn/types/pkg/generated/smrpc"
+
+	lhtypes "github.com/longhorn/go-common-libs/types"
 	"google.golang.org/grpc"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
@@ -49,8 +51,26 @@ func ServerCmd() *cli.Command {
 			},
 			&cli.StringFlag{
 				Name:     "passphrase",
-				Usage:    "contains the encryption passphrase",
+				Usage:    "contains the encryption passphrase of the secret key provider",
 				Sources:  cli.EnvVars("PASSPHRASE"),
+				Required: false,
+			},
+			&cli.StringFlag{
+				Name:     "cryptokeyprovider",
+				Usage:    "the key provider: empty or 'secret' uses --passphrase, 'vault' fetches the key from Vault",
+				Sources:  cli.EnvVars("CRYPTOKEYPROVIDER"),
+				Required: false,
+			},
+			&cli.StringFlag{
+				Name:     "encryption-secret-name",
+				Usage:    "the Secret in Longhorn's namespace configuring a key-store provider",
+				Sources:  cli.EnvVars("ENCRYPTION_SECRET_NAME"),
+				Required: false,
+			},
+			&cli.BoolFlag{
+				Name:     "encryption-initialized",
+				Usage:    "the device was formatted with LUKS before, so a blank-reading device is refused",
+				Sources:  cli.EnvVars("ENCRYPTION_INITIALIZED"),
 				Required: false,
 			},
 			&cli.StringFlag{
@@ -105,7 +125,11 @@ func ServerCmd() *cli.Command {
 			vol := volume.Volume{
 				Name:                       c.String("volume"),
 				DataEngine:                 c.String("data-engine"),
+				Encrypted:                  c.Bool("encrypted"),
 				Passphrase:                 c.String("passphrase"),
+				KeyProvider:                c.String("cryptokeyprovider"),
+				EncryptionSecretName:       c.String("encryption-secret-name"),
+				Initialized:                c.Bool("encryption-initialized"),
 				CryptoKeyCipher:            c.String("cryptokeycipher"),
 				CryptoKeyHash:              c.String("cryptokeyhash"),
 				CryptoKeySize:              c.String("cryptokeysize"),
@@ -116,7 +140,7 @@ func ServerCmd() *cli.Command {
 				MountOptions:               c.StringSlice("mount"),
 			}
 
-			if c.Bool("encrypted") && len(vol.Passphrase) == 0 {
+			if c.Bool("encrypted") && vol.KeyProviderName() == lhtypes.EncryptionKeyProviderSecret && len(vol.Passphrase) == 0 {
 				logrus.Fatalf("Error starting share-manager missing passphrase for encrypted volume %v", vol.Name)
 			}
 
